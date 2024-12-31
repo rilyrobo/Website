@@ -137,8 +137,8 @@
 
                 <!-- Example Images -->
                 <div class="examples" style="display: flex; flex-wrap: wrap; gap: 20px;">
-                    <img src="2d_sketch_example.jpg" alt="2D Sketch Example" class="example-image" onclick="openModal(this.src)">
-                    <img src="2d_colored_example.jpg" alt="2D Colored Example" class="example-image" onclick="openModal(this.src)">
+                    <img src="2d_sketch_example.jpg" alt="2D Sketch Example" class="example-image">
+                    <img src="2d_colored_example.jpg" alt="2D Colored Example" class="example-image">
                 </div>
 
                 <!-- 3D Commissions Section -->
@@ -172,11 +172,11 @@
                     <ul>
                         <li>NSFW Content: +20% base cost</li>
                     </ul>
-                    
+                
                     <!-- Example Images -->
                     <div class="examples" style="display: flex; flex-wrap: wrap; gap: 20px;">
-                        <img src="3d_low_poly_example.jpg" alt="3D Low Poly Example" class="example-image" onclick="openModal(this.src)">
-                        <img src="3d_high_poly_example.jpg" alt="3D High Poly Example" class="example-image" onclick="openModal(this.src)">
+                        <img src="3d_low_poly_example.jpg" alt="3D Low Poly Example" class="example-image">
+                        <img src="3d_high_poly_example.jpg" alt="3D High Poly Example" class="example-image">
                     </div>
                 </div>
             </div>
@@ -216,13 +216,18 @@
             </form>
         </div>
 
-        <div id="gallery-modal" class="modal hidden">
+        <div id="gallery-modal" class="modal">
             <div class="modal-content">
-                <span class="close">&times;</span>
-                <img id="modal-image" src="" alt="Art Image">
-                <a id="modal-link" href="#" target="_blank">View on DeviantArt</a>
+                <img id="modal-image" src="" alt="Enlarged Art">
+                <a id="modal-link" href="#" target="_blank" class="button">View on DeviantArt</a>
             </div>
-        </div>            
+        </div>   
+
+        <div id="commision-modal" class="modal">
+            <div class="modal-content">
+                <img id="modal-image" src="" alt="Enlarged Art">
+            </div>
+        </div>        
 
         <footer>
             <p>&copy; 2024 Art by RilyRobo. All rights reserved.</p>
