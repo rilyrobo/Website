@@ -2,6 +2,16 @@ document.addEventListener("DOMContentLoaded", () => {
         
     const channelId = 'UCNlAFfQIh6Eycmd2yntbK7Q';
 
+    const videoIds = [
+        'uQXPa-OcfFQ',
+        'yaDXBP_9nLM',
+        '9ufioUSRtWs',
+        'HRU_q-m73IM',
+        'OKIYQ-5k22I',
+        // Add more video IDs here
+    ];
+    
+
     // Fetch Gallery Data for Home Page
         fetch(`https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo`)
             .then(response => response.text())
@@ -68,9 +78,37 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
 
-
           
-
+        // Home Page Videos
+        const videoGridHome = document.querySelector('.video-grid-home');
+        let homeHtml = '';
+        
+        videoIds.slice(0, 3).forEach(videoId => {
+            homeHtml += `
+                <div class="video-card">
+                    <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+                    <h4>Video Title</h4> <!-- You can manually add titles if you want -->
+                </div>`;
+        });
+        
+        videoGridHome.innerHTML = homeHtml;
+        
+        // Video Page Videos
+        const videoGridFull = document.querySelector('.video-grid-full');
+        let fullHtml = '';
+        
+        videoIds.forEach(videoId => {
+            fullHtml += `
+                <div class="video-card">
+                    <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+                    <h4>Video Title</h4> <!-- You can manually add titles if you want -->
+                </div>`;
+        });
+        
+        videoGridFull.innerHTML = fullHtml;
+        
+                
+        /*
         fetch(`https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`)
         .then(response => response.text())
         .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
@@ -108,22 +146,19 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
             .then(data => {
-                const items = data.querySelectorAll("entry");
-                const videoGrid = document.querySelector('.video-grid-full');
-                let html = '';
-        
-                items.forEach(item => {
-                    const title = item.querySelector("title").textContent;
-                    const videoId = item.querySelector("yt\\:videoId").textContent;
-        
-                    html += `
-                        <div class="video-card">
-                            <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
-                            <h4>${title}</h4>
-                        </div>`;
-                });
-        
-                videoGrid.innerHTML = html;
+            const videoGrid = document.querySelector('.video-grid-full');
+            let html = '';
+
+            videoIds.forEach(videoId => {
+                html += `
+                    <div class="video-card">
+                        <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+                        <h4>Video Title</h4> <!-- You can manually add titles if you want -->
+                    </div>`;
+            });
+
+            videoGrid.innerHTML = html;
+
             })
             .catch(error => {
                 console.error('Error fetching RSS feed:', error);
@@ -133,11 +168,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         
     
-        
-
-
-        
-        /*
         fetch(`https://www.googleapis.com/youtube/v3/search?key=${API_KEYS.youtube}&channelId=${channelId}&part=snippet&type=video&order=date&maxResults=3`)
         .then(response => response.json())
         .then(data => {
