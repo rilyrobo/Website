@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Art by RilyRobo</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    
+    <body>
+
+        <header>
+            <h1>Art by RilyRobo</h1>
+            <p>Explore my world of creativity: Drawings, 3D Renders, Comics, Writing, and more</p>
+        </header>
+
+        <nav>
+            <a href="#home" onclick="showPage('home')">Home</a>
+            <a href="#gallery" onclick="showPage('gallery')">Gallery</a>
+            <a href="#videos" onclick="showPage('videos')">Videos</a>
+            <a href="#commissions" onclick="showPage('commissions')">Commissions</a>
+            <a href="#social" onclick="showPage('social')">Social Media</a>
+            <a href="#storefront" onclick="showPage('storefront')">Store</a>
+            <a href="#contact" onclick="showPage('contact')">Contact</a>
+        </nav>
+
+        <div id="home" class="page active" style="background: url('background.jpg') center/cover no-repeat; color: white; text-align: center; padding: 50px 20px;">
+            <h2 style="font-size: 2.5em; margin-bottom: 20px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px  1px 0 #000, 1px  1px 0 #000;">Welcome to My Creative World</h2>
+            <p style="font-size: 1.2em; max-width: 700px; margin: 0 auto; line-height: 1.8; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px  1px 0 #000, 1px  1px 0 #000;">
+                Explore a unique collection of art, from <strong>drawings</strong> and <strong>3D renders</strong> to <strong>comics</strong> and <strong>writings</strong>. Let creativity take you on a journey.
+            </p>
+            <div style="margin-top: 40px;">
+                <a href="#gallery" onclick="showPage('gallery')" class="button" style="display: inline-block; margin: 10px; padding: 15px 25px; font-size: 1em; color: white; background-color: #007BFF; border: none; border-radius: 5px; text-decoration: none;">View Gallery</a>
+                <a href="#commissions" onclick="showPage('commissions')" class="button" style="display: inline-block; margin: 10px; padding: 15px 25px; font-size: 1em; color: white; background-color: #28A745; border: none; border-radius: 5px; text-decoration: none;">Get a Commission</a>
+            </div>
+            
+            <!-- Latest Artworks Section -->
+            <div class="latest-gallery" style="margin: 40px auto; max-width: 1200px; overflow: hidden;">
+                <h3 style="text-align: left; margin-bottom: 20px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px  1px 0 #000, 1px  1px 0 #000;">Latest Artworks</h3>
+                <div class="gallery-grid-home" style="display: flex; justify-content: center; gap: 20px;">
+                    <!-- Artwork thumbnails will be inserted dynamically -->
+                </div>
+                <div style="margin-top: 20px;">
+                    <a href="#gallery" onclick="showPage('gallery')" class="button" style="display: inline-block; padding: 15px 25px; font-size: 1em; color: white; background-color: #007BFF; border: none; border-radius: 5px; text-decoration: none;">View Full Gallery</a>
+                </div>
+            </div>
+            
+            <!-- Latest Videos Section -->
+            <div class="latest-videos" style="margin: 40px auto; max-width: 1200px; overflow: hidden;">
+                <h3 style="text-align: left; margin-bottom: 20px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px  1px 0 #000, 1px  1px 0 #000;">Latest Videos</h3>
+                <div class="video-grid-home" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                    <!-- Latest videos will be inserted dynamically -->
+                </div>
+                <div style="margin-top: 20px;">
+                    <a href="#videos" onclick="showPage('videos')" class="button" style="display: inline-block; padding: 15px 25px; font-size: 1em; color: white; background-color: #007BFF; border: none; border-radius: 5px; text-decoration: none;">View Videos</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gallery Page -->
+        <div id="gallery" class="page">
+            <h2>Gallery</h2>
+            <p>Discover my artwork: Drawings, 3D Renders, Comics, and Writing</p>
+            <div class="gallery-grid-full" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
+                <!-- Artwork thumbnails will be inserted dynamically -->
+            </div>
+            <div class="social-media">
+                <a href="https://twitter.com/RilyRobo"><i class="fab fa-twitter"></i> Twitter</a>
+                <a href="https://www.deviantart.com/RilyRobo"><i class="fab fa-deviantart"></i> Deviantart</a>
+                <a href="https://www.instagram.com/RilyRobo"><i class="fab fa-instagram"></i> Instagram</a>
+                <a href="https://RilyRobo.newgrounds.com/"><i class="fab fa-newgrounds"></i> Newgrounds</a>
+            </div>
+        </div>
+          
+        <div id="videos" class="page">
+            <h2>Videos</h2>
+            <p>Watch my tutorials, speed paintings, and more.</p>
+            <div class="intro-video" style="border: 1px solid #ccc; border-radius: 10px; padding: 15px; background: rgba(0, 0, 0, 0.6); text-align: center;">
+                <iframe src="https://www.youtube.com/embed/yaDXBP_9nLM" frameborder="0" allowfullscreen style="width: 100%; height: 400px;"></iframe>
+                <h3 style="color: #FFFFFF; margin-top: 10px;">Introductory Video</h3>
+            </div>
+            <div class="video-grid-full" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                <!-- Artwork thumbnails will be inserted dynamically -->
+            </div>
+            <div class="social-media">
+                <a href="https://www.youtube.com/@RilyRobo"><i class="fab fa-youtube"></i> Youtube</a>
+                <a href="https://twitter.com/RilyRobo"><i class="fab fa-twitter"></i> Twitter</a>
+            </div>
+        </div>
+        
+        <div id="commissions" class="page">
+            <h2>Commissions and Pricing</h2>
+            <p>Interested in personalized artwork? Explore my 2D and 3D commission options below:</p>
+
+            <!-- 2D Commissions Section -->
+            <div id="2d-commissions" style="margin-bottom: 40px;">
+                <h3>2D Commissions</h3>
+                <p>Choose from sketches, line art, flat colors, or shading. Prices vary by character coverage (portrait, upper half, or full body), additional characters, and background complexity.</p>
+                
+                <ul>
+                    <li><strong>Sketch</strong>: 
+                        <ul>
+                            <li>Portrait: $50</li>
+                            <li>Upper Half: $75</li>
+                            <li>Full Body: $100</li>
+                        </ul>
+                    </li>
+                    <li><strong>Line Art</strong>: 
+                        <ul>
+                            <li>Portrait: $60</li>
+                            <li>Upper Half: $90</li>
+                            <li>Full Body: $120</li>
+                        </ul>
+                    </li>
+                    <li><strong>Flat Colors</strong>: 
+                        <ul>
+                            <li>Portrait: $70</li>
+                            <li>Upper Half: $110</li>
+                            <li>Full Body: $150</li>
+                        </ul>
+                    </li>
+                    <li><strong>Shading</strong>: 
+                        <ul>
+                            <li>Portrait: $80</li>
+                            <li>Upper Half: $130</li>
+                            <li>Full Body: $180</li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <p><strong>Additional Costs:</strong></p>
+                <ul>
+                    <li>Additional Characters: +50% per character</li>
+                    <li>Backgrounds: $50–$150 depending on complexity</li>
+                    <li>NSFW Content: +20% base cost</li>
+                </ul>
+
+                <!-- Example Images -->
+                <div class="examples" style="display: flex; flex-wrap: wrap; gap: 20px;">
+                    <img src="2d_sketch_example.jpg" alt="2D Sketch Example" class="example-image" onclick="openModal(this.src)">
+                    <img src="2d_colored_example.jpg" alt="2D Colored Example" class="example-image" onclick="openModal(this.src)">
+                </div>
+
+                <!-- 3D Commissions Section -->
+                <div id="3d-commissions">
+                    <h3>3D Commissions</h3>
+                    <p>Whether you need low-poly models reminiscent of the PS1 era or high-detail PS3-quality models, I offer fully rigged and textured creations. Additional options include viseme setup and dynamic props.</p>
+                    
+                    <ul>
+                        <li><strong>From-Scratch Models</strong>:
+                            <ul>
+                                <li>Low-Poly (PS1 style): $300</li>
+                                <li>High-Poly (PS3 style): $500</li>
+                                <li>Facial Viseme Setup: +$150</li>
+                            </ul>
+                        </li>
+                        <li><strong>From-Scratch Props</strong>: 
+                            <ul>
+                                <li>Static Prop: $100</li>
+                                <li>Dynamic Prop (with rigging): $200</li>
+                            </ul>
+                        </li>
+                        <li><strong>Kitbashing</strong>: 
+                            <ul>
+                                <li>Character Kitbash: $250</li>
+                                <li>Prop Kitbash: $150</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    
+                    <p><strong>Additional Costs:</strong></p>
+                    <ul>
+                        <li>NSFW Content: +20% base cost</li>
+                    </ul>
+                    
+                    <!-- Example Images -->
+                    <div class="examples" style="display: flex; flex-wrap: wrap; gap: 20px;">
+                        <img src="3d_low_poly_example.jpg" alt="3D Low Poly Example" class="example-image" onclick="openModal(this.src)">
+                        <img src="3d_high_poly_example.jpg" alt="3D High Poly Example" class="example-image" onclick="openModal(this.src)">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="social" class="page">
+            <h2>Social Media</h2>
+            <p>Connect with me online:</p>
+            <div class="social-media">
+                <a href="https://www.youtube.com/@RilyRobo"><i class="fab fa-youtube"></i> Youtube</a>
+                <a href="https://twitter.com/RilyRobo"><i class="fab fa-twitter"></i> Twitter</a>
+                <a href="https://www.deviantart.com/RilyRobo"><i class="fab fa-deviantart"></i> Deviantart</a>
+                <a href="https://www.instagram.com/RilyRobo"><i class="fab fa-instagram"></i> Instagram</a>
+                <a href="https://RilyRobo.newgrounds.com/"><i class="fab fa-newgrounds"></i> Newgrounds</a>
+            </div>
+        </div>
+
+        <div id="storefront" class="page">
+            <h2>Store</h2>
+            <p>Explore my merchandise:</p>
+            <div class="teespring-store">
+                <iframe id="teespring-iframe" 
+                        src="https://my-store-c7ca26-2.creator-spring.com" 
+                        style="width: 100%; min-height: 800px; border: none; overflow: auto;" 
+                        scrolling="yes">
+                </iframe>
+            </div>            
+        </div>
+
+        <div id="contact" class="page">
+            <h2>Contact</h2>
+            <form action="#" method="post">
+                <input type="text" name="name" placeholder="Your Name" required>
+                <input type="email" name="email" placeholder="Your Email" required>
+                <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+                <button type="submit">Send Message</button>
+            </form>
+        </div>
+
+        <div id="gallery-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <img id="modal-image" src="" alt="Art Image">
+                <a id="modal-link" href="#" target="_blank">View on DeviantArt</a>
+            </div>
+        </div>            
+
+        <footer>
+            <p>&copy; 2024 Art by RilyRobo. All rights reserved.</p>
+        </footer>
+
+        <script src="script.js"></script>
+
+    </body>
+</html>

@@ -1,0 +1,276 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  background-color: #1a0f0f;
+  color: #f5e6e6;
+  overflow-x: hidden;
+}
+
+header {
+  background: url('backgroundHeader.jpg') center/cover no-repeat;;
+  color: white;
+  padding: 2rem 0;
+  text-align: center;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px  1px 0 #000, 1px  1px 0 #000;
+}
+
+header h1 {
+  font-size: 2.5rem;
+  margin: 0;
+}
+
+header p {
+  font-size: 1.2rem;
+  margin: 0.5rem 0 0;
+}
+
+nav {
+  position: sticky;
+  top: 0;
+  background: #660000;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  z-index: 1000;
+}
+
+nav a {
+  color: #f5e6e6;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+nav a:hover {
+  background: #8b0000;
+}
+
+.page {
+  display: none;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: auto;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.page.active {
+  display: block;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.card {
+  background: #2a1a1a;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+}
+
+.card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.card h3 {
+  margin: 1rem;
+  font-size: 1.5rem;
+  color: #f5e6e6;
+}
+
+.card p {
+  margin: 0 1rem 1rem;
+  color: #d3b8b8;
+}
+
+.social-media {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.social-media a {
+  color: #f5e6e6;
+  text-decoration: none;
+  background-color: #4b0000;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+.social-media a:hover {
+  background-color: #8b0000;
+}
+
+footer {
+  background: #2a1a1a;
+  color: #f5e6e6;
+  text-align: center;
+  padding: 2rem 0;
+  margin-top: 2rem;
+}
+
+form input, form textarea, form button {
+  display: block;
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border: 1px solid #8b0000;
+  border-radius: 5px;
+  background: #1a0f0f;
+  color: #f5e6e6;
+}
+
+form button {
+  background: #660000;
+  color: #f5e6e6;
+  border: none;
+  cursor: pointer;
+}
+
+form button:hover {
+  background: #8b0000;
+}
+
+.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fade-out {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.gallery-grid-full {
+   display: grid;
+   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+   gap: 16px;
+}
+
+.gallery-card, .video-card {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.6);
+  text-align: center;
+}
+
+.gallery-card img, .video-card iframe {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.gallery-card h4, .video-card h4 {
+  color: #ffffff;
+  margin-top: 10px;
+  font-size: 1em;
+}
+
+.example-image {
+  width: 45%;
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 15px; /* Rounded edges */
+  max-height: 300px; /* Target height */
+  object-fit: cover; /* Ensure the image covers the area */
+}
+
+.modal-content img {
+  border-radius: 15px; /* Rounded edges for modal image */
+}
+
+/* Add hover effect for clickable items */
+a, button, .card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+a:hover, button:hover, .card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.teespring-store iframe {
+  width: 100%;
+  height: 100vh; /* Full viewport height */
+  border: none;
+}
+
+.grid-item {
+  transition: transform 0.3s ease;
+}
+
+.grid-item:hover {
+  transform: scale(1.05);
+  z-index: 1;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  position: relative;
+  text-align: center;
+  color: #fff;
+  max-width: 90%;
+}
+
+.modal-content img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.modal-content a {
+  display: inline-block;
+  color: #FFD700;
+  text-decoration: underline;
+  font-size: 1.2em;
+  margin-top: 10px;
+}
+
+.modal-content .close {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 2em;
+  cursor: pointer;
+  color: #fff;
+}
