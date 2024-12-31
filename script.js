@@ -1,13 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const API_KEYS = {
-        youtube: 'AIzaSyAsNfZpuQCErlERbY51Bm8RNuJIJtOB8Zc',
-        deviantArt: 'RilyRobo',
-    };
         
     const channelId = 'UCNlAFfQIh6Eycmd2yntbK7Q';
 
     // Fetch Gallery Data for Home Page
-        fetch(`https://backend.deviantart.com/rss.xml?q=gallery:${API_KEYS.deviantArt}`)
+        fetch(`https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo`)
             .then(response => response.text())
             .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
             .then(data => {
@@ -39,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // Fetch Gallery Data for Dedicated Page
-        fetch(`https://backend.deviantart.com/rss.xml?q=gallery:${API_KEYS.deviantArt}`)
+        fetch(`https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo`)
             .then(response => response.text())
             .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
             .then(data => {
@@ -73,6 +69,75 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+          
+
+        fetch(`https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`)
+        .then(response => response.text())
+        .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
+        .then(data => {
+            const items = data.querySelectorAll("entry");
+            const videoGrid = document.querySelector('.video-grid-home');
+            let html = '';
+    
+            items.forEach(item => {
+                const title = item.querySelector("title").textContent;
+                const videoId = item.querySelector("yt\\:videoId").textContent;
+    
+                html += `
+                    <div class="video-card">
+                        <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+                        <h4>${title}</h4>
+                    </div>`;
+            });
+    
+            videoGrid.innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error fetching RSS feed:', error);
+            const errorMessage = document.querySelector('.video-grid-home');
+            errorMessage.innerHTML = 'Failed to load videos.';
+            errorMessage.classList.add('error-message');
+        });
+
+        fetch(`https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
+            .then(data => {
+                const items = data.querySelectorAll("entry");
+                const videoGrid = document.querySelector('.video-grid-full');
+                let html = '';
+        
+                items.forEach(item => {
+                    const title = item.querySelector("title").textContent;
+                    const videoId = item.querySelector("yt\\:videoId").textContent;
+        
+                    html += `
+                        <div class="video-card">
+                            <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+                            <h4>${title}</h4>
+                        </div>`;
+                });
+        
+                videoGrid.innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error fetching RSS feed:', error);
+                const errorMessage = document.querySelector('.video-grid-full');
+                errorMessage.innerHTML = 'Failed to load videos.';
+                errorMessage.classList.add('error-message');
+            });
+        
+    
+        
+
+
+        
+        /*
         fetch(`https://www.googleapis.com/youtube/v3/search?key=${API_KEYS.youtube}&channelId=${channelId}&part=snippet&type=video&order=date&maxResults=3`)
         .then(response => response.json())
         .then(data => {
@@ -95,8 +160,8 @@ document.addEventListener("DOMContentLoaded", () => {
             errorMessage.innerHTML = 'Failed to load videos.';
             errorMessage.classList.add('error-message');
         });
-          
-        
+
+
         fetch(`https://www.googleapis.com/youtube/v3/search?key=${API_KEYS.youtube}&channelId=${channelId}&part=snippet&type=video&order=date&maxResults=50`)
         .then(response => response.json())
         .then(data => {
@@ -118,21 +183,42 @@ document.addEventListener("DOMContentLoaded", () => {
             const errorMessage = document.querySelector('.video-grid-full');
             errorMessage.innerHTML = 'Failed to load videos.';
             errorMessage.classList.add('error-message');
-        });
+        });*/
 });
 
-function stopVideos() {
+let players = []; // To store YouTube players
+
+// Initialize YouTube players
+function onYouTubeIframeAPIReady() {
     const iframes = document.querySelectorAll('iframe');
-    iframes.forEach(iframe => {
-        const src = iframe.src;
-        iframe.src = '';
-        iframe.src = src;
+    iframes.forEach((iframe, index) => {
+        const player = new YT.Player(iframe, {
+            events: {
+                'onReady': onPlayerReady,
+            }
+        });
+        players[index] = player;
+    });
+}
+
+// Function to handle player readiness
+function onPlayerReady(event) {
+    // Player is ready to be controlled
+}
+
+// Function to stop all videos
+function stopVideos() {
+    players.forEach(player => {
+        if (player && player.pauseVideo) {
+            player.pauseVideo(); // Pause the video
+        }
     });
 }
 
 
 
 function showPage(pageId) {
+    stopVideos(); // Stop all videos before switching
     const pages = document.querySelectorAll('.page');
     const activePage = document.querySelector('.page.active');
 
@@ -142,9 +228,7 @@ function showPage(pageId) {
         setTimeout(() => {
             activePage.style.display = 'none';
             activePage.classList.remove('fade-out');
-            
-            stopVideos(); // Stop videos when leaving the page
-            
+
             const newPage = document.getElementById(pageId);
             newPage.style.display = 'block';
             setTimeout(() => {
@@ -159,6 +243,7 @@ function showPage(pageId) {
         }, 50);
     }
 }
+
 
 
 
