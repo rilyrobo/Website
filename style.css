@@ -53,7 +53,7 @@ nav a:hover {
 .page {
   display: none;
   padding: 2rem;
-  max-width: 1200px;
+  max-width: 90%;
   margin: auto;
   opacity: 0;
   transform: translateY(20px);
@@ -174,7 +174,7 @@ form button:hover {
    gap: 16px;
 }
 
-.gallery-card, .video-card {
+.comic-gallery-card, .gallery-card, .video-card {
   border: 1px solid #ccc;
   border-radius: 10px;
   padding: 15px;
@@ -182,14 +182,14 @@ form button:hover {
   text-align: center;
 }
 
-.gallery-card img, .video-card iframe {
+.comic-gallery-card img, .gallery-card img, .video-card iframe {
   width: 100%;
   height: auto;
   object-fit: cover;
   border-radius: 10px;
 }
 
-.gallery-card h4, .video-card h4 {
+.comic-gallery-card h4, .gallery-card h4, .video-card h4 {
   color: #ffffff;
   margin-top: 10px;
   font-size: 1em;
@@ -280,6 +280,33 @@ a:hover, button:hover, .card:hover {
   background-color: #0056b3;
 }
 
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  position: relative;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  padding: 20px;
+}
+
+.modal-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
 .example-image {
   width: 45%;
   transition: transform 0.3s ease;
@@ -289,6 +316,125 @@ a:hover, button:hover, .card:hover {
 
 .example-image:hover {
   transform: scale(1.1);
+}
+.comics-container {
+  max-width: 90%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.comic-display img {
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin-bottom: 10px;
+}
+
+.comic-navigation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.comic-selector {
+  padding: 5px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.comic-selector:hover {
+  background-color: #eaeaea;
+  transform: scale(1.05);
+}
+
+.comic-navigation button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.3s;
+}
+
+.comic-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: auto;
+  padding: 20px;
+  overflow: auto;
+  background-color: #222;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+
+.comic-display img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+nav {
+  position: relative;
+  background: #660000;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  z-index: 1000;
+}
+
+nav a {
+  color: #f5e6e6;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+nav a:hover {
+  background: #8b0000;
+}
+
+.dropdown {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #660000;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: #f5e6e6;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  transition: background 0.3s ease;
+}
+
+.dropdown-content a:hover {
+  background-color: #8b0000;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
 }
 
 .error-message {

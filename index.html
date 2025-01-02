@@ -17,12 +17,20 @@
         <nav>
             <a href="#home" onclick="showPage('home')">Home</a>
             <a href="#gallery" onclick="showPage('gallery')">Gallery</a>
+            <div class="dropdown">
+                <a href="#comics" onclick="showPage('comics')">Comics</a>
+                <div class="dropdown-content">
+                    <a href="#comics" onclick="showPage('comics')">Comics</a>
+                    <a href="#comic-1" onclick="showPage('comic-1')">Comic 1</a>
+                    <a href="#comic-2" onclick="showPage('comic-2')">Comic 2</a>
+                </div>
+            </div>
             <a href="#videos" onclick="showPage('videos')">Videos</a>
             <a href="#commissions" onclick="showPage('commissions')">Commissions</a>
             <a href="#social" onclick="showPage('social')">Social Media</a>
             <a href="#storefront" onclick="showPage('storefront')">Store</a>
             <a href="#contact" onclick="showPage('contact')">Contact</a>
-        </nav>
+        </nav>        
 
         <div id="home" class="page active" style="background: url('background.jpg') center/cover no-repeat; color: white; text-align: center; padding: 50px 20px;">
             <h2 style="font-size: 2.5em; margin-bottom: 20px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px  1px 0 #000, 1px  1px 0 #000;">Welcome to My Creative World</h2>
@@ -71,6 +79,55 @@
                 <a href="https://RilyRobo.newgrounds.com/"><i class="fab fa-newgrounds"></i> Newgrounds</a>
             </div>
         </div>
+
+        <!-- Comic Gallery Page -->
+        <div id="comics" class="page">
+            <h2>Comics</h2>
+            <div id="comic-gallery-grid-1" class="gallery-grid"></div>
+            <div id="comic-gallery-grid-2" class="gallery-grid"></div>
+        </div>
+
+        <div id="comic-1" class="page">
+            <h2 style = "text-align: center;">Comics</h2>
+            <div class="comics-container">
+                <div>
+                    <button id="first-top-comic-comic-1">First</button>
+                    <button id="previous-top-comic-comic-1">Previous</button>
+                    <select class="comic-1-comic-selector"></select>
+                    <button id="next-top-comic-comic-1">Next</button>
+                    <button id="last-top-comic-comic-1">Last</button>
+                </div>
+                <div id="comic-display-1" class="comic-display"></div>
+                <div>
+                    <button id="first-bot-comic-comic-1">First</button>
+                    <button id="previous-bot-comic-comic-1">Previous</button>
+                    <select class="comic-1-comic-selector"></select>
+                    <button id="next-bot-comic-comic-1">Next</button>
+                    <button id="last-bot-comic-comic-1">Last</button>
+                </div>
+            </div>
+        </div>   
+
+        <div id="comic-2" class="page">
+            <h2 style = "text-align: center;">Comics</h2>
+            <div class="comics-container">
+                <div>
+                    <button id="first-top-comic-comic-2">First</button>
+                    <button id="previous-top-comic-comic-2">Previous</button>
+                    <select class="comic-2-comic-selector"></select>
+                    <button id="next-top-comic-comic-2">Next</button>
+                    <button id="last-top-comic-comic-2">Last</button>
+                </div>
+                <div id="comic-display-2" class="comic-display"></div>
+                <div>
+                    <button id="first-bot-comic-comic-2">First</button>
+                    <button id="previous-bot-comic-comic-2">Previous</button>
+                    <select class="comic-2-comic-selector"></select>
+                    <button id="next-bot-comic-comic-2">Next</button>
+                    <button id="last-bot-comic-comic-2">Last</button>
+                </div>
+            </div>
+        </div>     
           
         <div id="videos" class="page">
             <h2>Videos</h2>
@@ -86,7 +143,7 @@
                 <a href="https://www.youtube.com/@RilyRobo"><i class="fab fa-youtube"></i> Youtube</a>
                 <a href="https://twitter.com/RilyRobo"><i class="fab fa-twitter"></i> Twitter</a>
             </div>
-        </div>
+        </div>      
         
         <div id="commissions" class="page">
             <h2>Commissions and Pricing</h2>
@@ -222,6 +279,13 @@
                 <a id="modal-link" href="#" target="_blank" class="button">View on DeviantArt</a>
             </div>
         </div>   
+        
+        <div id="comic-modal" class="modal">
+            <div class="modal-content" style="max-width: 90%; max-height: 90%; overflow-y: auto; background-color: #000;">
+                <span class="close" style="position: absolute; top: 10px; right: 20px; color: white; font-size: 2rem; cursor: pointer;">&times;</span>
+                <img id="comic-modal-image" src="" alt="Comic Image" style="width: 100%; display: block;">
+            </div>
+        </div>      
 
         <div id="commision-modal" class="modal">
             <div class="modal-content">
