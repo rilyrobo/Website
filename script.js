@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // YouTube Video IDs and Player Management
     const videoIds = [
         'uQXPa-OcfFQ',
         'yaDXBP_9nLM',
@@ -29,8 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
-
-    // Display YouTube Videos
     function displayVideos(gridSelector, ids) {
         const videoGrid = document.querySelector(gridSelector);
         let html = '';
@@ -48,8 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     displayVideos('.video-grid-home', videoIds.slice(0, 3));
     displayVideos('.video-grid-full', videoIds);
-
-    // Gallery Fetching and Modal Management
     function fetchGalleryData(endpoint, gridSelector, limit = null) {
         fetch(endpoint)
             .then(response => response.text())
@@ -57,8 +52,6 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(data => {
                 const items = Array.from(data.querySelectorAll("item"));
                 let html = '';
-
-                // Limit the items if a limit is specified
                 const displayedItems = limit ? items.slice(0, limit) : items;
 
                 displayedItems.forEach(el => {
@@ -74,8 +67,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
 
                 document.querySelector(gridSelector).innerHTML = html;
-
-                // Attach modal functionality
                 attachModalListeners(gridSelector);
             })
             .catch(error => {
@@ -85,45 +76,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 errorMessage.classList.add('error-message');
             });
     }
-
-    // Social
-    fetch('https://example.com/rss/twitter/Rilyrobo')
-    .then(response => response.text())
-    .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
-    .then(data => {
-        const items = data.querySelectorAll("item");
-        let html = "";
-        items.forEach(item => {
-            const title = item.querySelector("title").textContent;
-            const link = item.querySelector("link").textContent;
-            html += `<p><a href="${link}" target="_blank">${title}</a></p>`;
-        });
-        document.getElementById("twitter-feed").innerHTML = html;
-    });
-
-
-
-    // Fetch limited gallery for the home page (e.g., 5 items)
     fetchGalleryData('https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/31357645/featured', '.gallery-grid-home', 5);
-
-    // Fetch full gallery for the dedicated gallery page
     fetchGalleryData('https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/31357645/featured', '.gallery-grid-full');
-
-    // Populate dropdown and comics grid
     function setupComics(comicsList) {
         const dropdownContent = document.querySelector(".dropdown-content");
         const comicsGrid = document.querySelector("#comics-grid");
-    
-        let dropdownHtml = `<a href="#comics" onclick="showPage('comics')">Comics</a>`; // Add "Comics" as the first dropdown option
+        let dropdownHtml = `<a href="#comics" onclick="showPage('comics')">Comics</a>`;
         let gridHtml = '';
-    
+
         comicsList.forEach((comic, index) => {
-            // Populate dropdown
-            dropdownHtml += `<a href="#comic-${index}" onclick="showPage('comic-${index}')">${comic.title}</a>`;
-    
-            // Populate comics grid
+            dropdownHtml += `<a href="#comic-${comic.title}" onclick="showPage('comic-${comic.title}')">${comic.title}</a>`;
             gridHtml += `
-                <div class="comic-preview" onclick="showPage('comic-${index}')">
+                <div class="comic-preview" data-target="comic-${comic.title}">
                     <div class="comic-card">
                         <div class="comic-image-container">
                             <img src="" alt="${comic.title}" id="comic-preview-image-${index}" class="comic-image" style="width: 100%; height: auto;">
@@ -131,21 +95,44 @@ document.addEventListener("DOMContentLoaded", () => {
                         <h4>${comic.title}</h4>
                     </div>
                 </div>`;
-    
-            // Fetch the first image of the comic
-            fetchGalleryData(comic.url, `#comic-preview-image-${index}`, 1);
+
+                fetchFirstComicImage(comic.url, `#comic-preview-image-${index}`);
         });
-    
+
         dropdownContent.innerHTML = dropdownHtml;
         comicsGrid.innerHTML = gridHtml;
+        const comicPreviews = document.querySelectorAll(".comic-preview");
+        comicPreviews.forEach(preview => {
+            preview.addEventListener("click", () => {
+                const target = preview.getAttribute("data-target");
+                showPage(target);
+            });
+        });
     }
+
+    function fetchFirstComicImage(endpoint, imageSelector) {
+        fetch(endpoint)
+            .then(response => response.text())
+            .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
+            .then(data => {
+                const firstItem = data.querySelector("item");
+                if (firstItem) {
+                    const imageUrl = firstItem.querySelector("media\\:content, content").getAttribute("url");
+                    const imageElement = document.querySelector(imageSelector);
+                    if (imageElement) {
+                        imageElement.src = imageUrl;
+                    }
+                }
+            })
+            .catch(error => console.error(`Error fetching first image for ${endpoint}:`, error));
+    }    
     
     function createComicPages(comicsList) {
         const mainContainer = document.querySelector("page");
     
         comicsList.forEach((comic, index) => {
             const comicPage = document.createElement("div");
-            comicPage.id = `comic-${index}`;
+            comicPage.id = `comic-${comic.title}`;
             comicPage.className = "page";
             comicPage.innerHTML = `
                 <h2 style="text-align: center;">${comic.title}</h2>
@@ -170,25 +157,29 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
             `;
             mainContainer.appendChild(comicPage);
-    
-            // Fetch and display the comic gallery for this page
-            fetchComicGallery(comic.url, index);
+            fetchComicGallery(comic.url, index, comic.dimensions);
         });
     }
-    function fetchComicGallery(endpoint, comicIndex) {
+
+    function fetchComicGallery(endpoint, comicIndex, dimensions = null) {
         fetch(endpoint)
             .then(response => response.text())
             .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
             .then(data => {
                 const items = Array.from(data.querySelectorAll("item"));
-                const images = items.map((el) => ({
-                    title: el.querySelector("title").textContent,
-                    link: el.querySelector("link").textContent,
-                    image: el.querySelector("media\\:content, content").getAttribute("url"),
-                }));
+                const images = Array.from(items).map(el => {
+                    const title = el.querySelector("title").textContent;
+                    const link = el.querySelector("link").textContent;
+                    let image = el.querySelector("media\\:content, content").getAttribute("url");
+                    if (image.includes("fill/w_")) {
+                        image = image.replace(/fill\/w_\d+,h_\d+,q_\d+/g, `fill/${dimensions}`);
+                    }
+    
+                    return { title, link, image };
+                });
     
                 setupComicNavigation(images, comicIndex);
-                displayComicImage(images, comicIndex, 0); // Start with the first image
+                displayComicImage(images, comicIndex, 0);
             })
             .catch((error) => console.error(`Error fetching comic gallery for index ${comicIndex}:`, error));
     }
@@ -204,13 +195,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const lastBotButton = document.getElementById(`last-bot-comic-${comicIndex}`);
         const topSelector = document.getElementById(`comic-selector-${comicIndex}`);
         const bottomSelector = document.getElementById(`comic-selector-bottom-${comicIndex}`);
-    
         images.forEach((image, index) => {
             const option = document.createElement("option");
             option.value = index;
             option.textContent = image.title;
             topSelector.appendChild(option);
-            bottomSelector.appendChild(option.cloneNode(true));
+    
+            const bottomOption = option.cloneNode(true);
+            bottomSelector.appendChild(bottomOption);
         });
     
         let currentIndex = 0;
@@ -223,44 +215,36 @@ document.addEventListener("DOMContentLoaded", () => {
                 bottomSelector.value = currentIndex;
             }
         };
-    
         firstTopButton.addEventListener("click", () => updateImageDisplay(0));
         previousTopButton.addEventListener("click", () => updateImageDisplay(currentIndex - 1));
         nextTopButton.addEventListener("click", () => updateImageDisplay(currentIndex + 1));
         lastTopButton.addEventListener("click", () => updateImageDisplay(images.length - 1));
-    
         firstBotButton.addEventListener("click", () => updateImageDisplay(0));
         previousBotButton.addEventListener("click", () => updateImageDisplay(currentIndex - 1));
         nextBotButton.addEventListener("click", () => updateImageDisplay(currentIndex + 1));
         lastBotButton.addEventListener("click", () => updateImageDisplay(images.length - 1));
-    
         topSelector.addEventListener("change", (e) => updateImageDisplay(Number(e.target.value)));
         bottomSelector.addEventListener("change", (e) => updateImageDisplay(Number(e.target.value)));
     }
     
     function displayComicImage(images, comicIndex, currentIndex) {
         const comicImage = document.getElementById(`comic-image-${comicIndex}`);
-        const comicTitle = document.getElementById(`comic-title-${comicIndex}`);
+        const topSelector = document.getElementById(`comic-selector-${comicIndex}`);
+        const bottomSelector = document.getElementById(`comic-selector-bottom-${comicIndex}`);
     
         const { image, title } = images[currentIndex];
         comicImage.src = image;
-        comicTitle.textContent = title;
-    }         
-
-    // List of comics with titles and gallery URLs
+        if (topSelector) topSelector.value = currentIndex;
+        if (bottomSelector) bottomSelector.value = currentIndex;
+    }
     const comicsList = [
-        { title: "Comic 1", url: "https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/57218117/the-day-nobody-died" },
-        { title: "Comic 2", url: "https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/62710269/oct-the-one-year-journey" },
-        // Add more comics here
+        { title: "The Day Nobody Died", url: "https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/57218117/the-day-nobody-died", dimensions: "w_1024,h_1326,q_80" },
+        { title: "The King and Guardian", url: "https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/62710269/oct-the-one-year-journey", dimensions: "w_1024,h_4452,q_80" },
     ];
 
     setupComics(comicsList);
     createComicPages(comicsList);
 
-
-
-
-    // Modal Functionality
     function attachModalListeners(gridSelector) {
         const galleryGrid = document.querySelector(gridSelector);
         const modal = document.getElementById("gallery-modal");
@@ -269,48 +253,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
         galleryGrid.addEventListener("click", (e) => {
             const galleryCard = e.target.closest(".gallery-card");
-            const comicGalleryCard = e.target.closest(".comic-gallery-card");
             if (galleryCard) {
                 const imageUrl = galleryCard.dataset.image;
                 const deviantArtLink = galleryCard.dataset.link;
 
                 modalImage.src = imageUrl;
                 modalLink.href = deviantArtLink;
-                modal.style.display = "flex"; // Show modal
-            }
-            if (comicGalleryCard) {
-                const selectorPrefix = comicGalleryCard.dataset.selectorPrefix;
-                window.location.hash = `#${selectorPrefix}`;
-                showPage(selectorPrefix);
-            }       
+                modal.style.display = "flex";
+            }      
         });
-
-        // Close modal when clicking outside modal content
         modal.addEventListener("click", (e) => {
             if (e.target === modal) {
-                modal.style.display = "none"; // Hide modal
+                modal.style.display = "none";
             }
         });
     }
-
-
-    // Page Switching
+    
     function showPage(pageId) {
-        stopVideos(); // Stop videos when switching pages
+        console.log(`Navigating to: ${pageId}`);
         const pages = document.querySelectorAll('.page');
-        const activePage = document.querySelector('.page.active');
-
-        if (activePage) {
-            activePage.classList.remove('active');
-            activePage.style.display = 'none';
-        }
-
-        const newPage = document.getElementById(pageId);
-        newPage.style.display = 'block';
-        newPage.classList.add('active');
+        pages.forEach(page => {
+            if (page.id === pageId) {
+                page.style.display = 'block';
+                page.classList.add('active');
+            } else {
+                page.style.display = 'none';
+                page.classList.remove('active');
+            }
+        });
+        history.pushState(null, '', `#${pageId}`);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
-    // Attach to navigation
     document.querySelectorAll("nav a").forEach(link => {
         link.addEventListener("click", (e) => {
             const targetPage = e.target.getAttribute("href").substring(1);
