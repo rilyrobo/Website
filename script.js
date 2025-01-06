@@ -1,50 +1,32 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const videoIds = [
-        'uQXPa-OcfFQ',
-        'yaDXBP_9nLM',
-        '9ufioUSRtWs',
-        'HRU_q-m73IM',
-        'OKIYQ-5k22I'
+
+    const videoData = [
+        { id: 'uQXPa-OcfFQ', title: 'Toy Story 2 ReAnimated - Scene 319' },
+        { id: 'yaDXBP_9nLM', title: 'Rily Robinson Animation Demo Reel 2020' },
+        { id: '9ufioUSRtWs', title: 'Demo Reel AGFVE Quarter 6' },
+        { id: 'HRU_q-m73IM', title: 'Demo Reel AGFVE Quarter 1' },
+        { id: 'OKIYQ-5k22I', title: 'Jester Reads : Darkness' }
     ];
-    let players = [];
-
-    function initializeYouTubePlayers() {
-        const iframes = document.querySelectorAll('iframe');
-        iframes.forEach((iframe, index) => {
-            const player = new YT.Player(iframe, {
-                events: {
-                    'onReady': () => {
-                        players[index] = player;
-                    }
-                }
-            });
-        });
-    }
-
-    function stopVideos() {
-        players.forEach(player => {
-            if (player && player.pauseVideo) {
-                player.pauseVideo();
-            }
-        });
-    }
-    function displayVideos(gridSelector, ids) {
+    
+    function displayVideos(gridSelector, videos) {
         const videoGrid = document.querySelector(gridSelector);
         let html = '';
-
-        ids.forEach(videoId => {
+    
+        videos.forEach(video => {
             html += `
                 <div class="video-card">
-                    <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
-                    <h4>Video Title</h4> <!-- Placeholder Title -->
+                    <iframe src="https://www.youtube.com/embed/${video.id}" frameborder="0" allowfullscreen></iframe>
+                    <h4>${video.title}</h4>
                 </div>`;
         });
-
+    
         videoGrid.innerHTML = html;
     }
+    displayVideos('.video-grid-home', videoData.slice(0, 3));
+    displayVideos('.video-grid-full', videoData);    
 
-    displayVideos('.video-grid-home', videoIds.slice(0, 3));
-    displayVideos('.video-grid-full', videoIds);
+
+
     function fetchGalleryData(endpoint, gridSelector, limit = null) {
         fetch(endpoint)
             .then(response => response.text())
@@ -76,18 +58,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 errorMessage.classList.add('error-message');
             });
     }
+
     fetchGalleryData('https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/31357645/featured', '.gallery-grid-home', 5);
     fetchGalleryData('https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/31357645/featured', '.gallery-grid-full');
+
     function setupComics(comicsList) {
         const dropdownContent = document.querySelector(".dropdown-content");
         const comicsGrid = document.querySelector("#comics-grid");
+    
         let dropdownHtml = `<a href="#comics" onclick="showPage('comics')">Comics</a>`;
         let gridHtml = '';
-
+    
         comicsList.forEach((comic, index) => {
-            dropdownHtml += `<a href="#comic-${comic.title}" onclick="showPage('comic-${comic.title}')">${comic.title}</a>`;
+            const urlFriendlyTitle = comic.title.replace(/\s+/g, '-');
+            dropdownHtml += `<a href="#comic-${urlFriendlyTitle}" onclick="showPage('comic-${urlFriendlyTitle}')">${comic.title}</a>`;
             gridHtml += `
-                <div class="comic-preview" data-target="comic-${comic.title}">
+                <div class="comic-preview" data-target="comic-${urlFriendlyTitle}">
                     <div class="comic-card">
                         <div class="comic-image-container">
                             <img src="" alt="${comic.title}" id="comic-preview-image-${index}" class="comic-image" style="width: 100%; height: auto;">
@@ -95,10 +81,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         <h4>${comic.title}</h4>
                     </div>
                 </div>`;
-
-                fetchFirstComicImage(comic.url, `#comic-preview-image-${index}`);
+            fetchFirstComicImage(comic.url, `#comic-preview-image-${index}`);
         });
-
+    
         dropdownContent.innerHTML = dropdownHtml;
         comicsGrid.innerHTML = gridHtml;
         const comicPreviews = document.querySelectorAll(".comic-preview");
@@ -109,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     }
-
+    
     function fetchFirstComicImage(endpoint, imageSelector) {
         fetch(endpoint)
             .then(response => response.text())
@@ -128,12 +113,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }    
     
     function createComicPages(comicsList) {
-        const mainContainer = document.querySelector("page");
+        const mainContainer = document.querySelector('page');
     
         comicsList.forEach((comic, index) => {
-            const comicPage = document.createElement("div");
-            comicPage.id = `comic-${comic.title}`;
-            comicPage.className = "page";
+            const comicPage = document.createElement('div');
+            comicPage.id = `comic-${comic.title.replace(/\s+/g, '-')}`;
+            comicPage.className = 'page';
             comicPage.innerHTML = `
                 <h2 style="text-align: center;">${comic.title}</h2>
                 <div class="comics-container">
@@ -160,28 +145,28 @@ document.addEventListener("DOMContentLoaded", () => {
             fetchComicGallery(comic.url, index, comic.dimensions);
         });
     }
-
-    function fetchComicGallery(endpoint, comicIndex, dimensions = null) {
+    
+    function fetchComicGallery(endpoint, comicIndex, dimensions = null, targetPage = 0) {
         fetch(endpoint)
             .then(response => response.text())
             .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
             .then(data => {
                 const items = Array.from(data.querySelectorAll("item"));
-                const images = Array.from(items).map(el => {
+                const images = items.map(el => {
                     const title = el.querySelector("title").textContent;
                     const link = el.querySelector("link").textContent;
                     let image = el.querySelector("media\\:content, content").getAttribute("url");
                     if (image.includes("fill/w_")) {
                         image = image.replace(/fill\/w_\d+,h_\d+,q_\d+/g, `fill/${dimensions}`);
                     }
-    
                     return { title, link, image };
                 });
     
                 setupComicNavigation(images, comicIndex);
-                displayComicImage(images, comicIndex, 0);
+                const validPageIndex = Math.max(0, Math.min(targetPage, images.length - 1));
+                displayComicImage(images, comicIndex, validPageIndex);
             })
-            .catch((error) => console.error(`Error fetching comic gallery for index ${comicIndex}:`, error));
+            .catch(error => console.error(`Error fetching comic gallery for index ${comicIndex}:`, error));
     }
     
     function setupComicNavigation(images, comicIndex) {
@@ -195,6 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const lastBotButton = document.getElementById(`last-bot-comic-${comicIndex}`);
         const topSelector = document.getElementById(`comic-selector-${comicIndex}`);
         const bottomSelector = document.getElementById(`comic-selector-bottom-${comicIndex}`);
+    
         images.forEach((image, index) => {
             const option = document.createElement("option");
             option.value = index;
@@ -204,8 +190,18 @@ document.addEventListener("DOMContentLoaded", () => {
             const bottomOption = option.cloneNode(true);
             bottomSelector.appendChild(bottomOption);
         });
-    
+        
         let currentIndex = 0;
+        const hash = window.location.hash;
+        const regex = new RegExp(`^#comic-[\\w-]+-page-(\\d+)$`);
+        const match = regex.exec(hash);
+    
+        if (match) {
+            const targetPage = parseInt(match[1], 10) - 1;
+            if (targetPage >= 0 && targetPage < images.length) {
+                currentIndex = targetPage;
+            }
+        }
     
         const updateImageDisplay = (index) => {
             if (index >= 0 && index < images.length) {
@@ -213,8 +209,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 displayComicImage(images, comicIndex, currentIndex);
                 topSelector.value = currentIndex;
                 bottomSelector.value = currentIndex;
+                const comicId = `comic-${comicsList[comicIndex].title.replace(/\s+/g, '-')}`;
+                const pageNumber = currentIndex + 1;
+                history.replaceState(null, '', `#${comicId}-page-${pageNumber}`);
             }
         };
+
         firstTopButton.addEventListener("click", () => updateImageDisplay(0));
         previousTopButton.addEventListener("click", () => updateImageDisplay(currentIndex - 1));
         nextTopButton.addEventListener("click", () => updateImageDisplay(currentIndex + 1));
@@ -225,6 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
         lastBotButton.addEventListener("click", () => updateImageDisplay(images.length - 1));
         topSelector.addEventListener("change", (e) => updateImageDisplay(Number(e.target.value)));
         bottomSelector.addEventListener("change", (e) => updateImageDisplay(Number(e.target.value)));
+        updateImageDisplay(currentIndex);
     }
     
     function displayComicImage(images, comicIndex, currentIndex) {
@@ -234,9 +235,14 @@ document.addEventListener("DOMContentLoaded", () => {
     
         const { image, title } = images[currentIndex];
         comicImage.src = image;
+        comicImage.alt = title;
+    
         if (topSelector) topSelector.value = currentIndex;
         if (bottomSelector) bottomSelector.value = currentIndex;
+        const comicTitle = comicsList[comicIndex].title.replace(/\s+/g, '-');
+        history.replaceState(null, '', `#comic-${comicTitle}-page-${currentIndex + 1}`);
     }
+    
     const comicsList = [
         { title: "The Day Nobody Died", url: "https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/57218117/the-day-nobody-died", dimensions: "w_1024,h_1326,q_80" },
         { title: "The King and Guardian", url: "https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/62710269/oct-the-one-year-journey", dimensions: "w_1024,h_4452,q_80" },
@@ -268,12 +274,14 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
-    
+
     function showPage(pageId) {
+        const [comicId] = pageId.split('-page-');
         console.log(`Navigating to: ${pageId}`);
         const pages = document.querySelectorAll('.page');
+    
         pages.forEach(page => {
-            if (page.id === pageId) {
+            if (page.id === comicId) {
                 page.style.display = 'block';
                 page.classList.add('active');
             } else {
@@ -281,11 +289,106 @@ document.addEventListener("DOMContentLoaded", () => {
                 page.classList.remove('active');
             }
         });
+    
         history.pushState(null, '', `#${pageId}`);
         window.scrollTo({ top: 0, behavior: 'smooth' });
+    }       
+    
+    function handleHashChange() {
+        const hash = window.location.hash.substring(1);
+    
+        if (!hash) {
+            showPage('home');
+            return;
+        }
+        const [comicHash, pageHash] = hash.split('-page-');
+    
+        if (comicHash.startsWith('comic-')) {
+            const comicTitle = comicHash.replace('comic-', '').replace(/-/g, ' ');
+            const comicIndex = comicsList.findIndex(comic => comic.title === comicTitle);
+    
+            if (comicIndex !== -1) {
+                showPage(comicHash);
+    
+                const pageIndex = pageHash ? parseInt(pageHash, 10) - 1 : 0;
+                if (!isNaN(pageIndex)) {
+                    fetchComicGallery(
+                        comicsList[comicIndex].url,
+                        comicIndex,
+                        comicsList[comicIndex].dimensions,
+                        pageIndex
+                    );
+                }
+            } else {
+                console.error(`Comic "${comicTitle}" not found.`);
+                showPage('home');
+            }
+        } else {
+            showPage(hash);
+        }
     }
+    
+    window.addEventListener('hashchange', handleHashChange);
+    handleHashChange();
+    
     document.querySelectorAll("nav a").forEach(link => {
         link.addEventListener("click", (e) => {
+            const targetPage = e.target.getAttribute("href").substring(1);
+            showPage(targetPage);
+        });
+    });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const username = "RilyRobo"
+
+    const platforms = [ 
+        { name: "Twitter", url: `https://twitter.com/${username}`, icon: "https://img.icons8.com/?size=100&id=phOKFKYpe00C&format=png&color=000000" },
+        { name: "Instagram", url: `https://instagram.com/${username}`, icon: "https://img.icons8.com/?size=100&id=32309&format=png&color=000000" },
+        { name: "YouTube", url: `https://www.youtube.com/@${username}`, icon: "https://img.icons8.com/?size=100&id=37326&format=png&color=000000" },
+        { name: "DeviantArt", url: `https://www.deviantart.com/${username}`, icon: "https://img.icons8.com/?size=100&id=38504&format=png&color=000000" },
+        { name: "Patreon", url: `https://www.patreon.com/c/${username}`, icon: "https://img.icons8.com/?size=100&id=tIshI0hyXw3f&format=png&color=000000" },
+        { name: "Patreon", url: `https://www.subscribestar.com/${username}`, icon: "https://img.icons8.com/?size=100&id=7856&format=png&color=000000" },
+        { name: "BuyMeACoffee", url: `https://www.buymeacoffee.com/${username}`, icon: "https://img.icons8.com/?size=100&id=8342&format=png&color=000000" },
+    ];
+
+    const socialMediasContainer = document.querySelector(".social-media");
+
+    if (!socialMediasContainer) {
+        console.error("Container with class 'social-media' not found.");
+        return;
+    }
+
+    platforms.forEach(platform => {
+        const link = document.createElement("a");
+        link.href = platform.url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.addEventListener("click", (e) => e.stopPropagation());
+        const img = document.createElement("img");
+        img.src = platform.icon;
+        img.alt = platform.name;
+        img.style.width = "24px";
+        img.style.height = "24px";
+        img.style.margin = "12 auto";
+
+        if (socialMediasContainer.classList.contains("social-media-icon")) {
+            link.appendChild(img);
+        } else {
+            link.innerHTML = `${platform.name}`;
+            link.style.display = "block";
+            link.style.marginBottom = "10px";
+            link.style.textDecoration = "none";
+            link.style.color = "#660000";
+            link.style.fontSize = "16px";
+            link.insertBefore(img, link.firstChild);
+        }
+        
+        socialMediasContainer.appendChild(link);
+    });
+    
+    document.querySelectorAll("nav a:not([href^='http'])").forEach(link => {
+        link.addEventListener("click", (e) => { e.preventDefault();
             const targetPage = e.target.getAttribute("href").substring(1);
             showPage(targetPage);
         });

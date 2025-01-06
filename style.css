@@ -108,26 +108,6 @@ nav a:hover {
   color: #d3b8b8;
 }
 
-.social-media {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-top: 1rem;
-}
-
-.social-media a {
-  color: #f5e6e6;
-  text-decoration: none;
-  background-color: #4b0000;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  transition: background 0.3s ease;
-}
-
-.social-media a:hover {
-  background-color: #8b0000;
-}
 .social-feed {
   margin-bottom: 30px;
 }
