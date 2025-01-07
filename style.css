@@ -13,6 +13,7 @@ header {
   color: white;
   padding: 2rem 0;
   text-align: center;
+  justify-content: space-between;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px  1px 0 #000, 1px  1px 0 #000;
 }
 
@@ -71,6 +72,82 @@ nav a:hover {
   display: block;
   opacity: 1;
   transform: translateX(0);
+}
+
+.gumroad-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.gumroad-item {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.6);
+  text-align: center;
+}
+
+.gumroad-item img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.gumroad-item h3, .gumroad-item p {
+  color: #ffffff;
+  margin-top: 10px;
+  font-size: 1em;
+}
+
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.game-card {
+  background-color: #222;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  color: #fff;
+}
+
+.game-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.game-card h3 {
+  font-size: 1.5rem;
+  margin: 10px 0;
+}
+
+.game-card p {
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.game-card .button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #007BFF;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+.game-card .button:hover {
+  background-color: #0056b3;
 }
 
 .card-grid {
@@ -200,13 +277,6 @@ form button:hover {
   font-size: 1em;
 }
 
-.example-image {
-  width: 45%;
-  height: auto;
-  border-radius: 15px;
-  max-height: 300px;
-  object-fit: cover;
-}
 a, button, .card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -220,6 +290,7 @@ a:hover, button:hover, .card:hover {
   width: 100%;
   height: 100vh;
   border: none;
+  background-color: #ffffff;
 }
 
 .grid-item {
@@ -230,6 +301,7 @@ a:hover, button:hover, .card:hover {
   transform: scale(1.05);
   z-index: 1;
 }
+
 .modal {
   display: none;
   position: fixed;
@@ -246,12 +318,16 @@ a:hover, button:hover, .card:hover {
 .modal-content {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   max-width: 90%;
   max-height: 90%;
   text-align: center;
   color: white;
+  background-color: #222;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .modal-content img {
@@ -259,6 +335,7 @@ a:hover, button:hover, .card:hover {
   max-height: 80vh;
   margin-bottom: 15px;
   object-fit: contain;
+  border-radius: 10px;
 }
 
 .modal-content .button {
@@ -271,41 +348,78 @@ a:hover, button:hover, .card:hover {
   border-radius: 5px;
   text-decoration: none;
   transition: background 0.3s;
+  margin-top: 15px;
 }
 
 .modal-content .button:hover {
   background-color: #0056b3;
 }
 
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background-color: rgba(0, 0, 0, 0.8);
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 175px;
+  grid-gap: 20px;
+}
+
+.pricing-section {
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pricing-section ul {
+  list-style-type: none;
+  padding: 0;
+  text-align: center;
+}
+
+.pricing-section li {
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.examples {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px;
+  gap: 20px;
   justify-content: center;
   align-items: center;
 }
 
-.modal-content {
-  position: relative;
+.example-image {
+  width: 18%;
+  height: auto;
+  border-radius: 15px;
+  max-height: 300px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  cursor: pointer;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-  padding: 20px;
 }
 
-.modal-content img {
-  display: block;
-  max-width: 100%;
-  height: auto;
+.example-image:hover {
+  transform: scale(1.1);
+}
+
+.examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
 }
 
 .example-image {
-  width: 45%;
+  width: 18%;
+  height: auto;
+  border-radius: 15px;
+  max-height: 300px;
+  object-fit: cover;
   transition: transform 0.3s ease;
   cursor: pointer;
   border-radius: 10px;
@@ -382,9 +496,6 @@ a:hover, button:hover, .card:hover {
   border-radius: 10px;
   margin: 0 auto;
 }
-
-
-
 
 .comics-grid {
   display: grid;

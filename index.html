@@ -27,9 +27,11 @@
                 </div>
             </div>
             <a href="#videos" onclick="showPage('videos')">Videos</a>
+            <a href="#games" onclick="showPage('games')">Games</a>
             <a href="#commissions" onclick="showPage('commissions')">Commissions</a>
             <a href="#social" onclick="showPage('social')">Social Media</a>
             <a href="#storefront" onclick="showPage('storefront')">Store</a>
+            <a href="#gumroad-shop" onclick="showPage('gumroad-shop')">Gumroad Shop</a>
             <a href="#contact" onclick="showPage('contact')">Contact</a>
         </nav>        
 
@@ -67,7 +69,6 @@
                 </div>
             </div>
 
-            <!-- Gallery Page -->
             <div id="gallery" class="page">
                 <h2>Gallery</h2>
                 <p>Discover my artwork: Drawings, 3D Renders, Comics, and Writing</p>
@@ -76,11 +77,10 @@
                 </div>
             </div>
 
-            <!-- Comic Gallery Page -->
             <div id="comics" class="page">
                 <h2 style="text-align: center;">Comics</h2>
                 <div id="comics-grid" class="comics-grid"></div>
-            </div> 
+            </div>
             
             <div id="videos" class="page">
                 <h2>Videos</h2>
@@ -92,98 +92,143 @@
                 <div class="video-grid-full" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
                     <!-- Artwork thumbnails will be inserted dynamically -->
                 </div>
-            </div>      
+            </div>
+            
+            <div id="games" class="page">
+                <h2>My Games</h2>
+                <div class="game-grid" id="my-games-grid">
+                    <!-- Dynamically populated -->
+                </div>
+                <h2>Games I Contributed To</h2>
+                <div class="game-grid" id="contributed-games-grid">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
             
             <div id="commissions" class="page">
-                <h2>Commissions and Pricing</h2>
-                <p>Interested in personalized artwork? Explore my 2D and 3D commission options below:</p>
-
+                <h2 style="text-align: center;">Commissions and Pricing</h2>
+                <p style="text-align: center;">Interested in personalized artwork? Explore my 2D and 3D commission options below:</p>
+        
                 <!-- 2D Commissions Section -->
-                <div id="2d-commissions" style="margin-bottom: 40px;">
-                    <h3>2D Commissions</h3>
-                    <p>Choose from sketches, line art, flat colors, or shading. Prices vary by character coverage (portrait, upper half, or full body), additional characters, and background complexity.</p>
+                <div id="2d-commissions">
+                    <h3 style="text-align: center;">2D Commissions</h3>
+                    <p style="text-align: center;">Choose from sketches, line art, flat colors, or shading. Prices vary by character coverage (portrait, upper half, or full body), additional characters, and background complexity.</p>
                     
-                    <ul>
-                        <li><strong>Sketch</strong>: 
-                            <ul>
-                                <li>Portrait: $50</li>
-                                <li>Upper Half: $75</li>
-                                <li>Full Body: $100</li>
-                            </ul>
-                        </li>
-                        <li><strong>Line Art</strong>: 
-                            <ul>
-                                <li>Portrait: $60</li>
-                                <li>Upper Half: $90</li>
-                                <li>Full Body: $120</li>
-                            </ul>
-                        </li>
-                        <li><strong>Flat Colors</strong>: 
-                            <ul>
-                                <li>Portrait: $70</li>
-                                <li>Upper Half: $110</li>
-                                <li>Full Body: $150</li>
-                            </ul>
-                        </li>
-                        <li><strong>Shading</strong>: 
-                            <ul>
-                                <li>Portrait: $80</li>
-                                <li>Upper Half: $130</li>
-                                <li>Full Body: $180</li>
-                            </ul>
-                        </li>
-                    </ul>
-                    
-                    <p><strong>Additional Costs:</strong></p>
-                    <ul>
-                        <li>Additional Characters: +50% per character</li>
-                        <li>Backgrounds: $50–$150 depending on complexity</li>
-                        <li>NSFW Content: +20% base cost</li>
-                    </ul>
-
-                    <!-- Example Images -->
-                    <div class="examples" style="display: flex; flex-wrap: wrap; gap: 20px;">
-                        <img src="2d_sketch_example.jpg" alt="2D Sketch Example" class="example-image">
-                        <img src="2d_colored_example.jpg" alt="2D Colored Example" class="example-image">
+                    <div class="pricing-grid-container">
+                        <div class="pricing-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
+                            <div class="pricing-section">
+                                <ul>
+                                    <li><strong>Sketch</strong>: 
+                                        <ul>
+                                            <li>Portrait: $30</li>
+                                            <li>Upper Half: $50</li>
+                                            <li>Full Body: $75</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="pricing-section">
+                                <ul>
+                                    <li><strong>Line Art</strong>: 
+                                        <ul>
+                                            <li>Portrait: $40</li>
+                                            <li>Upper Half: $60</li>
+                                            <li>Full Body: $90</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="pricing-section">
+                                <ul>
+                                    <li><strong>Flat Colors</strong>: 
+                                        <ul>
+                                            <li>Portrait: $50</li>
+                                            <li>Upper Half: $70</li>
+                                            <li>Full Body: $110</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="pricing-section">
+                                <ul>
+                                    <li><strong>Shading</strong>: 
+                                        <ul>
+                                            <li>Portrait: $60</li>
+                                            <li>Upper Half: $90</li>
+                                            <li>Full Body: $130</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-
+                    
+                    <p style="text-align: center;"><strong>Additional Costs:</strong></p>
+                    <p style="text-align: center;">Additional Characters: +50% per character</p>
+                    <p style="text-align: center;">Backgrounds: $50–$150 depending on complexity</p>
+                    <p style="text-align: center;">NSFW Content: +20% base cost</p>
+        
+                    <!-- Example Images -->
+                    <div class="examples">
+                        <img src="2d_example-1.jpg" alt="2D Example" class="example-image">
+                        <img src="2d_example-2.jpg" alt="2D Example" class="example-image">
+                        <img src="2d_example-3.jpg" alt="2D Example" class="example-image">
+                        <img src="2d_example-4.jpg" alt="2D Example" class="example-image">
+                        <img src="2d_example-5.jpg" alt="2D Example" class="example-image">
+                    </div>
+        
                     <!-- 3D Commissions Section -->
                     <div id="3d-commissions">
-                        <h3>3D Commissions</h3>
-                        <p>Whether you need low-poly models reminiscent of the PS1 era or high-detail PS3-quality models, I offer fully rigged and textured creations. Additional options include viseme setup and dynamic props.</p>
+                        <h3 style="text-align: center;">3D Commissions</h3>
+                        <p style="text-align: center;">Whether you need low-poly models reminiscent of the PS1 era or high-detail PS3-quality models, I offer fully rigged and textured creations. Additional options include viseme setup and dynamic props.</p>
                         
-                        <ul>
-                            <li><strong>From-Scratch Models</strong>:
-                                <ul>
-                                    <li>Low-Poly (PS1 style): $300</li>
-                                    <li>High-Poly (PS3 style): $500</li>
-                                    <li>Facial Viseme Setup: +$150</li>
-                                </ul>
-                            </li>
-                            <li><strong>From-Scratch Props</strong>: 
-                                <ul>
-                                    <li>Static Prop: $100</li>
-                                    <li>Dynamic Prop (with rigging): $200</li>
-                                </ul>
-                            </li>
-                            <li><strong>Kitbashing</strong>: 
-                                <ul>
-                                    <li>Character Kitbash: $250</li>
-                                    <li>Prop Kitbash: $150</li>
-                                </ul>
-                            </li>
-                        </ul>
-                        
-                        <p><strong>Additional Costs:</strong></p>
-                        <ul>
-                            <li>NSFW Content: +20% base cost</li>
-                        </ul>
+                        <div class="pricing-grid-container">
+                            <div class="pricing-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+                                <div class="pricing-section">
+                                    <ul>
+                                        <li><strong>From-Scratch Models</strong>: 
+                                            <ul>
+                                                <li>Low-Poly (PS1 style): $300</li>
+                                                <li>High-Poly (PS3 style): $500</li>
+                                                <li>Facial Viseme Setup: +$150</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="pricing-section">
+                                    <ul>
+                                        <li><strong>From-Scratch Props</strong>: 
+                                            <ul>
+                                                <li>Static Prop: $100</li>
+                                                <li>Dynamic Prop (with rigging): $200</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="pricing-section">
+                                    <ul>
+                                        <li><strong>Kitbashing</strong>: 
+                                            <ul>
+                                                <li>Character Kitbash: $250</li>
+                                                <li>Prop Kitbash: $150</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     
                         <!-- Example Images -->
-                        <div class="examples" style="display: flex; flex-wrap: wrap; gap: 20px;">
-                            <img src="3d_low_poly_example.jpg" alt="3D Low Poly Example" class="example-image">
-                            <img src="3d_high_poly_example.jpg" alt="3D High Poly Example" class="example-image">
+                        <div class="examples">
+                            <img src="3d_example-1.jpg" alt="3D Example" class="example-image">
+                            <img src="3d_example-2.jpg" alt="3D Example" class="example-image">
+                            <img src="3d_example-3.jpg" alt="3D Example" class="example-image">
+                            <img src="3d_example-4.jpg" alt="3D Example" class="example-image">
+                            <img src="3d_example-5.jpg" alt="3D Example" class="example-image">
                         </div>
+                        
+                        <p style="text-align: center;"><strong>Additional Costs:</strong></p>
+                        <p style="text-align: center;">NSFW Content: +20% base cost</p>
                     </div>
                 </div>
             </div>
@@ -258,11 +303,18 @@
                 <p>Explore my merchandise:</p>
                 <div class="teespring-store">
                     <iframe id="teespring-iframe" 
-                            src="https://my-store-c7ca26-2.creator-spring.com" 
-                            style="width: 100%; min-height: 800px; border: none; overflow: auto;" 
-                            scrolling="yes">
+                        src="https://my-store-c7ca26-2.creator-spring.com" 
+                        style="width: 100%; height: 2500px; border: none; overflow: auto;" 
+                        scrolling="no">
                     </iframe>
                 </div>            
+            </div>
+            
+            <div id="gumroad-shop" class="page">
+                <h2>My Gumroad Shop</h2>
+                <div class="gumroad-container">
+                    <!-- Products will be populated here -->
+                </div>
             </div>
 
             <div id="contact" class="page">
@@ -282,12 +334,12 @@
                 </div>
             </div>
 
-            <div id="commision-modal" class="modal">
+            <div id="example-image-modal" class="modal">
                 <div class="modal-content">
-                    <img id="modal-image" src="" alt="Enlarged Art">
+                    <img id="example-image-modal-img" src="" alt="Example Image">
                 </div>
             </div>
-        </page>
+        </page>        
 
         <footer>
             <p>&copy; 2024 Art by RilyRobo. All rights reserved.</p>
