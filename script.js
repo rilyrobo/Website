@@ -36,45 +36,50 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Instagram", url: `https://instagram.com/${username}`, icon: "https://img.icons8.com/?size=100&id=32309&format=png&color=ffffff" },
         { name: "YouTube", url: `https://www.youtube.com/@${username}`, icon: "https://img.icons8.com/?size=100&id=37326&format=png&color=ffffff" },
         { name: "DeviantArt", url: `https://www.deviantart.com/${username}`, icon: "https://img.icons8.com/?size=100&id=38504&format=png&color=ffffff" },
+        { name: "Newgrounds", url: `https://${username}.newgrounds.com`, icon: "https://static.wikia.nocookie.net/logopedia/images/2/2a/Newgrounds_2006.svg/revision/latest?cb=20231103140730" },
+        { name: "Twitch", url: `https://www.twitch.tv/${username}`, icon: "https://img.icons8.com/?size=100&id=18104&format=png&color=ffffff" },
+        { name: "Picarto", url: `https://picarto.tv/${username}`, icon: "https://img.icons8.com/?size=100&id=6byL4WgkpyPg&format=png&color=ffffff" },
         { name: "Patreon", url: `https://www.patreon.com/c/${username}`, icon: "https://img.icons8.com/?size=100&id=tIshI0hyXw3f&format=png&color=ffffff" },
         { name: "Subscribestar", url: `https://www.subscribestar.com/${username}`, icon: "https://img.icons8.com/?size=100&id=7856&format=png&color=ffffff" },
         { name: "BuyMeACoffee", url: `https://www.buymeacoffee.com/${username}`, icon: "https://img.icons8.com/?size=100&id=8342&format=png&color=ffffff" },
     ];
 
-    const socialMediasContainer = document.querySelector(".social-media");
+    const socialMediasContainers = document.querySelectorAll(".social-media");
 
-    if (!socialMediasContainer) {
-        console.error("Container with class 'social-media' not found.");
+    if (socialMediasContainers.length === 0) {
+        console.error("No containers with class 'social-media' found.");
         return;
     }
 
-    platforms.forEach(platform => {
-        const link = document.createElement("a");
-        link.href = platform.url;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-        link.addEventListener("click", (e) => e.stopPropagation());
+    socialMediasContainers.forEach(container => {
+        platforms.forEach(platform => {
+            const link = document.createElement("a");
+            link.href = platform.url;
+            link.target = "_blank";
+            link.rel = "noopener noreferrer";
+            link.addEventListener("click", (e) => e.stopPropagation());
 
-        const img = document.createElement("img");
-        img.src = platform.icon;
-        img.alt = platform.name;
-        img.style.width = "24px";
-        img.style.height = "24px";
-        img.style.margin = "0 8px";
+            const img = document.createElement("img");
+            img.src = platform.icon;
+            img.alt = platform.name;
+            img.style.width = "24px";
+            img.style.height = "24px";
+            img.style.margin = "0 8px";
 
-        if (socialMediasContainer.classList.contains("social-media-icon")) {
-            link.appendChild(img);
-        } else {
-            link.innerHTML = `${platform.name}`;
-            link.style.display = "block";
-            link.style.marginBottom = "10px";
-            link.style.textDecoration = "none";
-            link.style.color = "#660000";
-            link.style.fontSize = "16px";
-            link.insertBefore(img, link.firstChild);
-        }
+            if (container.classList.contains("social-media-icon")) {
+                link.appendChild(img);
+            } else {
+                link.innerHTML = `${platform.name}`;
+                link.style.display = "block";
+                link.style.marginBottom = "10px";
+                link.style.textDecoration = "none";
+                link.style.color = "#660000";
+                link.style.fontSize = "16px";
+                link.insertBefore(img, link.firstChild);
+            }
 
-        socialMediasContainer.appendChild(link);
+            container.appendChild(link);
+        });
     });
 });
 
@@ -511,4 +516,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
         gumroadContainer.appendChild(item);
     });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const teespringIframe = document.getElementById("teespring-iframe");
+    const gumroadIframe = document.getElementById("gumroad-iframe");
+    const twitterIframe = document.getElementById("twitter-iframe");
+
+    if (teespringIframe) {
+        teespringIframe.src = "https://my-store-c7ca26-2.creator-spring.com";
+    }
+    if (gumroadIframe) {
+        gumroadIframe.src = "https://gumroad.com/rilyrobo";
+    }
+    if (twitterIframe) {
+        twitterIframe.src = "https://twitframe.com/show?url=https%3A%2F%2Fx.com%2FRilyrobo";
+    }
 });

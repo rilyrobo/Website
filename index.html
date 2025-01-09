@@ -30,7 +30,7 @@
             <a href="#games" onclick="showPage('games')">Games</a>
             <a href="#commissions" onclick="showPage('commissions')">Commissions</a>
             <a href="#social" onclick="showPage('social')">Social Media</a>
-            <a href="#storefront" onclick="showPage('storefront')">Store</a>
+            <a href="#storefront" onclick="showPage('storefront')">Merch Store</a>
             <a href="#gumroad-shop" onclick="showPage('gumroad-shop')">Gumroad Shop</a>
             <a href="#contact" onclick="showPage('contact')">Contact</a>
         </nav>        
@@ -70,8 +70,8 @@
             </div>
 
             <div id="gallery" class="page">
-                <h2>Gallery</h2>
-                <p>Discover my artwork: Drawings, 3D Renders, Comics, and Writing</p>
+                <h2 style="text-align:center;">Gallery</h2>
+                <p style="text-align:center;">Discover my artwork: Drawings, 3D Renders, Comics, and Writing</p>
                 <div class="gallery-grid-full" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
                     <!-- Artwork thumbnails will be inserted dynamically -->
                 </div>
@@ -83,8 +83,8 @@
             </div>
             
             <div id="videos" class="page">
-                <h2>Videos</h2>
-                <p>Watch my tutorials, speed paintings, and more.</p>
+                <h2 style="text-align:center;">Videos</h2>
+                <p style="text-align:center;">Watch my tutorials, speed paintings, and more.</p>
                 <div class="intro-video" style="border: 1px solid #ccc; border-radius: 10px; padding: 15px; background: rgba(0, 0, 0, 0.6); text-align: center;">
                     <iframe src="https://www.youtube.com/embed/yaDXBP_9nLM?controls=0" frameborder="0" allowfullscreen style="width: 100%; height: 400px;"></iframe>
                     <h3 style="color: #FFFFFF; margin-top: 10px;">Introductory Video</h3>
@@ -95,11 +95,11 @@
             </div>
             
             <div id="games" class="page">
-                <h2>My Games</h2>
+                <h2 style="text-align:center;">My Games</h2>
                 <div class="game-grid" id="my-games-grid">
                     <!-- Dynamically populated -->
                 </div>
-                <h2>Games I Contributed To</h2>
+                <h2 style="text-align:center;">Games I Contributed To</h2>
                 <div class="game-grid" id="contributed-games-grid">
                     <!-- Dynamically populated -->
                 </div>
@@ -234,12 +234,12 @@
             </div>
 
             <div id="social" class="page">
-                <h2>Social Media</h2>
-                <p>Connect with me online:</p>
+                <h2 style="text-align:center;">Social Media</h2>
+                <div class="social-media" style="text-align:center; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;"></div>
                 
                 <div class="container" style="display: flex;">
                     <div class="social-feed" style="flex: 1; margin: 10px;">
-                        <h2>Instagram Feed</h2>
+                        <h2 style="text-align:center;">Instagram Feed</h2>
                         <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/p/C6-JZUGsN3D/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);">
                             <div style="padding:16px;">
                                 <a href="https://www.instagram.com/p/C6-JZUGsN3D/?utm_source=ig_embed&amp;utm_campaign=loading" style=" background:#FFFFFF; line-height:0; padding:0 0; text-align:center; text-decoration:none; width:100%;" target="_blank">
@@ -291,34 +291,42 @@
                     </div>
                 
                     <div class="social-feed" style="flex: 1; margin: 10px;">
-                        <h2>Twitter Feed</h2>
-                        <a class="twitter-timeline" href="https://twitter.com/Rilyrobo?ref_src=twsrc%5Etfw">Tweets by Rilyrobo</a>
-                        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8" width="100%" height="500" justify-content="center"></script>
+                        <h2 style="text-align:center;">Twitter Feed</h2>
+                        <iframe id="twitter-iframe" border=0 frameborder=0 height=625 width="100%"
+                        src="https://x.com/Rilyrobo"></iframe>
                     </div>
                 </div>
             </div>
 
             <div id="storefront" class="page">
-                <h2>Store</h2>
-                <p>Explore my merchandise:</p>
+                <h2 style="text-align:center;">Merchandise Store</h2>
                 <div class="teespring-store">
                     <iframe id="teespring-iframe" 
-                        src="https://my-store-c7ca26-2.creator-spring.com" 
-                        style="width: 100%; height: 2500px; border: none; overflow: auto;" 
-                        scrolling="no">
+                            src="https://my-store-c7ca26-2.creator-spring.com" 
+                            style="width: 100%; min-height: 2700px; border: none; overflow: auto;" 
+                            scrolling="yes">
                     </iframe>
                 </div>            
             </div>
             
             <div id="gumroad-shop" class="page">
-                <h2>My Gumroad Shop</h2>
+                <h2 style="text-align:center;">Gumroad Shop</h2>
+                <iframe id="gumroad-iframe"
+                    src="https://gumroad.com/rilyrobo"
+                    style="width: 100%; min-height: 1600px; border: none; overflow: auto;" 
+                    scrolling="yes">
+                </iframe>
+            </div>
+            
+            <div id="gumroad-shop_backup" class="page">
+                <h2 style="text-align:center;">Gumroad Shop</h2>
                 <div class="gumroad-container">
                     <!-- Products will be populated here -->
                 </div>
             </div>
 
             <div id="contact" class="page">
-                <h2>Contact</h2>
+                <h2 style="text-align:center;">Contact</h2>
                 <form action="#" method="post">
                     <input type="text" name="name" placeholder="Your Name" required>
                     <input type="email" name="email" placeholder="Your Email" required>
