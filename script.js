@@ -556,20 +556,12 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
     const teespringIframe = document.getElementById("teespring-iframe");
     const gumroadIframe = document.getElementById("gumroad-iframe");
-    const twitterIframe = document.getElementById("twitter-iframe");
-    const instagramIframe = document.getElementById("instagram-iframe");
 
     if (teespringIframe) {
         teespringIframe.src = "https://my-store-c7ca26-2.creator-spring.com";
     }
     if (gumroadIframe) {
         gumroadIframe.src = "https://gumroad.com/rilyrobo";
-    }
-    if (twitterIframe) {
-        twitterIframe.src = "https://twitframe.com/show?url=https%3A%2F%2Fx.com%2FRilyrobo";
-    }
-    if (instagramIframe) {
-        instagramIframe.src = "https://www.instagram.com/rilyrobo/";
     }
 });
 
