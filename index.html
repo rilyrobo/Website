@@ -36,7 +36,7 @@
         </nav>        
 
         <page>
-            <div id="home" class="page active" style="background: url('background.jpg') center/cover no-repeat; color: white; text-align: center; padding: 50px 20px;">
+            <div id="home" class="page active" style="background: url('images/background.jpg') center/cover no-repeat; color: white; text-align: center; padding: 50px 20px;">
                 <h2 style="font-size: 2.5em; margin-bottom: 20px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px  1px 0 #000, 1px  1px 0 #000;">Welcome to My Creative World</h2>
                 <p style="font-size: 1.2em; max-width: 700px; margin: 0 auto; line-height: 1.8; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px  1px 0 #000, 1px  1px 0 #000;">
                     Explore a unique collection of art, from <strong>drawings</strong> and <strong>3D renders</strong> to <strong>comics</strong> and <strong>writings</strong>. Let creativity take you on a journey.
@@ -170,11 +170,11 @@
         
                     <!-- Example Images -->
                     <div class="examples">
-                        <img src="2d_example-1.jpg" alt="2D Example" class="example-image">
-                        <img src="2d_example-2.jpg" alt="2D Example" class="example-image">
-                        <img src="2d_example-3.jpg" alt="2D Example" class="example-image">
-                        <img src="2d_example-4.jpg" alt="2D Example" class="example-image">
-                        <img src="2d_example-5.jpg" alt="2D Example" class="example-image">
+                        <img src="images/2d_example-1.jpg" alt="2D Example" class="example-image">
+                        <img src="images/2d_example-2.jpg" alt="2D Example" class="example-image">
+                        <img src="images/2d_example-3.jpg" alt="2D Example" class="example-image">
+                        <img src="images/2d_example-4.jpg" alt="2D Example" class="example-image">
+                        <img src="images/2d_example-5.jpg" alt="2D Example" class="example-image">
                     </div>
         
                     <!-- 3D Commissions Section -->
@@ -220,16 +220,83 @@
                     
                         <!-- Example Images -->
                         <div class="examples">
-                            <img src="3d_example-1.jpg" alt="3D Example" class="example-image">
-                            <img src="3d_example-2.jpg" alt="3D Example" class="example-image">
-                            <img src="3d_example-3.jpg" alt="3D Example" class="example-image">
-                            <img src="3d_example-4.jpg" alt="3D Example" class="example-image">
-                            <img src="3d_example-5.jpg" alt="3D Example" class="example-image">
+                            <img src="images/3d_example-1.jpg" alt="3D Example" class="example-image">
+                            <img src="images/3d_example-2.jpg" alt="3D Example" class="example-image">
+                            <img src="images/3d_example-3.jpg" alt="3D Example" class="example-image">
+                            <img src="images/3d_example-4.jpg" alt="3D Example" class="example-image">
+                            <img src="images/3d_example-5.jpg" alt="3D Example" class="example-image">
                         </div>
                         
                         <p style="text-align: center;"><strong>Additional Costs:</strong></p>
                         <p style="text-align: center;">NSFW Content: +20% base cost</p>
                     </div>
+                </div>
+                <h2 style="text-align: center;">Commission Price Calculator</h2>
+                <div class="calculator">
+                    <label for="type">Commission Type:</label>
+                    <select id="type" onchange="updateOptions()">
+                        <option value="2d">2D</option>
+                        <option value="3d">3D</option>
+                    </select>
+            
+                    <div id="2d-options">
+                        <label for="2d-type">2D Type:</label>
+                        <select id="2d-type">
+                            <option value="sketch">Sketch</option>
+                            <option value="lineart">Line Art</option>
+                            <option value="flatcolors">Flat Colors</option>
+                            <option value="shading">Shading</option>
+                        </select>
+            
+                        <label for="coverage">Character Coverage:</label>
+                        <select id="coverage">
+                            <option value="portrait">Portrait</option>
+                            <option value="upperhalf">Upper Half</option>
+                            <option value="fullbody">Full Body</option>
+                        </select>
+            
+                        <label for="additional">Additional Characters:</label>
+                        <input type="number" id="additional" min="0" value="0">
+            
+                        <label for="background">Background Complexity:</label>
+                        <select id="background">
+                            <option value="colourgradient">Colour Gradient</option>
+                            <option value="splashfilterphoto">Splash Filter Photo</option>
+                            <option value="vagueenvironment">Vague Environment</option>
+                            <option value="detailedtargetmidground">Detailed Target Midground</option>
+                            <option value="detailedbackground">Detailed Background</option>
+                        </select>
+                    </div>
+            
+                    <div id="3d-options" style="display: none;">
+                        <label for="3d-type">3D Type:</label>
+                        <select id="3d-type" onchange="updateVisemeOption()">
+                            <option value="lowpoly">Low-Poly Model</option>
+                            <option value="highpoly">High-Poly Model</option>
+                            <option value="staticprop">Static Prop</option>
+                            <option value="dynamicprop">Dynamic Prop</option>
+                            <option value="kitbashchar">Character Kitbash</option>
+                            <option value="kitbashprop">Prop Kitbash</option>
+                        </select>
+            
+                        <div id="viseme-option" style="display: none;">
+                            <label for="viseme">Facial Viseme Setup:</label>
+                            <select id="viseme">
+                                <option value="no">No</option>
+                                <option value="yes">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+            
+                    <label for="nsfw">NSFW Content:</label>
+                    <select id="nsfw">
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                    </select>
+            
+                    <button onclick="calculatePrice()">Calculate Price</button>
+            
+                    <div class="result" id="result"></div>
                 </div>
             </div>
 
@@ -292,7 +359,7 @@
                 
                     <div class="social-feed" style="flex: 1; margin: 10px;">
                         <h2 style="text-align:center;">Twitter Feed</h2>
-                        <iframe id="twitter-iframe" border=0 frameborder=0 height=625 width="100%"
+                        <iframe id="twitter-iframe" frameborder=0 height=550 width="100%"
                         src="https://x.com/Rilyrobo"></iframe>
                     </div>
                 </div>

@@ -32,16 +32,16 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
     const username = "RilyRobo";
     const platforms = [
-        { name: "Twitter", url: `https://twitter.com/${username}`, icon: "https://img.icons8.com/?size=100&id=phOKFKYpe00C&format=png&color=ffffff" },
-        { name: "Instagram", url: `https://instagram.com/${username}`, icon: "https://img.icons8.com/?size=100&id=32309&format=png&color=ffffff" },
-        { name: "YouTube", url: `https://www.youtube.com/@${username}`, icon: "https://img.icons8.com/?size=100&id=37326&format=png&color=ffffff" },
-        { name: "DeviantArt", url: `https://www.deviantart.com/${username}`, icon: "https://img.icons8.com/?size=100&id=38504&format=png&color=ffffff" },
-        { name: "Newgrounds", url: `https://${username}.newgrounds.com`, icon: "https://img.icons8.com/?size=100&id=15771&format=png&color=ffffff" },
-        { name: "Twitch", url: `https://www.twitch.tv/${username}`, icon: "https://img.icons8.com/?size=100&id=18104&format=png&color=ffffff" },
-        { name: "Picarto", url: `https://picarto.tv/${username}`, icon: "https://img.icons8.com/?size=100&id=6byL4WgkpyPg&format=png&color=ffffff" },
-        { name: "Patreon", url: `https://www.patreon.com/c/${username}`, icon: "https://img.icons8.com/?size=100&id=tIshI0hyXw3f&format=png&color=ffffff" },
-        { name: "Subscribestar", url: `https://www.subscribestar.com/${username}`, icon: "https://img.icons8.com/?size=100&id=7856&format=png&color=ffffff" },
-        { name: "BuyMeACoffee", url: `https://www.buymeacoffee.com/${username}`, icon: "https://img.icons8.com/?size=100&id=8342&format=png&color=ffffff" },
+        { name: "Twitter", url: `https://twitter.com/${username}`, icon: "https://img.icons8.com/?size=100&id=phOKFKYpe00C&format=png&color=ffffff" , color: "#1DA1F2" },
+        { name: "Instagram", url: `https://instagram.com/${username}`, icon: "https://img.icons8.com/?size=100&id=32309&format=png&color=ffffff" , color: "#E1306C" },
+        { name: "YouTube", url: `https://www.youtube.com/@${username}`, icon: "https://img.icons8.com/?size=100&id=37326&format=png&color=ffffff" , color: "#FF0000" },
+        { name: "DeviantArt", url: `https://www.deviantart.com/${username}`, icon: "https://img.icons8.com/?size=100&id=38504&format=png&color=ffffff" , color: "#05CC47" },
+        { name: "Newgrounds", url: `https://${username}.newgrounds.com`, icon: "https://img.icons8.com/?size=100&id=15771&format=png&color=ffffff" , color: "#FFCC00" },
+        { name: "Twitch", url: `https://www.twitch.tv/${username}`, icon: "https://img.icons8.com/?size=100&id=18104&format=png&color=ffffff" , color: "#9146FF" },
+        { name: "Picarto", url: `https://picarto.tv/${username}`, icon: "https://img.icons8.com/?size=100&id=6byL4WgkpyPg&format=png&color=ffffff" , color: "#00FF00" },
+        { name: "Patreon", url: `https://www.patreon.com/c/${username}`, icon: "https://img.icons8.com/?size=100&id=tIshI0hyXw3f&format=png&color=ffffff" , color: "#F96854" },
+        { name: "Subscribestar", url: `https://www.subscribestar.com/${username}`, icon: "https://img.icons8.com/?size=100&id=7856&format=png&color=ffffff" , color: "#FFCC00" },
+        { name: "BuyMeACoffee", url: `https://www.buymeacoffee.com/${username}`, icon: "https://img.icons8.com/?size=100&id=8342&format=png&color=ffffff" , color: "#FFDD00" },
     ];
 
     const socialMediasContainers = document.querySelectorAll(".social-media");
@@ -75,6 +75,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 link.style.textDecoration = "none";
                 link.style.color = "#660000";
                 link.style.fontSize = "16px";
+                link.style.backgroundColor = platform.color;
+                link.style.padding = "5px";
+                link.style.borderRadius = "8px";
                 link.insertBefore(img, link.firstChild);
             }
 
@@ -421,30 +424,60 @@ document.querySelectorAll("nav a:not([href^='http'])").forEach(link => {
 document.addEventListener("DOMContentLoaded", () => {
     const myGames = [
         {
-            title: "Game Title 1",
-            image: "path-to-image1.jpg",
-            description: "Brief description of the game you made.",
-            link: "https://example.com/game1",
+            title: "Secured Maze",
+            image: "images/game_securedmaze.jpg",
+            description: "In 2016 the Secured Maze was a 2.5D gamemaker 8 engine horror game, the player would travel through mazes gathering keys to open gates to find elevators to travel deeper.The players own sense would betray them as some monsters would rely on the players use of hearing and sight to track them down, requiring the player to block these sense and struggle to make it through the mazes",
+            links: [
+                
+            ]
+        },
+        {
+            title: "VRChat Retro Game Recreation",
+            image: "images/game_arcaderecreation.jpg",
+            description: "An on-going project to create immersive retro arcade game cabinent assets and standalone games for use in VRChat. With various gameplay styles such as space invaders, arcanoid / block breaker, pong, snake, and more.",
+            links: [
+                { name: "VRChat World", url: "https://vrchat.com/home/world/wrld_5de8a59e-2c93-4ec4-a380-b5030310c76a/info" },
+            ]
         },
         {
             title: "Game Title 2",
-            image: "path-to-image2.jpg",
-            description: "Brief description of another game you made.",
-            link: "https://example.com/game2",
+            image: "path-to-image1.jpg",
+            description: "Brief description of the game you made.",
+            links: [
+                { name: "Website", url: "https://example.com/game2" },
+                { name: "YouTube", url: "https://youtube.com/game2" },
+                { name: "Itch.io", url: "https://itch.io/game2" }
+            ]
         },
     ];
     const contributedGames = [
         {
-            title: "Contributed Game 1",
-            image: "path-to-image3.jpg",
-            description: "Brief description of your role in the project.",
-            link: "https://example.com/contributed1",
+            title: "Insert Paper",
+            image: "images/game_insertpaper.jpg",
+            description: "Before any professional training I joined the group Startreming for a short while. I did character modeling, UV unwrapping, texturing, rigging and test animating those characters",
+            links: [
+                { name: "Steam", url: "https://store.steampowered.com/app/661490/Insert_Paper/" }
+            ]
         },
         {
-            title: "Contributed Game 2",
+            title: "CRITICAL MASS EPISODE I",
+            image: "images/game_criticalmass.jpg",
+            description: "As a Technical Animator, I was responsible for rigging characters and props, creating placeholder animations, and I animated some background assets. My contributions ensured smooth and realistic movement were possible, enhancing the overall visual experience of the game.",
+            links: [
+                { name: "Website", url: "https://www.arcadiagameworks.com/games" },
+                { name: "YouTube", url: "https://www.youtube.com/channel/UCpreE7v8PZ41TifVkk-J04g" },
+                { name: "Instagram", url: "https://www.instagram.com/arcadiagameworks/" }
+            ]
+        },
+        {
+            title: "Contributed Game 3",
             image: "path-to-image4.jpg",
             description: "Another game you contributed to.",
-            link: "https://example.com/contributed2",
+            links: [
+                { name: "Website", url: "https://example.com/contributed2" },
+                { name: "YouTube", url: "https://youtube.com/contributed2" },
+                { name: "Itch.io", url: "https://itch.io/contributed2" }
+            ]
         },
     ];
     populateGamesGrid(myGames, document.getElementById("my-games-grid"));
@@ -456,11 +489,13 @@ function populateGamesGrid(games, gridElement) {
         const gameCard = document.createElement("div");
         gameCard.className = "game-card";
 
+        const linksHTML = game.links.map(link => `<a href="${link.url}" target="_blank" class="button">${link.name}</a>`).join(" ");
+
         gameCard.innerHTML = `
             <img src="${game.image}" alt="${game.title}" class="game-image">
             <h3>${game.title}</h3>
             <p>${game.description}</p>
-            <a href="${game.link}" target="_blank" class="button">Learn More</a>
+            ${linksHTML}
         `;
 
         gridElement.appendChild(gameCard);
@@ -522,6 +557,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const teespringIframe = document.getElementById("teespring-iframe");
     const gumroadIframe = document.getElementById("gumroad-iframe");
     const twitterIframe = document.getElementById("twitter-iframe");
+    const instagramIframe = document.getElementById("instagram-iframe");
 
     if (teespringIframe) {
         teespringIframe.src = "https://my-store-c7ca26-2.creator-spring.com";
@@ -532,4 +568,93 @@ document.addEventListener("DOMContentLoaded", () => {
     if (twitterIframe) {
         twitterIframe.src = "https://twitframe.com/show?url=https%3A%2F%2Fx.com%2FRilyrobo";
     }
+    if (instagramIframe) {
+        instagramIframe.src = "https://www.instagram.com/rilyrobo/";
+    }
 });
+
+const prices = {
+    "2d": {
+        sketch: { portrait: 30, upperhalf: 50, fullbody: 75 },
+        lineart: { portrait: 40, upperhalf: 60, fullbody: 90 },
+        flatcolors: { portrait: 50, upperhalf: 70, fullbody: 110 },
+        shading: { portrait: 60, upperhalf: 90, fullbody: 130 },
+        background: {
+            colourgradient: 0,
+            splashfilterphoto: 20,
+            vagueenvironment: 40,
+            detailedtargetmidground: 60,
+            detailedbackground: 150
+        },
+        nsfwMultiplier: 0.2,
+        additionalMultiplier: 0.5
+    },
+    "3d": {
+        lowpoly: 300,
+        highpoly: 500,
+        staticprop: 100,
+        dynamicprop: 200,
+        kitbashchar: 250,
+        kitbashprop: 150,
+        viseme: 150,
+        nsfwMultiplier: 0.2
+    }
+};
+
+function updateOptions() {
+    const type = document.getElementById('type').value;
+    const options2D = document.getElementById('2d-options');
+    const options3D = document.getElementById('3d-options');
+
+    if (type === '2d') {
+        options2D.style.display = 'block';
+        options3D.style.display = 'none';
+    } else {
+        options2D.style.display = 'none';
+        options3D.style.display = 'block';
+    }
+}
+
+function updateVisemeOption() {
+    const type3D = document.getElementById('3d-type').value;
+    const visemeOption = document.getElementById('viseme-option');
+
+    if (type3D === 'lowpoly' || type3D === 'highpoly' || type3D === 'kitbashchar') {
+        visemeOption.style.display = 'block';
+    } else {
+        visemeOption.style.display = 'none';
+    }
+}
+
+function calculatePrice() {
+    const type = document.getElementById('type').value;
+    const nsfw = document.getElementById('nsfw').value;
+    let basePrice = 0;
+
+    if (type === '2d') {
+        const type2D = document.getElementById('2d-type').value;
+        const coverage = document.getElementById('coverage').value;
+        const additional = parseInt(document.getElementById('additional').value);
+        const background = document.getElementById('background').value;
+
+        basePrice = prices["2d"][type2D][coverage];
+        const additionalCost = additional * (basePrice * prices["2d"].additionalMultiplier);
+        const backgroundCost = prices["2d"].background[background] || 0;
+        const nsfwCost = nsfw === 'yes' ? basePrice * prices["2d"].nsfwMultiplier : 0;
+
+        basePrice += additionalCost + backgroundCost + nsfwCost;
+    } else {
+        const type3D = document.getElementById('3d-type').value;
+        const viseme = document.getElementById('viseme').value;
+
+        basePrice = prices["3d"][type3D];
+        const visemeCost = (type3D === 'lowpoly' || type3D === 'highpoly' || type3D === 'kitbashchar') && viseme === 'yes' 
+            ? prices["3d"].viseme 
+            : 0;
+        const nsfwCost = nsfw === 'yes' ? basePrice * prices["3d"].nsfwMultiplier : 0;
+
+        basePrice += visemeCost + nsfwCost;
+    }
+
+    document.getElementById('result').innerText = `Total Price: $${basePrice.toFixed(2)}`;
+}
