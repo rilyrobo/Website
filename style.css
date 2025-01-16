@@ -74,11 +74,191 @@ nav a:hover {
   transform: translateX(0);
 }
 
+.home-page {
+  background: url('images/background.jpg') center/cover no-repeat;
+  color: white;
+  text-align: center;
+  padding: 50px 20px;
+}
+
+.home-page p{
+  font-size: 1.2em; 
+  max-width: 700px; 
+  margin: 0 auto; 
+  line-height: 1.8; 
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px  1px 0 #000, 1px  1px 0 #000;
+}
+
+.button-container {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.view-gallery-button {
+  display: inline-block;
+  margin: 10px;
+  padding: 15px 25px;
+  font-size: 1em;
+  color: white;
+  background-color: #007BFF;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.get-commission-button {
+  display: inline-block;
+  margin: 10px;
+  padding: 15px 25px;
+  font-size: 1em;
+  color: white;
+  background-color: #28A745;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.view-tos-button {
+  display: inline-block;
+  margin: 10px;
+  padding: 15px 25px;
+  font-size: 1em;
+  color: white;
+  background-color: #28A745;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.welcome-heading {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px  1px 0 #000, 1px  1px 0 #000;
+}
+
+.latest-gallery {
+  margin: 40px auto;
+  max-width: 1200px;
+  overflow: hidden;
+}
+
+.latest-artworks-heading {
+  text-align: left;
+  margin-bottom: 20px;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.gallery-grid-home {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.margin-top-20 {
+  margin-top: 20px;
+}
+
+.view-full-gallery-button {
+  display: inline-block;
+  padding: 15px 25px;
+  font-size: 1em;
+  color: white;
+  background-color: #007BFF;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.latest-videos {
+  margin: 40px auto;
+  max-width: 1200px;
+  overflow: hidden;
+}
+
+.latest-videos-heading {
+  text-align: left;
+  margin-bottom: 20px;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.video-grid-home {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.view-videos-button-container {
+  margin-top: 20px;
+}
+
+.view-videos-button {
+  display: inline-block;
+  padding: 15px 25px;
+  font-size: 1em;
+  color: white;
+  background-color: #007BFF;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.intro-video {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.6);
+  text-align: center;
+}
+
+.intro-video-iframe {
+  width: 100%;
+  height: 400px;
+}
+
+.intro-video-heading {
+  color: #FFFFFF;
+  margin-top: 10px;
+}
+
+.video-grid-full {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.list {
+  text-align: left;
+}
+
+.gallery-grid-full {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
 .gumroad-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 20px;
   padding: 20px;
+}
+
+.gumroad-iframe {
+  width: 100%;
+  min-height: 1600px;
+  border: none;
+  overflow: auto;
+}
+
+.pricing-grid.four-columns {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+.pricing-grid.three-columns {
+  grid-template-columns: 1fr 1fr 1fr;
 }
 
 .gumroad-item {
@@ -205,6 +385,13 @@ nav a:hover {
   margin-bottom: 20px;
 }
 
+.social-media-grid {
+  text-align: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
 footer {
   background: #2a1a1a;
   color: #f5e6e6;
@@ -287,11 +474,14 @@ a:hover, button:hover, .card:hover {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-.teespring-store iframe {
+.teespring-iframe {
+
   width: 100%;
   height: 100vh;
-  border: none;
+  min-height: 2700px;
   background-color: #ffffff;
+  border: none;
+  overflow: auto;
 }
 
 .grid-item {
@@ -317,18 +507,19 @@ a:hover, button:hover, .card:hover {
 }
 
 .modal-content {
-  display: flex;
+  
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  max-width: 90%;
-  max-height: 90%;
+  max-width: 100%;
+  max-height: 100%;
   text-align: center;
   color: white;
   background-color: #222;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  overflow-y: auto;
 }
 
 .modal-content img {
@@ -526,6 +717,11 @@ a:hover, button:hover, .card:hover {
   justify-content: center;
 }
 
+.comic-image-container img {
+  width: 100%;
+  height: auto;
+}
+
 .comic-image {
   max-height: 100%;
   object-fit: cover;
@@ -625,4 +821,20 @@ nav a:hover {
 .result {
   margin-top: 20px;
   font-size: 1.2em;
+}
+
+.deviantart-button {
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 20px auto;
+  font-size: 16px;
+  color: #fff;
+  background-color: #009f4d;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.deviantart-button:hover {
+  background-color: #007a3b;
 }

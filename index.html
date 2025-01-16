@@ -36,93 +36,101 @@
         </nav>        
 
         <page>
-            <div id="home" class="page active" style="background: url('images/background.jpg') center/cover no-repeat; color: white; text-align: center; padding: 50px 20px;">
-                <h2 style="font-size: 2.5em; margin-bottom: 20px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px  1px 0 #000, 1px  1px 0 #000;">Welcome to My Creative World</h2>
-                <p style="font-size: 1.2em; max-width: 700px; margin: 0 auto; line-height: 1.8; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px  1px 0 #000, 1px  1px 0 #000;">
+            <div id="home" class="page active home-page">
+                <h2 class="welcome-heading">Welcome to My Creative World</h2>
+                <p>
                     Explore a unique collection of art, from <strong>drawings</strong> and <strong>3D renders</strong> to <strong>comics</strong> and <strong>writings</strong>. Let creativity take you on a journey.
                 </p>
-                <div style="margin-top: 40px;">
-                    <a href="#gallery" onclick="showPage('gallery')" class="button" style="display: inline-block; margin: 10px; padding: 15px 25px; font-size: 1em; color: white; background-color: #007BFF; border: none; border-radius: 5px; text-decoration: none;">View Gallery</a>
-                    <a href="#commissions" onclick="showPage('commissions')" class="button" style="display: inline-block; margin: 10px; padding: 15px 25px; font-size: 1em; color: white; background-color: #28A745; border: none; border-radius: 5px; text-decoration: none;">Get a Commission</a>
+                <div class="button-container">
+                    <a href="#gallery" onclick="showPage('gallery')" class="button view-gallery-button">View Gallery</a>
+                    <a href="#commissions" onclick="showPage('commissions')" class="button get-commission-button">Get a Commission</a>
                 </div>
                 
                 <!-- Latest Artworks Section -->
-                <div class="latest-gallery" style="margin: 40px auto; max-width: 1200px; overflow: hidden;">
-                    <h3 style="text-align: left; margin-bottom: 20px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px  1px 0 #000, 1px  1px 0 #000;">Latest Artworks</h3>
-                    <div class="gallery-grid-home" style="display: flex; justify-content: center; gap: 20px;">
+                <div class="latest-gallery">
+                    <h3 class="latest-artworks-heading">Latest Artworks</h3>
+                    <div class="gallery-grid-home">
                         <!-- Artwork thumbnails will be inserted dynamically -->
                     </div>
-                    <div style="margin-top: 20px;">
-                        <a href="#gallery" onclick="showPage('gallery')" class="button" style="display: inline-block; padding: 15px 25px; font-size: 1em; color: white; background-color: #007BFF; border: none; border-radius: 5px; text-decoration: none;">View Full Gallery</a>
+                    <div class="margin-top-20">
+                        <a href="#gallery" onclick="showPage('gallery')" class="button view-full-gallery-button">View Full Gallery</a>
                     </div>
                 </div>
                 
                 <!-- Latest Videos Section -->
-                <div class="latest-videos" style="margin: 40px auto; max-width: 1200px; overflow: hidden;">
-                    <h3 style="text-align: left; margin-bottom: 20px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px  1px 0 #000, 1px  1px 0 #000;">Latest Videos</h3>
-                    <div class="video-grid-home" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                <div class="latest-videos">
+                    <h3 class="latest-videos-heading">Latest Videos</h3>
+                    <div class="video-grid-home">
                         <!-- Latest videos will be inserted dynamically -->
                     </div>
-                    <div style="margin-top: 20px;">
-                        <a href="#videos" onclick="showPage('videos')" class="button" style="display: inline-block; padding: 15px 25px; font-size: 1em; color: white; background-color: #007BFF; border: none; border-radius: 5px; text-decoration: none;">View Videos</a>
+                    <div class="view-videos-button-container">
+                    <a href="#videos" onclick="showPage('videos')" class="button view-videos-button">View Videos</a>
                     </div>
                 </div>
             </div>
 
             <div id="gallery" class="page">
-                <h2 style="text-align:center;">Gallery</h2>
-                <p style="text-align:center;">Discover my artwork: Drawings, 3D Renders, Comics, and Writing</p>
-                <div class="gallery-grid-full" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
+                <h2 class="center-text">Gallery</h2>
+                <p  class="center-text">Discover my artwork: Drawings, 3D Renders, Comics, and Writing</p>
+                <div class="gallery-grid-full">
                     <!-- Artwork thumbnails will be inserted dynamically -->
                 </div>
-            </div>
+                <div  class="button-container">
+                    <a href="https://www.deviantart.com/RilyRobo" target="_blank" rel="noopener noreferrer" class="button deviantart-button">
+                        More on DeviantArt
+                    </a>
+                </div>
+            </div>            
 
             <div id="comics" class="page">
-                <h2 style="text-align: center;">Comics</h2>
+                <h2  class="center-text">Comics</h2>
                 <div id="comics-grid" class="comics-grid"></div>
             </div>
             
             <div id="videos" class="page">
-                <h2 style="text-align:center;">Videos</h2>
-                <p style="text-align:center;">Watch my tutorials, speed paintings, and more.</p>
-                <div class="intro-video" style="border: 1px solid #ccc; border-radius: 10px; padding: 15px; background: rgba(0, 0, 0, 0.6); text-align: center;">
-                    <iframe src="https://www.youtube.com/embed/yaDXBP_9nLM?controls=0" frameborder="0" allowfullscreen style="width: 100%; height: 400px;"></iframe>
-                    <h3 style="color: #FFFFFF; margin-top: 10px;">Introductory Video</h3>
+                <h2  class="center-text">Videos</h2>
+                <p  class="center-text">Watch my tutorials, speed paintings, and more.</p>
+                <div class="intro-video">
+                    <iframe src="https://www.youtube.com/embed/yaDXBP_9nLM?controls=0" frameborder="0" allowfullscreen class="intro-video-iframe" title="Introductory Video"></iframe>
+                    <h3 class="intro-video-heading">Introductory Video</h3>
                 </div>
-                <div class="video-grid-full" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                <div class="video-grid-full">
                     <!-- Artwork thumbnails will be inserted dynamically -->
                 </div>
             </div>
             
             <div id="games" class="page">
-                <h2 style="text-align:center;">My Games</h2>
+                <h2  class="center-text">My Games</h2>
                 <div class="game-grid" id="my-games-grid">
                     <!-- Dynamically populated -->
                 </div>
-                <h2 style="text-align:center;">Games I Contributed To</h2>
+                <h2  class="center-text">Games I Contributed To</h2>
                 <div class="game-grid" id="contributed-games-grid">
                     <!-- Dynamically populated -->
                 </div>
             </div>
             
             <div id="commissions" class="page">
-                <h2 style="text-align: center;">Commissions and Pricing</h2>
-                <p style="text-align: center;">Interested in personalized artwork? Explore my 2D and 3D commission options below:</p>
-        
+                <h2  class="center-text">Commissions and Pricing</h2>
+                <p  class="center-text">Interested in personalized artwork? Explore my 2D and 3D commission options below (All prices in USD):</p>
+
+                <div class="button-container">
+                    <a id="open-tos-modal-button" class="button view-gallery-button">View Terms of Service</a>
+                </div>
+
                 <!-- 2D Commissions Section -->
                 <div id="2d-commissions">
-                    <h3 style="text-align: center;">2D Commissions</h3>
-                    <p style="text-align: center;">Choose from sketches, line art, flat colors, or shading. Prices vary by character coverage (portrait, upper half, or full body), additional characters, and background complexity.</p>
-                    
+                    <h3  class="center-text">2D Commissions</h3>
+                    <p  class="center-text">Choose from sketches, line art, flat colors, or shading. Prices vary by character coverage (portrait, upper half, or full body), additional characters, and background complexity.</p>
                     <div class="pricing-grid-container">
-                        <div class="pricing-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
+                        <div class="pricing-grid four-columns">
                             <div class="pricing-section">
                                 <ul>
                                     <li><strong>Sketch</strong>: 
                                         <ul>
-                                            <li>Portrait: $30</li>
-                                            <li>Upper Half: $50</li>
-                                            <li>Full Body: $75</li>
+                                            <li>Portrait: $8</li>
+                                            <li>Upper Half: $10</li>
+                                            <li>Full Body: $12</li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -131,9 +139,9 @@
                                 <ul>
                                     <li><strong>Line Art</strong>: 
                                         <ul>
-                                            <li>Portrait: $40</li>
-                                            <li>Upper Half: $60</li>
-                                            <li>Full Body: $90</li>
+                                            <li>Portrait: $12</li>
+                                            <li>Upper Half: $14</li>
+                                            <li>Full Body: $16</li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -142,9 +150,9 @@
                                 <ul>
                                     <li><strong>Flat Colors</strong>: 
                                         <ul>
-                                            <li>Portrait: $50</li>
-                                            <li>Upper Half: $70</li>
-                                            <li>Full Body: $110</li>
+                                            <li>Portrait: $16</li>
+                                            <li>Upper Half: $18</li>
+                                            <li>Full Body: $20</li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -153,9 +161,9 @@
                                 <ul>
                                     <li><strong>Shading</strong>: 
                                         <ul>
-                                            <li>Portrait: $60</li>
-                                            <li>Upper Half: $90</li>
-                                            <li>Full Body: $130</li>
+                                            <li>Portrait: $20</li>
+                                            <li>Upper Half: $22</li>
+                                            <li>Full Body: $24</li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -163,10 +171,10 @@
                         </div>
                     </div>
                     
-                    <p style="text-align: center;"><strong>Additional Costs:</strong></p>
-                    <p style="text-align: center;">Additional Characters: +50% per character</p>
-                    <p style="text-align: center;">Backgrounds: $50–$150 depending on complexity</p>
-                    <p style="text-align: center;">NSFW Content: +20% base cost</p>
+                    <p  class="center-text"><strong>Additional Costs:</strong></p>
+                    <p  class="center-text">Additional Characters: +50% per character</p>
+                    <p  class="center-text">Backgrounds: $0–$150 depending on complexity</p>
+                    <p  class="center-text">NSFW Content: +20% base cost</p>
         
                     <!-- Example Images -->
                     <div class="examples">
@@ -179,18 +187,18 @@
         
                     <!-- 3D Commissions Section -->
                     <div id="3d-commissions">
-                        <h3 style="text-align: center;">3D Commissions</h3>
-                        <p style="text-align: center;">Whether you need low-poly models reminiscent of the PS1 era or high-detail PS3-quality models, I offer fully rigged and textured creations. Additional options include viseme setup and dynamic props.</p>
+                        <h3  class="center-text">3D Commissions</h3>
+                        <p  class="center-text">Whether you need low-poly models reminiscent of the PS1 era or high-detail PS3-quality models, I offer fully rigged and textured creations. Additional options include viseme setup and dynamic props.</p>
                         
                         <div class="pricing-grid-container">
-                            <div class="pricing-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+                            <div class="pricing-grid three-columns">
                                 <div class="pricing-section">
                                     <ul>
                                         <li><strong>From-Scratch Models</strong>: 
                                             <ul>
-                                                <li>Low-Poly (PS1 style): $300</li>
-                                                <li>High-Poly (PS3 style): $500</li>
-                                                <li>Facial Viseme Setup: +$150</li>
+                                                <li>Low-Poly (PS1 style): $150</li>
+                                                <li>High-Poly (PS3 style): $300</li>
+                                                <li>Facial Viseme Setup: +$10</li>
                                             </ul>
                                         </li>
                                     </ul>
@@ -199,8 +207,8 @@
                                     <ul>
                                         <li><strong>From-Scratch Props</strong>: 
                                             <ul>
-                                                <li>Static Prop: $100</li>
-                                                <li>Dynamic Prop (with rigging): $200</li>
+                                                <li>Static Prop: $30</li>
+                                                <li>Dynamic Prop (with rigging): $50</li>
                                             </ul>
                                         </li>
                                     </ul>
@@ -209,8 +217,8 @@
                                     <ul>
                                         <li><strong>Kitbashing</strong>: 
                                             <ul>
-                                                <li>Character Kitbash: $250</li>
-                                                <li>Prop Kitbash: $150</li>
+                                                <li>Character Kitbash: $75</li>
+                                                <li>Prop Kitbash: $75</li>
                                             </ul>
                                         </li>
                                     </ul>
@@ -227,11 +235,11 @@
                             <img src="images/3d_example-5.jpg" alt="3D Example" class="example-image">
                         </div>
                         
-                        <p style="text-align: center;"><strong>Additional Costs:</strong></p>
-                        <p style="text-align: center;">NSFW Content: +20% base cost</p>
+                        <p  class="center-text"><strong>Additional Costs:</strong></p>
+                        <p  class="center-text">NSFW Content: +20% base cost</p>
                     </div>
                 </div>
-                <h2 style="text-align: center;">Commission Price Calculator</h2>
+                <h2  class="center-text">Commission Price Calculator</h2>
                 <div class="calculator">
                     <label for="type">Commission Type:</label>
                     <select id="type" onchange="updateOptions()">
@@ -268,7 +276,7 @@
                         </select>
                     </div>
             
-                    <div id="3d-options" style="display: none;">
+                    <div id="3d-options"  class="hidden">
                         <label for="3d-type">3D Type:</label>
                         <select id="3d-type" onchange="updateVisemeOption()">
                             <option value="lowpoly">Low-Poly Model</option>
@@ -279,7 +287,7 @@
                             <option value="kitbashprop">Prop Kitbash</option>
                         </select>
             
-                        <div id="viseme-option" style="display: none;">
+                        <div id="viseme-option"  class="hidden">
                             <label for="viseme">Facial Viseme Setup:</label>
                             <select id="viseme">
                                 <option value="no">No</option>
@@ -301,39 +309,34 @@
             </div>
 
             <div id="social" class="page">
-                <h2 style="text-align:center;">Social Media</h2>
-                <div class="social-media" style="text-align:center; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;"></div>
+                <h2  class="center-text">Social Media</h2>
+                <div class="social-media social-media-grid"></div>
             </div>
 
             <div id="storefront" class="page">
-                <h2 style="text-align:center;">Merchandise Store</h2>
+                <h2  class="center-text">Merchandise Store</h2>
                 <div class="teespring-store">
                     <iframe id="teespring-iframe" 
                             src="https://my-store-c7ca26-2.creator-spring.com" 
-                            style="width: 100%; min-height: 2700px; border: none; overflow: auto;" 
-                            scrolling="yes">
+                            class="teespring-iframe" 
+                            scrolling="yes"
+                            title="Teespring Merchandise Store">
                     </iframe>
                 </div>            
             </div>
             
             <div id="gumroad-shop" class="page">
-                <h2 style="text-align:center;">Gumroad Shop</h2>
+                <h2  class="center-text">Gumroad Shop</h2>
                 <iframe id="gumroad-iframe"
                     src="https://gumroad.com/rilyrobo"
-                    style="width: 100%; min-height: 1600px; border: none; overflow: auto;" 
-                    scrolling="yes">
+                    class="gumroad-iframe"
+                    scrolling="yes"
+                    title="Gumroad Shop">
                 </iframe>
-            </div>
-            
-            <div id="gumroad-shop_backup" class="page">
-                <h2 style="text-align:center;">Gumroad Shop</h2>
-                <div class="gumroad-container">
-                    <!-- Products will be populated here -->
-                </div>
             </div>
 
             <div id="contact" class="page">
-                <h2 style="text-align:center;">Contact</h2>
+                <h2  class="center-text">Contact</h2>
                 <form action="#" method="post">
                     <input type="text" name="name" placeholder="Your Name" required>
                     <input type="email" name="email" placeholder="Your Email" required>
@@ -342,6 +345,16 @@
                 </form>
             </div>
 
+            <div id="tos-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>Terms of Service</h2>
+                    <div id="tos-content">
+                        <!-- TOS content will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            
             <div id="gallery-modal" class="modal">
                 <div class="modal-content">
                     <img id="modal-image" src="" alt="Enlarged Art">
@@ -361,6 +374,6 @@
         </footer>
 
         <script src="script.js"></script>
-
     </body>
 </html>
+    

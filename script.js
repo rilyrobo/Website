@@ -1,16 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const comicsList = [
-        { title: "The Day Nobody Died", url: "https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/57218117/the-day-nobody-died", dimensions: "w_1024,h_1326,q_80" },
-        { title: "The King and Guardian", url: "https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/62710269/oct-the-one-year-journey", dimensions: "w_1024,h_4452,q_80" },
-    ];
-
-    setupComics(comicsList);
-    createComicPages(comicsList);
-    handleHashChange();
-    window.addEventListener('hashchange', handleHashChange);
-});
-
-document.addEventListener("DOMContentLoaded", () => {
     const videoData = [
         { id: 'uQXPa-OcfFQ', title: 'Toy Story 2 ReAnimated - Scene 319' },
         { id: 'yaDXBP_9nLM', title: 'Rily Robinson Animation Demo Reel 2020' },
@@ -133,6 +121,18 @@ function fetchGalleryData(endpoint, gridSelector, limit = null) {
         });
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+    const comicsList = [
+        { title: "The Day Nobody Died", file: "comics/day-nobody-died.csv"},
+        { title: "The King and Guardian", file: "comics/king-and-guardian.csv"},
+    ];
+
+    setupComics(comicsList);
+    createComicPages(comicsList);
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
+});
+
 function setupComics(comicsList) {
     const dropdownContent = document.querySelector(".dropdown-content");
     const comicsGrid = document.querySelector("#comics-grid");
@@ -147,12 +147,12 @@ function setupComics(comicsList) {
             <div class="comic-preview" data-target="comic-${urlFriendlyTitle}">
                 <div class="comic-card">
                     <div class="comic-image-container">
-                        <img src="" alt="${comic.title}" id="comic-preview-image-${index}" class="comic-image" style="width: 100%; height: auto;">
+                        <img src="" alt="${comic.title}" id="comic-preview-image-${index}" class="comic-image">
                     </div>
                     <h4>${comic.title}</h4>
                 </div>
             </div>`;
-        fetchFirstComicImage(comic.url, `#comic-preview-image-${index}`);
+        fetchFirstComicImage(comic.file, `#comic-preview-image-${index}`);
     });
 
     dropdownContent.innerHTML = dropdownHtml;
@@ -166,22 +166,20 @@ function setupComics(comicsList) {
     });
 }
 
-function fetchFirstComicImage(endpoint, imageSelector) {
-    fetch(endpoint)
-        .then(response => response.text())
-        .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
-        .then(data => {
-            const firstItem = data.querySelector("item");
-            if (firstItem) {
-                const imageUrl = firstItem.querySelector("media\\:content, content").getAttribute("url");
-                const imageElement = document.querySelector(imageSelector);
-                if (imageElement) {
-                    imageElement.src = imageUrl;
-                }
+function fetchFirstComicImage(filePath, imgSelector) {
+    loadCSV(filePath, (data) => {
+        if (data.length > 0) {
+            const firstItem = data[0];
+            const imgElement = document.querySelector(imgSelector);
+            if (imgElement) {
+                imgElement.src = firstItem.ImageUrl;
+                imgElement.alt = firstItem.Title;
             }
-        })
-        .catch(error => console.error(`Error fetching first image for ${endpoint}:`, error));
-}    
+        } else {
+            console.error("No data found in CSV file.");
+        }
+    });
+}
 
 function createComicPages(comicsList) {
     const mainContainer = document.querySelector('page');
@@ -213,106 +211,142 @@ function createComicPages(comicsList) {
             </div>
         `;
         mainContainer.appendChild(comicPage);
-        fetchComicGallery(comic.url, index, comic.dimensions);
+        setupComicNavigation(comic, index);
     });
 }
 
-function fetchComicGallery(endpoint, comicIndex, dimensions = null, targetPage = 0) {
-    fetch(endpoint)
-        .then(response => response.text())
-        .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
-        .then(data => {
-            const items = Array.from(data.querySelectorAll("item"));
-            const images = items.map(el => {
-                const title = el.querySelector("title").textContent;
-                const link = el.querySelector("link").textContent;
-                let image = el.querySelector("media\\:content, content").getAttribute("url");
-                if (image.includes("fill/w_")) {
-                    image = image.replace(/fill\/w_\d+,h_\d+,q_\d+/g, `fill/${dimensions}`);
-                }
-                return { title, link, image };
-            });
-
-            setupComicNavigation(images, comicIndex);
-            const validPageIndex = Math.max(0, Math.min(targetPage, images.length - 1));
-            displayComicImage(images, comicIndex, validPageIndex);
-        })
-        .catch(error => console.error(`Error fetching comic gallery for index ${comicIndex}:`, error));
-}
-
-function setupComicNavigation(images, comicIndex) {
-    const firstTopButton = document.getElementById(`first-top-comic-${comicIndex}`);
-    const previousTopButton = document.getElementById(`previous-top-comic-${comicIndex}`);
-    const nextTopButton = document.getElementById(`next-top-comic-${comicIndex}`);
-    const lastTopButton = document.getElementById(`last-top-comic-${comicIndex}`);
-    const firstBotButton = document.getElementById(`first-bot-comic-${comicIndex}`);
-    const previousBotButton = document.getElementById(`previous-bot-comic-${comicIndex}`);
-    const nextBotButton = document.getElementById(`next-bot-comic-${comicIndex}`);
-    const lastBotButton = document.getElementById(`last-bot-comic-${comicIndex}`);
-    const topSelector = document.getElementById(`comic-selector-${comicIndex}`);
-    const bottomSelector = document.getElementById(`comic-selector-bottom-${comicIndex}`);
-
-    images.forEach((image, index) => {
-        const option = document.createElement("option");
-        option.value = index;
-        option.textContent = image.title;
-        topSelector.appendChild(option);
-
-        const bottomOption = option.cloneNode(true);
-        bottomSelector.appendChild(bottomOption);
-    });
-    
-    let currentIndex = 0;
-    const hash = window.location.hash;
-    const regex = new RegExp(`^#comic-[\\w-]+-page-(\\d+)$`);
-    const match = regex.exec(hash);
-
-    if (match) {
-        const targetPage = parseInt(match[1], 10) - 1;
-        if (targetPage >= 0 && targetPage < images.length) {
-            currentIndex = targetPage;
-        }
-    }
-
-    const updateImageDisplay = (index) => {
-        if (index >= 0 && index < images.length) {
-            currentIndex = index;
-            displayComicImage(images, comicIndex, currentIndex);
-            topSelector.value = currentIndex;
-            bottomSelector.value = currentIndex;
-            const comicId = `comic-${comicsList[comicIndex].title.replace(/\s+/g, '-')}`;
-            const pageNumber = currentIndex + 1;
-            history.replaceState(null, '', `#${comicId}-page-${pageNumber}`);
+function loadCSV(filePath, callback) {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", filePath, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const data = parseCSV(xhr.responseText);
+            callback(data);
         }
     };
+    xhr.send();
+}
 
-    firstTopButton.addEventListener("click", () => updateImageDisplay(0));
-    previousTopButton.addEventListener("click", () => updateImageDisplay(currentIndex - 1));
-    nextTopButton.addEventListener("click", () => updateImageDisplay(currentIndex + 1));
-    lastTopButton.addEventListener("click", () => updateImageDisplay(images.length - 1));
-    firstBotButton.addEventListener("click", () => updateImageDisplay(0));
-    previousBotButton.addEventListener("click", () => updateImageDisplay(currentIndex - 1));
-    nextBotButton.addEventListener("click", () => updateImageDisplay(currentIndex + 1));
-    lastBotButton.addEventListener("click", () => updateImageDisplay(images.length - 1));
-    topSelector.addEventListener("change", (e) => updateImageDisplay(Number(e.target.value)));
-    bottomSelector.addEventListener("change", (e) => updateImageDisplay(Number(e.target.value)));
-    updateImageDisplay(currentIndex);
+function parseCSV(data) {
+    const lines = data.split("\n");
+    const result = [];
+    const headers = lines[0].split(",");
+
+    for (let i = 1; i < lines.length; i++) {
+        const obj = {};
+        const currentLine = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+
+        if (currentLine !== null) {
+            for (let j = 0; j < headers.length; j++) {
+                if (currentLine[j] !== undefined) {
+                    obj[headers[j].trim()] = currentLine[j].replace(/(^"|"$)/g, '').trim();
+                }
+            }
+            result.push(obj);
+        }
+    }
+    return result;
+}
+
+function setupComicNavigation(comic, comicIndex) {
+    loadCSV(comic.file, (images) => {
+        const firstTopButton = document.getElementById(`first-top-comic-${comicIndex}`);
+        const previousTopButton = document.getElementById(`previous-top-comic-${comicIndex}`);
+        const nextTopButton = document.getElementById(`next-top-comic-${comicIndex}`);
+        const lastTopButton = document.getElementById(`last-top-comic-${comicIndex}`);
+        const firstBotButton = document.getElementById(`first-bot-comic-${comicIndex}`);
+        const previousBotButton = document.getElementById(`previous-bot-comic-${comicIndex}`);
+        const nextBotButton = document.getElementById(`next-bot-comic-${comicIndex}`);
+        const lastBotButton = document.getElementById(`last-bot-comic-${comicIndex}`);
+        const topSelector = document.getElementById(`comic-selector-${comicIndex}`);
+        const bottomSelector = document.getElementById(`comic-selector-bottom-${comicIndex}`);
+
+        images.forEach((image, index) => {
+            const option = document.createElement("option");
+            option.value = index;
+            option.textContent = image.Title;
+            topSelector.appendChild(option);
+
+            const bottomOption = option.cloneNode(true);
+            bottomSelector.appendChild(bottomOption);
+        });
+
+        let currentIndex = 0;
+        const hash = window.location.hash;
+        const regex = new RegExp(`^#comic-[\\w-]+-page-(\\d+)$`);
+        const match = regex.exec(hash);
+
+        if (match) {
+            const targetPage = parseInt(match[1], 10) - 1;
+            if (targetPage >= 0 && targetPage < images.length) {
+                currentIndex = targetPage;
+            }
+        }
+
+        const updateImageDisplay = (index) => {
+            if (index >= 0 && index < images.length) {
+                currentIndex = index;
+                displayComicImage(images, comicIndex, currentIndex);
+                topSelector.value = currentIndex;
+                bottomSelector.value = currentIndex;
+                const comicId = `comic-${comic.title.replace(/\s+/g, '-')}`;
+                const pageNumber = currentIndex + 1;
+                history.replaceState(null, '', `#${comicId}-page-${pageNumber}`);
+            }
+        };
+
+        firstTopButton.addEventListener("click", () => updateImageDisplay(0));
+        previousTopButton.addEventListener("click", () => updateImageDisplay(currentIndex - 1));
+        nextTopButton.addEventListener("click", () => updateImageDisplay(currentIndex + 1));
+        lastTopButton.addEventListener("click", () => updateImageDisplay(images.length - 1));
+        firstBotButton.addEventListener("click", () => updateImageDisplay(0));
+        previousBotButton.addEventListener("click", () => updateImageDisplay(currentIndex - 1));
+        nextBotButton.addEventListener("click", () => updateImageDisplay(currentIndex + 1));
+        lastBotButton.addEventListener("click", () => updateImageDisplay(images.length - 1));
+        topSelector.addEventListener("change", (e) => updateImageDisplay(Number(e.target.value)));
+        bottomSelector.addEventListener("change", (e) => updateImageDisplay(Number(e.target.value)));
+        updateImageDisplay(currentIndex);
+    });
 }
 
 function displayComicImage(images, comicIndex, currentIndex) {
-    const comicImage = document.getElementById(`comic-image-${comicIndex}`);
-    const topSelector = document.getElementById(`comic-selector-${comicIndex}`);
-    const bottomSelector = document.getElementById(`comic-selector-bottom-${comicIndex}`);
+    const galleryDiv = document.getElementById(`comic-display-${comicIndex}`);
+    const imageElement = galleryDiv.querySelector("img");
 
-    const { image, title } = images[currentIndex];
-    comicImage.src = image;
-    comicImage.alt = title;
-
-    if (topSelector) topSelector.value = currentIndex;
-    if (bottomSelector) bottomSelector.value = currentIndex;
-    const comicTitle = comicsList[comicIndex].title.replace(/\s+/g, '-');
-    history.replaceState(null, '', `#comic-${comicTitle}-page-${currentIndex + 1}`);
+    if (images && images[currentIndex]) {
+        const { Title, ImageUrl } = images[currentIndex];
+        imageElement.src = ImageUrl;
+        imageElement.alt = Title;
+    } else {
+        console.error(`Error fetching comic gallery for index ${comicIndex}: Image data is undefined.`);
+    }
 }
+
+function handleHashChange() {
+    const hash = window.location.hash.substring(1);
+    const [comicHash, pageHash] = hash.split('-page-');
+    const comicTitle = comicHash.replace('comic-', '').replace(/-/g, ' ');
+    const comicIndex = comicsList.findIndex(comic => comic.title === comicTitle);
+
+    if (comicIndex !== -1) {
+        const pageIndex = pageHash ? parseInt(pageHash, 10) - 1 : 0;
+        loadCSV(comicsList[comicIndex].file, (images) => {
+            displayComicImage(images, comicIndex, pageIndex);
+            setupComicNavigation(comicsList[comicIndex], comicIndex);
+        });
+    } else {
+        showPage(hash);
+    }
+}
+
+window.addEventListener('hashchange', handleHashChange);
+
+document.querySelectorAll("nav a").forEach(link => {
+    if (link.href.startsWith("http")) {
+        link.setAttribute("target", "_blank");
+        link.setAttribute("rel", "noopener noreferrer");
+    }
+});
 
 function attachModalListeners(gridSelector) {
     const galleryGrid = document.querySelector(gridSelector);
@@ -355,49 +389,7 @@ function showPage(pageId) {
 
     history.pushState(null, '', `#${pageId}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-}       
-
-function handleHashChange() {
-    const hash = window.location.hash.substring(1);
-
-    if (!hash) {
-        showPage('home');
-        return;
-    }
-
-    const [comicHash, pageHash] = hash.split('-page-');
-    if (comicHash.startsWith('comic-')) {
-        const comicTitle = comicHash.replace('comic-', '').replace(/-/g, ' ');
-        const comicIndex = comicsList.findIndex(comic => comic.title === comicTitle);
-
-        if (comicIndex !== -1) {
-            const pageIndex = pageHash ? parseInt(pageHash, 10) - 1 : 0;
-            fetchComicGallery(
-                comicsList[comicIndex].url,
-                comicIndex,
-                comicsList[comicIndex].dimensions,
-                pageIndex
-            );
-            return;
-        }
-    }
-
-    showPage(hash);
 }
-window.addEventListener('hashchange', handleHashChange);
-
-document.querySelectorAll("nav a").forEach(link => {
-    if (link.href.startsWith("http")) {
-        link.setAttribute("target", "_blank");
-        link.setAttribute("rel", "noopener noreferrer");
-    } else {
-        link.addEventListener("click", (e) => {
-            e.preventDefault();
-            const targetPage = link.getAttribute("href").substring(1);
-            showPage(targetPage);
-        });
-    }
-});
 
 document.querySelectorAll(".example-image").forEach(img => {
     img.addEventListener("click", () => {
@@ -408,6 +400,7 @@ document.querySelectorAll(".example-image").forEach(img => {
         modal.style.display = "flex";
     });
 });
+
 document.getElementById("example-image-modal").addEventListener("click", (e) => {
     if (e.target.id === "example-image-modal") {
         e.target.style.display = "none";
@@ -503,57 +496,6 @@ function populateGamesGrid(games, gridElement) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    const gumroadContainer = document.querySelector(".gumroad-container");
-    const products = [
-        {
-            name: 'Mug "Normal People Scare Me" Multi-Texture',
-            url: "https://rilyrobo.gumroad.com/l/vgOAs",
-            image: "https://public-files.gumroad.com/tvi9ex2o1aa8uuoe00ebnefau9ly",
-            price: "0.00"
-        },
-        {
-            name: "Chair Red",
-            url: "https://rilyrobo.gumroad.com/l/SlPZX",
-            image: "https://public-files.gumroad.com/1f9f8ym196ip1idjk1k76pjucmud",
-            price: "3.00"
-        },
-        {
-            name: "Shark Chair",
-            url: "https://rilyrobo.gumroad.com/l/gAVxf",
-            image: "https://public-files.gumroad.com/milkiilabcpb1sbxjv1g2b9dx2ac",
-            price: "3.00"
-        },
-        {
-            name: "Metal Chair 4 Texture",
-            url: "https://rilyrobo.gumroad.com/l/ZoHSP",
-            image: "https://public-files.gumroad.com/fmw9aaojloo4o56m7z2ecdmt1vmz",
-            price: "3.00"
-        },
-        {
-            name: "Wood Barrel 3 Colours, Open, Closed",
-            url: "https://rilyrobo.gumroad.com/l/DzXMGm",
-            image: "https://public-files.gumroad.com/xw3d89gwsc1v89jdnqy80r3ts0n2",
-            price: "3.00"
-        }
-    ];
-
-    products.forEach(product => {
-        const item = document.createElement("div");
-        item.classList.add("gumroad-item");
-
-        item.innerHTML = `
-            <a href="${product.url}" target="_blank">
-                <img src="${product.image}" alt="${product.name}">
-                <h4>${product.name}</h4>
-                <h4>${product.price} CAD</h4>
-            </a>
-        `;
-
-        gumroadContainer.appendChild(item);
-    });
-});
-
-document.addEventListener("DOMContentLoaded", () => {
     const teespringIframe = document.getElementById("teespring-iframe");
     const gumroadIframe = document.getElementById("gumroad-iframe");
 
@@ -567,10 +509,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const prices = {
     "2d": {
-        sketch: { portrait: 30, upperhalf: 50, fullbody: 75 },
-        lineart: { portrait: 40, upperhalf: 60, fullbody: 90 },
-        flatcolors: { portrait: 50, upperhalf: 70, fullbody: 110 },
-        shading: { portrait: 60, upperhalf: 90, fullbody: 130 },
+        sketch: { portrait: 8, upperhalf: 10, fullbody: 12 },
+        lineart: { portrait: 12, upperhalf: 14, fullbody: 16 },
+        flatcolors: { portrait: 16, upperhalf: 18, fullbody: 20 },
+        shading: { portrait: 20, upperhalf: 22, fullbody: 24 },
         background: {
             colourgradient: 0,
             splashfilterphoto: 20,
@@ -582,13 +524,13 @@ const prices = {
         additionalMultiplier: 0.5
     },
     "3d": {
-        lowpoly: 300,
-        highpoly: 500,
-        staticprop: 100,
-        dynamicprop: 200,
-        kitbashchar: 250,
-        kitbashprop: 150,
-        viseme: 150,
+        lowpoly: 150,
+        highpoly: 300,
+        staticprop: 30,
+        dynamicprop: 50,
+        kitbashchar: 75,
+        kitbashprop: 75,
+        viseme: 10,
         nsfwMultiplier: 0.2
     }
 };
@@ -647,6 +589,33 @@ function calculatePrice() {
 
         basePrice += visemeCost + nsfwCost;
     }
-
     document.getElementById('result').innerText = `Total Price: $${basePrice.toFixed(2)}`;
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    const openTosModalButton = document.getElementById("open-tos-modal-button");
+    const tosModal = document.getElementById("tos-modal");
+    const closeTosModalButton = tosModal.querySelector(".close");
+    const tosContent = document.getElementById("tos-content");
+
+    openTosModalButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        fetch('tos.html')
+            .then(response => response.text())
+            .then(data => {
+                tosContent.innerHTML = data;
+                tosModal.style.display = "block";
+            })
+            .catch(error => console.error('Error loading TOS:', error));
+    });
+
+    closeTosModalButton.addEventListener("click", () => {
+        tosModal.style.display = "none";
+    });
+
+    window.addEventListener("click", (event) => {
+        if (event.target === tosModal) {
+            tosModal.style.display = "none";
+        }
+    });
+});
