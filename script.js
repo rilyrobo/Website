@@ -129,6 +129,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setupComics(comicsList);
     createComicPages(comicsList);
+    if (!window.location.hash) {
+        history.replaceState(null, '', '#home');
+    }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
     handleHashChange();
     window.addEventListener('hashchange', handleHashChange);
 });
@@ -285,13 +291,15 @@ function setupComicNavigation(comic, comicIndex) {
 
         const updateImageDisplay = (index) => {
             if (index >= 0 && index < images.length) {
-                currentIndex = index;
-                displayComicImage(images, comicIndex, currentIndex);
-                topSelector.value = currentIndex;
-                bottomSelector.value = currentIndex;
-                const comicId = `comic-${comic.title.replace(/\s+/g, '-')}`;
-                const pageNumber = currentIndex + 1;
+            currentIndex = index;
+            displayComicImage(images, comicIndex, currentIndex);
+            topSelector.value = currentIndex;
+            bottomSelector.value = currentIndex;
+            const comicId = `comic-${comic.title.replace(/\s+/g, '-')}`;
+            const pageNumber = currentIndex + 1;
+            if (window.location.hash.startsWith(`#${comicId}`)) {
                 history.replaceState(null, '', `#${comicId}-page-${pageNumber}`);
+            }
             }
         };
 
@@ -324,19 +332,31 @@ function displayComicImage(images, comicIndex, currentIndex) {
 
 function handleHashChange() {
     const hash = window.location.hash.substring(1);
-    const [comicHash, pageHash] = hash.split('-page-');
-    const comicTitle = comicHash.replace('comic-', '').replace(/-/g, ' ');
-    const comicIndex = comicsList.findIndex(comic => comic.title === comicTitle);
 
-    if (comicIndex !== -1) {
-        const pageIndex = pageHash ? parseInt(pageHash, 10) - 1 : 0;
-        loadCSV(comicsList[comicIndex].file, (images) => {
-            displayComicImage(images, comicIndex, pageIndex);
-            setupComicNavigation(comicsList[comicIndex], comicIndex);
-        });
-    } else {
-        showPage(hash);
+    if (!hash) {
+        showPage('home');
+        history.replaceState(null, '', '#home');
+        return;
     }
+
+    const [comicHash, pageHash] = hash.split('-page-');
+    if (comicHash.startsWith('comic-')) {
+        const comicTitle = comicHash.replace('comic-', '').replace(/-/g, ' ');
+        const comicIndex = comicsList.findIndex(comic => comic.title === comicTitle);
+
+        if (comicIndex !== -1) {
+            const pageIndex = pageHash ? parseInt(pageHash, 10) - 1 : 0;
+            loadCSV(comicsList[comicIndex].file, (images) => {
+                displayComicImage(images, comicIndex, pageIndex);
+                setupComicNavigation(comicsList[comicIndex], comicIndex);
+                showPage(`comic-${comicTitle.replace(/\s+/g, '-')}`);
+                history.replaceState(null, '', `#comic-${comicTitle.replace(/\s+/g, '-')}${pageHash ? `-page-${pageIndex + 1}` : ''}`);
+            });
+        }
+        return;
+    }
+
+    showPage(hash);
 }
 
 window.addEventListener('hashchange', handleHashChange);
