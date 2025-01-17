@@ -555,6 +555,11 @@ const prices = {
     }
 };
 
+document.addEventListener("DOMContentLoaded", () => {
+    updateOptions();
+    updateVisemeOption();
+});
+
 function updateOptions() {
     const type = document.getElementById('type').value;
     const options2D = document.getElementById('2d-options');
