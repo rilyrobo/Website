@@ -541,19 +541,53 @@ nav a:hover {
   color: #d3b8b8;
 }
 
-.social-feed {
-  margin-bottom: 30px;
-}
-
-.social-feed img {
-  width: 100%;
-  max-height: 300px;
-  object-fit: cover;
-  border-radius: 10px;
-}
-
-.social-feed h3 {
+.social-media a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 10px;
+  text-decoration: none;
+  color: #ffffff;
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.social-media a:hover {
+  transform: scale(1.05);
+}
+
+.social-media-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.social-media-icon a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+  box-shadow: none;
+  transition: transform 0.3s ease;
+}
+
+.social-media-icon a:hover {
+  transform: scale(1.2);
+}
+
+.social-media-icon img {
+  width: 24px;
+  height: 24px;
+  margin: 0;
 }
 
 .social-post {
@@ -565,6 +599,16 @@ nav a:hover {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
+}
+
+.social-media-grid a:hover {
+    transform: scale(1.2);
+}
+
+.social-media-grid img {
+    width: 24px;
+    height: 24px;
+    margin: 0;
 }
 
 footer {

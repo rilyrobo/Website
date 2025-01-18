@@ -20,16 +20,16 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
     const username = "RilyRobo";
     const platforms = [
-        { name: "Twitter", url: `https://twitter.com/${username}`, icon: "https://img.icons8.com/?size=100&id=phOKFKYpe00C&format=png&color=ffffff" , color: "#1DA1F2" },
-        { name: "Instagram", url: `https://instagram.com/${username}`, icon: "https://img.icons8.com/?size=100&id=32309&format=png&color=ffffff" , color: "#E1306C" },
-        { name: "YouTube", url: `https://www.youtube.com/@${username}`, icon: "https://img.icons8.com/?size=100&id=37326&format=png&color=ffffff" , color: "#FF0000" },
-        { name: "DeviantArt", url: `https://www.deviantart.com/${username}`, icon: "https://img.icons8.com/?size=100&id=38504&format=png&color=ffffff" , color: "#05CC47" },
-        { name: "Newgrounds", url: `https://${username}.newgrounds.com`, icon: "https://img.icons8.com/?size=100&id=15771&format=png&color=ffffff" , color: "#FFCC00" },
-        { name: "Twitch", url: `https://www.twitch.tv/${username}`, icon: "https://img.icons8.com/?size=100&id=18104&format=png&color=ffffff" , color: "#9146FF" },
-        { name: "Picarto", url: `https://picarto.tv/${username}`, icon: "https://img.icons8.com/?size=100&id=6byL4WgkpyPg&format=png&color=ffffff" , color: "#00FF00" },
-        { name: "Patreon", url: `https://www.patreon.com/c/${username}`, icon: "https://img.icons8.com/?size=100&id=tIshI0hyXw3f&format=png&color=ffffff" , color: "#F96854" },
-        { name: "Subscribestar", url: `https://www.subscribestar.com/${username}`, icon: "https://img.icons8.com/?size=100&id=7856&format=png&color=ffffff" , color: "#FFCC00" },
-        { name: "BuyMeACoffee", url: `https://www.buymeacoffee.com/${username}`, icon: "https://img.icons8.com/?size=100&id=8342&format=png&color=ffffff" , color: "#FFDD00" },
+        { name: "Twitter", url: `https://twitter.com/${username}`, icon: "https://img.icons8.com/?size=100&id=phOKFKYpe00C&format=png&color=ffffff" , color: "#1A91DA" },
+        { name: "Instagram", url: `https://instagram.com/${username}`, icon: "https://img.icons8.com/?size=100&id=32309&format=png&color=ffffff" , color: "#C13584" },
+        { name: "YouTube", url: `https://www.youtube.com/@${username}`, icon: "https://img.icons8.com/?size=100&id=37326&format=png&color=ffffff" , color: "#CC0000" },
+        { name: "DeviantArt", url: `https://www.deviantart.com/${username}`, icon: "https://img.icons8.com/?size=100&id=38504&format=png&color=ffffff" , color: "#04A045" },
+        { name: "Newgrounds", url: `https://${username}.newgrounds.com`, icon: "https://img.icons8.com/?size=100&id=15771&format=png&color=ffffff" , color: "#E6B800" },
+        { name: "Twitch", url: `https://www.twitch.tv/${username}`, icon: "https://img.icons8.com/?size=100&id=18104&format=png&color=ffffff" , color: "#772CE8" },
+        { name: "Picarto", url: `https://picarto.tv/${username}`, icon: "https://img.icons8.com/?size=100&id=6byL4WgkpyPg&format=png&color=ffffff" , color: "#00CC00" },
+        { name: "Patreon", url: `https://www.patreon.com/c/${username}`, icon: "https://img.icons8.com/?size=100&id=tIshI0hyXw3f&format=png&color=ffffff" , color: "#E36254" },
+        { name: "Subscribestar", url: `https://www.subscribestar.com/${username}`, icon: "https://img.icons8.com/?size=100&id=7856&format=png&color=ffffff" , color: "#E6B800" },
+        { name: "BuyMeACoffee", url: `https://www.buymeacoffee.com/${username}`, icon: "https://img.icons8.com/?size=100&id=8342&format=png&color=ffffff" , color: "#E6C200" },
     ];
 
     const socialMediasContainers = document.querySelectorAll(".social-media");
@@ -47,26 +47,30 @@ document.addEventListener("DOMContentLoaded", () => {
             link.rel = "noopener noreferrer";
             link.addEventListener("click", (e) => e.stopPropagation());
 
-            const img = document.createElement("img");
-            img.src = platform.icon;
-            img.alt = platform.name;
-            img.style.width = "24px";
-            img.style.height = "24px";
-            img.style.margin = "0 8px";
+            const imgStart = document.createElement("img");
+            imgStart.src = platform.icon;
+            imgStart.alt = platform.name;
+            imgStart.classList.add("social-icon");
+
+            const imgEnd = imgStart.cloneNode(true);
 
             if (container.classList.contains("social-media-icon")) {
-                link.appendChild(img);
+                link.appendChild(imgStart);
             } else {
-                link.innerHTML = `${platform.name}`;
-                link.style.display = "block";
+                link.innerHTML = `<strong>${platform.name}</strong>`;
+                link.style.display = "flex";
+                link.style.alignItems = "center";
+                link.style.justifyContent = "space-between";
                 link.style.marginBottom = "10px";
                 link.style.textDecoration = "none";
-                link.style.color = "#660000";
+                link.style.color = "#ffffff";
                 link.style.fontSize = "16px";
                 link.style.backgroundColor = platform.color;
-                link.style.padding = "5px";
+                link.style.padding = "5px 10px";
                 link.style.borderRadius = "8px";
-                link.insertBefore(img, link.firstChild);
+                link.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.2)";
+                link.insertBefore(imgStart, link.firstChild);
+                link.appendChild(imgEnd);
             }
 
             container.appendChild(link);
