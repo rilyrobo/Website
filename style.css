@@ -1113,3 +1113,38 @@ a:hover, button:hover, .card:hover {
       max-width: 100%;
   }
 }
+
+.commissions-slider {
+  display: flex;
+  overflow-x: auto;
+  padding: 20px;
+  gap: 20px;
+  scroll-snap-type: x mandatory;
+}
+
+.commissions-slider img {
+  scroll-snap-align: center;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  transition: transform 0.3s ease, z-index 0.3s ease;
+  cursor: pointer;
+}
+
+.commissions-slider img:hover {
+  transform: scale(1.2);
+  z-index: 10;
+}
+
+.commissions-slider img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  transition: transform 0.3s ease, z-index 0.3s ease;
+  cursor: pointer;
+}
+
+.commissions-slider img:hover {
+  transform: scale(1.2);
+  z-index: 10;
+}

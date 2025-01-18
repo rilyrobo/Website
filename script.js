@@ -672,3 +672,59 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener('scroll', checkHeaderVisibility);
     checkHeaderVisibility();
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const commissionsFolder = 'commissions';
+    const commissionsSlider = document.querySelector('.commissions-slider');
+    const exampleImageModal = document.getElementById('example-image-modal');
+    const exampleImageModalImg = document.getElementById('example-image-modal-img');
+    const closeModalButton = exampleImageModal.querySelector('.close');
+
+    // Example images array (replace with actual image paths)
+    const commissionImages = [
+        `${commissionsFolder}/image1.jpg`,
+        `${commissionsFolder}/image2.jpg`,
+        `${commissionsFolder}/image3.jpg`,
+        `${commissionsFolder}/image4.jpg`,
+        `${commissionsFolder}/image5.jpg`,
+        `${commissionsFolder}/image6.jpg`,
+        `${commissionsFolder}/image7.jpg`,
+        `${commissionsFolder}/image8.jpg`,
+        `${commissionsFolder}/image9.jpg`,
+        `${commissionsFolder}/image10.jpg`,
+        `${commissionsFolder}/image1.jpg`,
+        `${commissionsFolder}/image2.jpg`,
+        `${commissionsFolder}/image3.jpg`,
+        `${commissionsFolder}/image4.jpg`,
+        `${commissionsFolder}/image5.jpg`,
+        `${commissionsFolder}/image6.jpg`,
+        `${commissionsFolder}/image7.jpg`,
+        `${commissionsFolder}/image8.jpg`,
+        `${commissionsFolder}/image9.jpg`,
+        `${commissionsFolder}/image10.jpg`,
+    ];
+
+    // Load images into the slider
+    commissionImages.forEach(imageSrc => {
+        const img = document.createElement('img');
+        img.src = imageSrc;
+        img.alt = 'Commission Image';
+        img.addEventListener('click', () => {
+            exampleImageModalImg.src = imageSrc;
+            exampleImageModal.style.display = 'block';
+        });
+        commissionsSlider.appendChild(img);
+    });
+
+    // Close modal when the close button is clicked
+    closeModalButton.addEventListener('click', () => {
+        exampleImageModal.style.display = 'none';
+    });
+
+    // Close modal when clicking outside the modal content
+    window.addEventListener('click', (event) => {
+        if (event.target === exampleImageModal) {
+            exampleImageModal.style.display = 'none';
+        }
+    });
+});
