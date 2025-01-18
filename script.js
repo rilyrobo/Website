@@ -123,8 +123,8 @@ function fetchGalleryData(endpoint, gridSelector, limit = null) {
 
 document.addEventListener("DOMContentLoaded", () => {
     const comicsList = [
-        { title: "The Day Nobody Died", file: "comics/day-nobody-died.csv"},
-        { title: "The King and Guardian", file: "comics/king-and-guardian.csv"},
+        { title: "The Day Nobody Died", file: "comics/day-nobody-died.csv", icon: "images/comic_icon_The-Day-Nobody-Died.ico" },
+        { title: "The King and Guardian", file: "comics/king-and-guardian.csv", icon: "images/comic_icon_The-King-and-Guardian.ico" },
     ];
 
     setupComics(comicsList);
@@ -143,12 +143,16 @@ function setupComics(comicsList) {
     const dropdownContent = document.querySelector(".dropdown-content");
     const comicsGrid = document.querySelector("#comics-grid");
 
-    let dropdownHtml = `<a href="#comics" onclick="showPage('comics')">Comics</a>`;
+    let dropdownHtml =  '';//`<a href="#comics" onclick="showPage('comics')">Comics</a>`;
     let gridHtml = '';
 
     comicsList.forEach((comic, index) => {
         const urlFriendlyTitle = comic.title.replace(/\s+/g, '-');
-        dropdownHtml += `<a href="#comic-${urlFriendlyTitle}" onclick="showPage('comic-${urlFriendlyTitle}')">${comic.title}</a>`;
+        dropdownHtml += `
+                    <div class="dropdown-item">
+                        <a href="#comic-${urlFriendlyTitle}" onclick="showPage('comic-${urlFriendlyTitle}')">${comic.title}</a>
+                <div class="nav-hover-image-dropdown" style="background: url('${comic.icon}') center/cover no-repeat;"></div>
+                    </div>`;
         gridHtml += `
             <div class="comic-preview" data-target="comic-${urlFriendlyTitle}">
                 <div class="comic-card">
@@ -437,9 +441,17 @@ document.querySelectorAll("nav a:not([href^='http'])").forEach(link => {
 document.addEventListener("DOMContentLoaded", () => {
     const myGames = [
         {
+            title: "Unnamed Game Project",
+            image: "images/game_projectt.jpg",
+            description: "2013 A horror game project that was never completed. The game was to be a 2D gamemaker 8 engine horror, adventure game with a focus on story and atmosphere. The player would explore a world overtaken by monsters and fleshy masses with pills to swap between the apocolyptic world and a modern world with the ability to by pass threats and puzzles by changing worlds.",
+            links: [
+                
+            ]
+        },
+        {
             title: "Secured Maze",
             image: "images/game_securedmaze.jpg",
-            description: "In 2016 the Secured Maze was a 2.5D gamemaker 8 engine horror game, the player would travel through mazes gathering keys to open gates to find elevators to travel deeper.The players own sense would betray them as some monsters would rely on the players use of hearing and sight to track them down, requiring the player to block these sense and struggle to make it through the mazes",
+            description: "2016 The Secured Maze was a 2.5D gamemaker 8 engine horror game, the player would travel through mazes gathering keys to open gates to find elevators to travel deeper.The players own sense would betray them as some monsters would rely on the players use of hearing and sight to track them down, requiring the player to block these sense and struggle to make it through the mazes",
             links: [
                 
             ]
@@ -447,19 +459,9 @@ document.addEventListener("DOMContentLoaded", () => {
         {
             title: "VRChat Retro Game Recreation",
             image: "images/game_arcaderecreation.jpg",
-            description: "An on-going project to create immersive retro arcade game cabinent assets and standalone games for use in VRChat. With various gameplay styles such as space invaders, arcanoid / block breaker, pong, snake, and more.",
+            description: "2023- An on-going project to create immersive retro arcade game cabinent assets and standalone games for use in VRChat. With various gameplay styles such as space invaders, arcanoid / block breaker, pong, snake, and more.",
             links: [
                 { name: "VRChat World", url: "https://vrchat.com/home/world/wrld_5de8a59e-2c93-4ec4-a380-b5030310c76a/info" },
-            ]
-        },
-        {
-            title: "Game Title 2",
-            image: "path-to-image1.jpg",
-            description: "Brief description of the game you made.",
-            links: [
-                { name: "Website", url: "https://example.com/game2" },
-                { name: "YouTube", url: "https://youtube.com/game2" },
-                { name: "Itch.io", url: "https://itch.io/game2" }
             ]
         },
     ];
@@ -467,7 +469,7 @@ document.addEventListener("DOMContentLoaded", () => {
         {
             title: "Insert Paper",
             image: "images/game_insertpaper.jpg",
-            description: "Before any professional training I joined the group Startreming for a short while. I did character modeling, UV unwrapping, texturing, rigging and test animating those characters",
+            description: "2017 Before any professional training I joined the group Startreming for a short while. I did character modeling, UV unwrapping, texturing, rigging and test animating those characters",
             links: [
                 { name: "Steam", url: "https://store.steampowered.com/app/661490/Insert_Paper/" }
             ]
@@ -475,7 +477,7 @@ document.addEventListener("DOMContentLoaded", () => {
         {
             title: "CRITICAL MASS EPISODE I",
             image: "images/game_criticalmass.jpg",
-            description: "As a Technical Animator, I was responsible for rigging characters and props, creating placeholder animations, and I animated some background assets. My contributions ensured smooth and realistic movement were possible, enhancing the overall visual experience of the game.",
+            description: "2021-2023 As a Technical Animator, I was responsible for rigging characters and props, creating placeholder animations, and I animated some background assets. My contributions ensured smooth and realistic movement were possible, enhancing the overall visual experience of the game.",
             links: [
                 { name: "Website", url: "https://www.arcadiagameworks.com/games" },
                 { name: "YouTube", url: "https://www.youtube.com/channel/UCpreE7v8PZ41TifVkk-J04g" },
@@ -483,13 +485,11 @@ document.addEventListener("DOMContentLoaded", () => {
             ]
         },
         {
-            title: "Contributed Game 3",
-            image: "path-to-image4.jpg",
-            description: "Another game you contributed to.",
+            title: "NDA",
+            image: "images/placeholder.jpg",
+            description: "2022-2023 A work in progress game project that is currently in development. More information will be available.",
             links: [
-                { name: "Website", url: "https://example.com/contributed2" },
-                { name: "YouTube", url: "https://youtube.com/contributed2" },
-                { name: "Itch.io", url: "https://itch.io/contributed2" }
+                
             ]
         },
     ];
@@ -643,4 +643,28 @@ document.addEventListener("DOMContentLoaded", () => {
             tosModal.style.display = "none";
         }
     });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const header = document.querySelector('header');
+    const navItems = document.querySelectorAll('#nav-image');
+
+    function checkHeaderVisibility() {
+        const headerRect = header.getBoundingClientRect();
+        const headerVisibleHeight = Math.max(0, headerRect.bottom - Math.max(0, headerRect.top));
+        const headerVisiblePercentage = (headerVisibleHeight / headerRect.height) * 100;
+
+        navItems.forEach(navItem => {
+            if (headerVisiblePercentage < 10) {
+                navItem.classList.remove('nav-hover-image');
+                navItem.classList.add('nav-hover-image-side');
+            } else {
+                navItem.classList.remove('nav-hover-image-side');
+                navItem.classList.add('nav-hover-image');
+            }
+        });
+    }
+
+    window.addEventListener('scroll', checkHeaderVisibility);
+    checkHeaderVisibility();
 });
