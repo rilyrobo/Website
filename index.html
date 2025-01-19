@@ -166,9 +166,9 @@
                                 <ul>
                                     <li><strong>Sketch</strong>: 
                                         <ul>
-                                            <li>Portrait: $8</li>
-                                            <li>Upper Half: $10</li>
-                                            <li>Full Body: $12</li>
+                                            <li>Portrait: <strong id="2d-sketch-portrait"></strong></li>
+                                            <li>Upper Half: <strong id="2d-sketch-upperhalf"></strong></li>
+                                            <li>Full Body: <strong id="2d-sketch-fullbody"></strong></li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -177,9 +177,9 @@
                                 <ul>
                                     <li><strong>Line Art</strong>: 
                                         <ul>
-                                            <li>Portrait: $12</li>
-                                            <li>Upper Half: $14</li>
-                                            <li>Full Body: $16</li>
+                                            <li>Portrait: <strong id="2d-lineart-portrait"></strong></li>
+                                            <li>Upper Half: <strong id="2d-lineart-upperhalf"></strong></li>
+                                            <li>Full Body: <strong id="2d-lineart-fullbody"></strong></li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -188,9 +188,9 @@
                                 <ul>
                                     <li><strong>Flat Colors</strong>: 
                                         <ul>
-                                            <li>Portrait: $16</li>
-                                            <li>Upper Half: $18</li>
-                                            <li>Full Body: $20</li>
+                                            <li>Portrait: <strong id="2d-flatcolors-portrait"></strong></li>
+                                            <li>Upper Half: <strong id="2d-flatcolors-upperhalf"></strong></li>
+                                            <li>Full Body: <strong id="2d-flatcolors-fullbody"></strong></li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -199,9 +199,9 @@
                                 <ul>
                                     <li><strong>Shading</strong>: 
                                         <ul>
-                                            <li>Portrait: $20</li>
-                                            <li>Upper Half: $22</li>
-                                            <li>Full Body: $24</li>
+                                            <li>Portrait: <strong id="2d-shading-portrait"></strong></li>
+                                            <li>Upper Half: <strong id="2d-shading-upperhalf"></strong></li>
+                                            <li>Full Body: <strong id="2d-shading-fullbody"></strong></li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -211,7 +211,7 @@
                     
                     <p  class="center-text"><strong>Additional Costs:</strong></p>
                     <p  class="center-text">Additional Characters: +50% per character</p>
-                    <p  class="center-text">Backgrounds: $0–$150 depending on complexity</p>
+                    <p  class="center-text">Backgrounds: <strong id="2d-background-colourgradient"></strong>–<strong id="2d-background-detailedbackground"></strong> depending on complexity</p>
                     <p  class="center-text">NSFW Content: +20% base cost</p>
         
                 <!-- Example Images -->
@@ -234,9 +234,9 @@
                                     <ul>
                                         <li><strong>From-Scratch Models</strong>: 
                                             <ul>
-                                                <li>Low-Poly (PS1 style): $150</li>
-                                                <li>High-Poly (PS3 style): $300</li>
-                                                <li>Facial Viseme Setup: +$10</li>
+                                                <li>Low-Poly (PS1 style): <strong id="3d-lowpoly"></strong></li>
+                                                <li>High-Poly (PS3 style): <strong id="3d-highpoly"></strong></li>
+                                                <li>Facial Viseme Setup: <strong id="3d-viseme"></strong></li>
                                             </ul>
                                         </li>
                                     </ul>
@@ -245,8 +245,8 @@
                                     <ul>
                                         <li><strong>From-Scratch Props</strong>: 
                                             <ul>
-                                                <li>Static Prop: $30</li>
-                                                <li>Dynamic Prop (with rigging): $50</li>
+                                                <li>Static Prop: <strong id="3d-staticprop"></strong></li>
+                                                <li>Dynamic Prop (with rigging): <strong id="3d-dynamicprop"></strong></li>
                                             </ul>
                                         </li>
                                     </ul>
@@ -255,8 +255,8 @@
                                     <ul>
                                         <li><strong>Kitbashing</strong>: 
                                             <ul>
-                                                <li>Character Kitbash: $75</li>
-                                                <li>Prop Kitbash: $75</li>
+                                                <li>Character Kitbash: <strong id="3d-kitbashchar"></strong></li>
+                                                <li>Prop Kitbash: <strong id="3d-kitbashprop"></strong></li>
                                             </ul>
                                         </li>
                                     </ul>
@@ -407,17 +407,17 @@
                 </div>
             </div>
 
-        <!-- Example Media Modal -->
-            <div id="example-image-modal" class="modal">
-                <div class="modal-content">
-                    <img id="example-image-modal-img" src="" alt="Example Image" style="display: none;">
-                    <video id="example-image-modal-video" alt="Example Video" loop style="display: none;">
-                        <source src="" type="video/webm">
-                        Your browser does not support the video tag.
-                    </video>
-                    <span class="close"><strong>&times;</strong></span>
+            <!-- Example Media Modal -->
+                <div id="example-image-modal" class="modal">
+                    <div class="modal-content">
+                        <img id="example-image-modal-img" src="" alt="Example Image" style="display: none;">
+                        <video id="example-image-modal-video" alt="Example Video" loop style="display: none;">
+                            <source src="" type="video/webm">
+                            Your browser does not support the video tag.
+                        </video>
+                        <span class="close"><strong>&times;</strong></span>
+                    </div>
                 </div>
-            </div>
         <footer>
             <p>&copy; 2024 Art by RilyRobo. All rights reserved.</p>
         </footer>

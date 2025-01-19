@@ -515,6 +515,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+
+//Prices
 const prices = {
     "2d": {
         sketch: { portrait: 8, upperhalf: 10, fullbody: 12 },
@@ -542,6 +544,37 @@ const prices = {
         nsfwMultiplier: 0.2
     }
 };
+
+document.addEventListener("DOMContentLoaded", () => {
+    function setPrices(prices) {
+        // 2D Prices
+        document.getElementById('2d-sketch-portrait').textContent = `$${prices["2d"].sketch.portrait}`;
+        document.getElementById('2d-sketch-upperhalf').textContent = `$${prices["2d"].sketch.upperhalf}`;
+        document.getElementById('2d-sketch-fullbody').textContent = `$${prices["2d"].sketch.fullbody}`;
+        document.getElementById('2d-lineart-portrait').textContent = `$${prices["2d"].lineart.portrait}`;
+        document.getElementById('2d-lineart-upperhalf').textContent = `$${prices["2d"].lineart.upperhalf}`;
+        document.getElementById('2d-lineart-fullbody').textContent = `$${prices["2d"].lineart.fullbody}`;
+        document.getElementById('2d-flatcolors-portrait').textContent = `$${prices["2d"].flatcolors.portrait}`;
+        document.getElementById('2d-flatcolors-upperhalf').textContent = `$${prices["2d"].flatcolors.upperhalf}`;
+        document.getElementById('2d-flatcolors-fullbody').textContent = `$${prices["2d"].flatcolors.fullbody}`;
+        document.getElementById('2d-shading-portrait').textContent = `$${prices["2d"].shading.portrait}`;
+        document.getElementById('2d-shading-upperhalf').textContent = `$${prices["2d"].shading.upperhalf}`;
+        document.getElementById('2d-shading-fullbody').textContent = `$${prices["2d"].shading.fullbody}`;
+        document.getElementById('2d-background-colourgradient').textContent = `$${prices["2d"].background.colourgradient}`;
+        document.getElementById('2d-background-detailedbackground').textContent = `$${prices["2d"].background.detailedbackground}`;
+
+        // 3D Prices
+        document.getElementById('3d-lowpoly').textContent = `$${prices["3d"].lowpoly}`;
+        document.getElementById('3d-highpoly').textContent = `$${prices["3d"].highpoly}`;
+        document.getElementById('3d-staticprop').textContent = `$${prices["3d"].staticprop}`;
+        document.getElementById('3d-dynamicprop').textContent = `$${prices["3d"].dynamicprop}`;
+        document.getElementById('3d-kitbashchar').textContent = `$${prices["3d"].kitbashchar}`;
+        document.getElementById('3d-kitbashprop').textContent = `$${prices["3d"].kitbashprop}`;
+        document.getElementById('3d-viseme').textContent = `$${prices["3d"].viseme}`;
+    }
+
+    setPrices(prices);
+});
 
 document.addEventListener("DOMContentLoaded", () => {
     updateOptions();
@@ -709,7 +742,7 @@ document.addEventListener("DOMContentLoaded", () => {
         exampleImageModal.style.display = 'none';
         exampleImageModalVideo.pause();
         exampleImageModalVideo.style.display = 'none';
-        exampleImageModalImg.style.display = 'none';
+        exampleImageModalImg.style.display = 'block';
     });
 
     // Close modal when clicking outside the modal content
@@ -718,7 +751,7 @@ document.addEventListener("DOMContentLoaded", () => {
             exampleImageModal.style.display = 'none';
             exampleImageModalVideo.pause();
             exampleImageModalVideo.style.display = 'none';
-            exampleImageModalImg.style.display = 'none';
+            exampleImageModalImg.style.display = 'block';
         }
     });
 });
