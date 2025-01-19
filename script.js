@@ -418,22 +418,6 @@ function showPage(pageId) {
     history.pushState(null, '', `#${pageId}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
-document.querySelectorAll(".example-image").forEach(img => {
-    img.addEventListener("click", () => {
-        const modal = document.getElementById("example-image-modal");
-        const modalImg = document.getElementById("example-image-modal-img");
-
-        modalImg.src = img.src;
-        modal.style.display = "flex";
-    });
-});
-
-document.getElementById("example-image-modal").addEventListener("click", (e) => {
-    if (e.target.id === "example-image-modal") {
-        e.target.style.display = "none";
-    }
-});
     
 document.querySelectorAll("nav a:not([href^='http'])").forEach(link => {
     link.addEventListener("click", (e) => { e.preventDefault();
@@ -678,53 +662,79 @@ document.addEventListener("DOMContentLoaded", () => {
     const commissionsSlider = document.querySelector('.commissions-slider');
     const exampleImageModal = document.getElementById('example-image-modal');
     const exampleImageModalImg = document.getElementById('example-image-modal-img');
+    const exampleImageModalVideo = document.getElementById('example-image-modal-video');
+    const exampleImageModalVideoSource = exampleImageModalVideo.querySelector('source');
     const closeModalButton = exampleImageModal.querySelector('.close');
 
-    // Example images array (replace with actual image paths)
-    const commissionImages = [
-        `${commissionsFolder}/image1.jpg`,
-        `${commissionsFolder}/image2.jpg`,
-        `${commissionsFolder}/image3.jpg`,
-        `${commissionsFolder}/image4.jpg`,
-        `${commissionsFolder}/image5.jpg`,
-        `${commissionsFolder}/image6.jpg`,
-        `${commissionsFolder}/image7.jpg`,
-        `${commissionsFolder}/image8.jpg`,
-        `${commissionsFolder}/image9.jpg`,
-        `${commissionsFolder}/image10.jpg`,
-        `${commissionsFolder}/image1.jpg`,
-        `${commissionsFolder}/image2.jpg`,
-        `${commissionsFolder}/image3.jpg`,
-        `${commissionsFolder}/image4.jpg`,
-        `${commissionsFolder}/image5.jpg`,
-        `${commissionsFolder}/image6.jpg`,
-        `${commissionsFolder}/image7.jpg`,
-        `${commissionsFolder}/image8.jpg`,
-        `${commissionsFolder}/image9.jpg`,
-        `${commissionsFolder}/image10.jpg`,
+    // Example media array with icon and showcase paths
+    const commissionMedia = [
+        { icon: `${commissionsFolder}/3d_scr_image01.gif`, showcase: `${commissionsFolder}/3d_scr_image01.webm` },
+        { icon: `${commissionsFolder}/3d_scr_image02.gif`, showcase: `${commissionsFolder}/3d_scr_image02.webm` },
+        { icon: `${commissionsFolder}/3d_scr_image03.gif`, showcase: `${commissionsFolder}/3d_scr_image03.webm` },
     ];
 
-    // Load images into the slider
-    commissionImages.forEach(imageSrc => {
-        const img = document.createElement('img');
-        img.src = imageSrc;
-        img.alt = 'Commission Image';
-        img.addEventListener('click', () => {
-            exampleImageModalImg.src = imageSrc;
+    // Load media into the slider
+    commissionMedia.forEach(media => {
+        let mediaElement;
+        if (media.icon.endsWith('.webm') || media.icon.endsWith('.mp4')) {
+            mediaElement = document.createElement('video');
+            mediaElement.src = media.icon;
+            mediaElement.loop = true;
+            mediaElement.muted = true; // Optional: mute the video
+        } else {
+            mediaElement = document.createElement('img');
+            mediaElement.src = media.icon;
+        }
+        mediaElement.alt = 'Commission Media';
+        mediaElement.classList.add('example-image'); // Add the example-image class
+        mediaElement.addEventListener('click', () => {
+            if (media.showcase.endsWith('.webm') || media.showcase.endsWith('.mp4')) {
+                exampleImageModalImg.style.display = 'none';
+                exampleImageModalVideo.style.display = 'block';
+                exampleImageModalVideoSource.src = media.showcase;
+                exampleImageModalVideo.load();
+                exampleImageModalVideo.play();
+            } else {
+                exampleImageModalVideo.style.display = 'none';
+                exampleImageModalImg.style.display = 'block';
+                exampleImageModalImg.src = media.showcase;
+            }
             exampleImageModal.style.display = 'block';
         });
-        commissionsSlider.appendChild(img);
+        commissionsSlider.appendChild(mediaElement);
     });
 
     // Close modal when the close button is clicked
     closeModalButton.addEventListener('click', () => {
         exampleImageModal.style.display = 'none';
+        exampleImageModalVideo.pause();
+        exampleImageModalVideo.style.display = 'none';
+        exampleImageModalImg.style.display = 'none';
     });
 
     // Close modal when clicking outside the modal content
     window.addEventListener('click', (event) => {
         if (event.target === exampleImageModal) {
             exampleImageModal.style.display = 'none';
+            exampleImageModalVideo.pause();
+            exampleImageModalVideo.style.display = 'none';
+            exampleImageModalImg.style.display = 'none';
         }
     });
+});
+
+document.querySelectorAll(".example-image").forEach(img => {
+    img.addEventListener("click", () => {
+        const modal = document.getElementById("example-image-modal");
+        const modalImg = document.getElementById("example-image-modal-img");
+
+        modalImg.src = img.src;
+        modal.style.display = "flex";
+    });
+});
+
+document.getElementById("example-image-modal").addEventListener("click", (e) => {
+    if (e.target.id === "example-image-modal") {
+        e.target.style.display = "none";
+    }
 });

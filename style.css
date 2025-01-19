@@ -726,7 +726,6 @@ a:hover, button:hover, .card:hover {
 }
 
 .modal-content {
-  
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -741,12 +740,12 @@ a:hover, button:hover, .card:hover {
   overflow-y: auto;
 }
 
-.modal-content img {
-  max-width: 100%;
-  max-height: 80vh;
-  margin-bottom: 15px;
-  object-fit: contain;
-  border-radius: 10px;
+.modal-content img,
+.modal-content video {
+    max-width: 100%;
+    max-height: 80vh;
+    border-radius: 10px;
+    display: block;
 }
 
 .modal-content .button {
@@ -1116,35 +1115,28 @@ a:hover, button:hover, .card:hover {
 
 .commissions-slider {
   display: flex;
-  overflow-x: auto;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
   padding: 20px;
-  gap: 20px;
-  scroll-snap-type: x mandatory;
+  position: relative;
 }
 
-.commissions-slider img {
+.commissions-slider img,
+.commissions-slider video {
   scroll-snap-align: center;
   width: 150px;
   height: 150px;
   object-fit: cover;
   transition: transform 0.3s ease, z-index 0.3s ease;
   cursor: pointer;
+  position: relative;
+  margin: -125px;
+  outline: 1px solid #660000;
 }
 
-.commissions-slider img:hover {
-  transform: scale(1.2);
-  z-index: 10;
-}
-
-.commissions-slider img {
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  transition: transform 0.3s ease, z-index 0.3s ease;
-  cursor: pointer;
-}
-
-.commissions-slider img:hover {
-  transform: scale(1.2);
-  z-index: 10;
+.commissions-slider img:hover,
+.commissions-slider video:hover {
+    transform: scale(1.2);
+    z-index: 10;
 }
