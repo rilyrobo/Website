@@ -429,13 +429,6 @@ nav a:hover {
   overflow: auto;
 }
 
-.pricing-grid.four-columns {
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-}
-.pricing-grid.three-columns {
-  grid-template-columns: 1fr 1fr 1fr;
-}
-
 .gumroad-item {
   border: 1px solid #ccc;
   border-radius: 10px;
@@ -783,80 +776,6 @@ a:hover, button:hover, .card:hover {
     cursor: pointer;
 }
 
-.pricing-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-auto-rows: 175px;
-  grid-gap: 20px;
-}
-
-.pricing-section {
-  border: 1px solid #ccc;
-  border-radius: 15px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.pricing-section ul {
-  list-style-type: none;
-  padding: 0;
-  text-align: center;
-}
-
-.pricing-section li {
-  margin-bottom: 10px;
-  text-align: center;
-}
-
-.examples {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 10px;
-  gap: 20px;
-  justify-content: center;
-  align-items: center;
-}
-
-.example-image {
-  width: 18%;
-  height: auto;
-  border-radius: 15px;
-  max-height: 300px;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-  cursor: pointer;
-  border-radius: 10px;
-}
-
-.example-image:hover {
-  transform: scale(1.1);
-}
-
-.examples {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-  align-items: center;
-}
-
-.example-image {
-  width: 18%;
-  height: auto;
-  border-radius: 15px;
-  max-height: 300px;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-  cursor: pointer;
-  border-radius: 10px;
-}
-
-.example-image:hover {
-  transform: scale(1.1);
-}
-
 .comics-container {
   max-width: 1024px;
   margin: 0 auto;
@@ -1051,17 +970,85 @@ a:hover, button:hover, .card:hover {
   background-color: #007a3b;
 }
 
-
-/* Responsive styles for tablets and larger screens */
-@media (min-width: 768px) {
-  .example-image {
-      width: 30%;
-  }
-
-  .comics-container {
-      max-width: 1024px;
-  }
+.commissions-slider {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 20px;
+  position: relative;
 }
+
+.commissions-slider img,
+.commissions-slider video {
+  scroll-snap-align: center;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  transition: transform 0.3s ease, z-index 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.commissions-slider img:hover,
+.commissions-slider video:hover {
+    transform: scale(1.2);
+    z-index: 10;
+}
+
+.pricing-grid {
+  display: flex;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  justify-content: center;
+  align-content: center;
+  margin: 10px;
+}
+
+.pricing-section {
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.pricing-section ul {
+  list-style-type: none;
+  padding: 0;
+  text-align: center;
+}
+
+.pricing-section li {
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.example-image {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+  margin-top: auto;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.example-image:hover {
+  transform: scale(1.1);
+}
+
+
 
 /* Responsive styles for mobile devices */
 @media (max-width: 767px) {
@@ -1111,30 +1098,4 @@ a:hover, button:hover, .card:hover {
   .comics-container {
       max-width: 100%;
   }
-}
-
-.commissions-slider {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  padding: 20px;
-  position: relative;
-}
-
-.commissions-slider img,
-.commissions-slider video {
-  scroll-snap-align: center;
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  transition: transform 0.3s ease, z-index 0.3s ease;
-  cursor: pointer;
-  position: relative;
-}
-
-.commissions-slider img:hover,
-.commissions-slider video:hover {
-    transform: scale(1.2);
-    z-index: 10;
 }
