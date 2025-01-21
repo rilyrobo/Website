@@ -74,9 +74,13 @@ nav a:hover {
   padding: 10px 0;
 }
 
-.mobile-nav
-  {
+.mobile-nav {
     display: none !important;
+    position: sticky;
+    top: 0;
+    background-color: #333;
+    display: flex;
+    justify-content: space-around;
   }
 
 .nav-item {
@@ -324,9 +328,9 @@ nav a:hover {
 }
 
 .gallery-grid-home {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
 }
 
 .margin-top-20 {
@@ -407,12 +411,6 @@ nav a:hover {
 
 .list {
   text-align: left;
-}
-
-.gallery-grid-full {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
 }
 
 .gumroad-container {
@@ -846,7 +844,11 @@ a:hover, button:hover, .card:hover {
 
 .comics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  grid-template-columns: repeat( auto-fit, minmax(300px, 1fr));
   gap: 20px;
   padding: 20px;
 }
@@ -931,12 +933,14 @@ a:hover, button:hover, .card:hover {
   width: 33%;
   margin: auto 33% auto;
 }
+
 .calculator select, .calculator input {
   text-align: center;
   width: 100%;
   margin-bottom: 10px;
   padding: 5px;
 }
+
 .calculator button {
   width: 100%;
   padding: 10px;
@@ -946,9 +950,11 @@ a:hover, button:hover, .card:hover {
   border-radius: 5px;
   cursor: pointer;
 }
+
 .calculator button:hover {
   background-color: #45a049;
 }
+
 .result {
   margin-top: 20px;
   font-size: 1.2em;
@@ -1002,7 +1008,7 @@ a:hover, button:hover, .card:hover {
   gap: 20px;
   justify-content: center;
   align-content: center;
-  margin: 10px;
+  margin: 0px;
 }
 
 .pricing-section {
@@ -1056,10 +1062,10 @@ a:hover, button:hover, .card:hover {
       flex-direction: column;
   }
 
-.sticky-nav
-  {
-    display: none !important;
-  }
+  .sticky-nav
+    {
+      display: none !important;
+    }
 
   .mobile-nav
     {
@@ -1091,11 +1097,69 @@ a:hover, button:hover, .card:hover {
       display: flex;
   }
 
+  .game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    box-sizing: border-box;
+    margin: 0px;
+  }
+  
+  .game-card {
+    background-color: #222;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    color: #fff;
+  }
+
   .example-image {
       width: 80%;
   }
 
+  .comic-navigation {
+    display: flex;
+  }
+  
+  .comic-selector {
+    padding: 0px;
+    word-wrap: break-word;
+    width: 30%;
+    font-size: 16px;
+  }
+
   .comics-container {
       max-width: 100%;
+  }
+
+  .comic-display {
+    display: block;
+    box-sizing: border-box;
+  }
+  
+  .example-image {
+    width: 75px;
+    height: 75px;
+  }
+
+  .commissions-slider img,
+  .commissions-slider video {
+    width: 75px;
+    height: 75px;
+  }
+
+  .calculator {
+    display: block;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-sizing: border-box;
+  }
+
+  .pricing-grid {
+    display: flex;
+    flex-wrap: wrap;
   }
 }

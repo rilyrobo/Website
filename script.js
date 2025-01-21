@@ -207,7 +207,7 @@ function createComicPages(comicsList) {
             <div class="comics-container">
                 <div>
                     <button id="first-top-comic-${index}">First</button>
-                    <button id="previous-top-comic-${index}">Previous</button>
+                    <button id="previous-top-comic-${index}">Prev</button>
                     <select id="comic-selector-${index}" class="comic-selector"></select>
                     <button id="next-top-comic-${index}">Next</button>
                     <button id="last-top-comic-${index}">Last</button>
@@ -217,7 +217,7 @@ function createComicPages(comicsList) {
                 </div>
                 <div>
                     <button id="first-bot-comic-${index}">First</button>
-                    <button id="previous-bot-comic-${index}">Previous</button>
+                    <button id="previous-bot-comic-${index}">Prev</button>
                     <select id="comic-selector-bottom-${index}" class="comic-selector"></select>
                     <button id="next-bot-comic-${index}">Next</button>
                     <button id="last-bot-comic-${index}">Last</button>
@@ -414,6 +414,9 @@ function showPage(pageId) {
             page.classList.remove('active');
         }
     });
+    
+    const navLinks = document.getElementById('nav-links');
+    navLinks.classList.remove('show');
 
     history.pushState(null, '', `#${pageId}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -515,8 +518,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-
-//Prices
 const prices = {
     "2d": {
         sketch: { portrait: 8, upperhalf: 10, fullbody: 12 },
@@ -547,7 +548,7 @@ const prices = {
 
 document.addEventListener("DOMContentLoaded", () => {
     function setPrices(prices) {
-        // 2D Prices
+
         document.getElementById('2d-sketch-portrait').textContent = `$${prices["2d"].sketch.portrait}`;
         document.getElementById('2d-sketch-upperhalf').textContent = `$${prices["2d"].sketch.upperhalf}`;
         document.getElementById('2d-sketch-fullbody').textContent = `$${prices["2d"].sketch.fullbody}`;
@@ -563,7 +564,6 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('2d-background-colourgradient').textContent = `$${prices["2d"].background.colourgradient}`;
         document.getElementById('2d-background-detailedbackground').textContent = `$${prices["2d"].background.detailedbackground}`;
 
-        // 3D Prices
         document.getElementById('3d-lowpoly').textContent = `$${prices["3d"].lowpoly}`;
         document.getElementById('3d-highpoly').textContent = `$${prices["3d"].highpoly}`;
         document.getElementById('3d-staticprop').textContent = `$${prices["3d"].staticprop}`;
@@ -699,27 +699,26 @@ document.addEventListener("DOMContentLoaded", () => {
     const exampleImageModalVideoSource = exampleImageModalVideo.querySelector('source');
     const closeModalButton = exampleImageModal.querySelector('.close');
 
-    // Example media array with icon and showcase paths
     const commissionMedia = [
         { icon: `${commissionsFolder}/3d_scr_image01.gif`, showcase: `${commissionsFolder}/3d_scr_image01.webm` },
         { icon: `${commissionsFolder}/3d_scr_image02.gif`, showcase: `${commissionsFolder}/3d_scr_image02.webm` },
         { icon: `${commissionsFolder}/3d_scr_image03.gif`, showcase: `${commissionsFolder}/3d_scr_image03.webm` },
     ];
 
-    // Load media into the slider
     commissionMedia.forEach(media => {
         let mediaElement;
         if (media.icon.endsWith('.webm') || media.icon.endsWith('.mp4')) {
             mediaElement = document.createElement('video');
             mediaElement.src = media.icon;
             mediaElement.loop = true;
-            mediaElement.muted = true; // Optional: mute the video
+            mediaElement.muted = true;
         } else {
             mediaElement = document.createElement('img');
             mediaElement.src = media.icon;
         }
         mediaElement.alt = 'Commission Media';
-        mediaElement.classList.add('example-image'); // Add the example-image class
+        mediaElement.classList.add('example-image');
+
         mediaElement.addEventListener('click', () => {
             if (media.showcase.endsWith('.webm') || media.showcase.endsWith('.mp4')) {
                 exampleImageModalImg.style.display = 'none';
@@ -737,7 +736,6 @@ document.addEventListener("DOMContentLoaded", () => {
         commissionsSlider.appendChild(mediaElement);
     });
 
-    // Close modal when the close button is clicked
     closeModalButton.addEventListener('click', () => {
         exampleImageModal.style.display = 'none';
         exampleImageModalVideo.pause();
@@ -745,7 +743,6 @@ document.addEventListener("DOMContentLoaded", () => {
         exampleImageModalImg.style.display = 'flex';
     });
 
-    // Close modal when clicking outside the modal content
     window.addEventListener('click', (event) => {
         if (event.target === exampleImageModal) {
             exampleImageModal.style.display = 'none';
@@ -771,3 +768,8 @@ document.getElementById("example-image-modal").addEventListener("click", (e) => 
         e.target.style.display = "none";
     }
 });
+
+function toggleMobileNav() {
+    const navLinks = document.getElementById('nav-links');
+    navLinks.classList.toggle('show');
+}
