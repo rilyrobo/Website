@@ -723,16 +723,16 @@ document.addEventListener("DOMContentLoaded", () => {
         mediaElement.addEventListener('click', () => {
             if (media.showcase.endsWith('.webm') || media.showcase.endsWith('.mp4')) {
                 exampleImageModalImg.style.display = 'none';
-                exampleImageModalVideo.style.display = 'block';
+                exampleImageModalVideo.style.display = 'flex';
                 exampleImageModalVideoSource.src = media.showcase;
                 exampleImageModalVideo.load();
                 exampleImageModalVideo.play();
             } else {
                 exampleImageModalVideo.style.display = 'none';
-                exampleImageModalImg.style.display = 'block';
+                exampleImageModalImg.style.display = 'flex';
                 exampleImageModalImg.src = media.showcase;
             }
-            exampleImageModal.style.display = 'block';
+            exampleImageModal.style.display = 'flex';
         });
         commissionsSlider.appendChild(mediaElement);
     });
@@ -742,7 +742,7 @@ document.addEventListener("DOMContentLoaded", () => {
         exampleImageModal.style.display = 'none';
         exampleImageModalVideo.pause();
         exampleImageModalVideo.style.display = 'none';
-        exampleImageModalImg.style.display = 'block';
+        exampleImageModalImg.style.display = 'flex';
     });
 
     // Close modal when clicking outside the modal content
@@ -751,7 +751,7 @@ document.addEventListener("DOMContentLoaded", () => {
             exampleImageModal.style.display = 'none';
             exampleImageModalVideo.pause();
             exampleImageModalVideo.style.display = 'none';
-            exampleImageModalImg.style.display = 'block';
+            exampleImageModalImg.style.display = 'flex';
         }
     });
 });
