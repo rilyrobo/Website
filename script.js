@@ -452,7 +452,9 @@ document.addEventListener("DOMContentLoaded", () => {
             image: "images/game_arcaderecreation.jpg",
             description: "2023- An on-going project to create immersive retro arcade game cabinent assets and standalone games for use in VRChat. With various gameplay styles such as space invaders, arcanoid / block breaker, pong, snake, and more.",
             links: [
-                { name: "VRChat World", url: "https://vrchat.com/home/world/wrld_5de8a59e-2c93-4ec4-a380-b5030310c76a/info" },
+                { name: "Circus", url: "https://vrchat.com/home/launch?worldId=wrld_62530ca6-fbec-4b70-b249-7b79cc38d825" },
+                { name: "Arcade", url: "https://vrchat.com/home/launch?worldId=wrld_5de8a59e-2c93-4ec4-a380-b5030310c76a" },
+                { name: "Whack-A-Jack", url: "https://vrchat.com/home/launch?worldId=wrld_4855b5fb-a007-419c-9756-b57a16df7dd1" },
             ]
         },
     ];
