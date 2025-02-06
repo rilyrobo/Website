@@ -480,7 +480,7 @@ document.addEventListener("DOMContentLoaded", () => {
         {
             title: "NDA",
             image: "images/placeholder.jpg",
-            description: "2022-2023 A work in progress game project that is currently in development. More information will be available.",
+            description: "2022-2024 A work in progress game project that is currently in development. More information will be available.",
             links: [
                 
             ]
