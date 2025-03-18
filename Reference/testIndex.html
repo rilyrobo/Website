@@ -1,0 +1,61 @@
+<h1>DeviantArt Gallery</h1>
+<div id="gallery">
+    <h2>Title Placeholder</h2>
+    <img src="images/placeholder.jpg" alt="Image Placeholder">
+</div>
+
+<script>
+    // Function to load CSV file and parse it
+    function loadCSV(filePath, callback) {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", filePath, true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                const data = parseCSV(xhr.responseText);
+                callback(data);
+            }
+        };
+        xhr.send();
+    }
+
+    // Function to parse CSV data
+    function parseCSV(data) {
+        const lines = data.split("\n");
+        const result = [];
+        const headers = lines[0].split(",");
+
+        for (let i = 1; i < lines.length; i++) {
+            const obj = {};
+            const currentLine = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+
+            if (currentLine !== null) {
+                for (let j = 0; j < headers.length; j++) {
+                    if (currentLine[j] !== undefined) {
+                        obj[headers[j].trim()] = currentLine[j].replace(/(^"|"$)/g, '').trim();
+                    }
+                }
+                result.push(obj);
+            }
+        }
+        return result;
+    }
+
+    // Load the CSV file and display the first image with title
+    loadCSV("comics/DeviantArtGallery.csv", function (data) {
+        if (data.length > 0) {
+            const firstItem = data[0];
+            console.log("First Item:", firstItem); // Debugging statement
+            const galleryDiv = document.getElementById("gallery");
+            const titleElement = galleryDiv.querySelector("h2");
+            const imageElement = galleryDiv.querySelector("img");
+
+            titleElement.textContent = firstItem.Title;
+            imageElement.src = firstItem.ImageUrl;
+            imageElement.alt = firstItem.Title;
+        } else {
+            console.error("No data found in CSV file.");
+        }
+    });
+</script>
+</body>
+</html>

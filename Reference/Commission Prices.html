@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commission Prices</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #111;
+            color: #eee;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+            background: #222;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+        h1, h2 {
+            color: #ffcc00;
+        }
+        .pricing-section {
+            background: #333;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .pricing-section h2 {
+            margin-bottom: 10px;
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            padding: 5px;
+            text-align: left;
+        }
+        .pricing-item {
+            text-align: center;
+            background: #444;
+            padding: 10px;
+            border-radius: 5px;
+            border-radius: 8px;
+            outline: 2px solid #252525;
+        }
+        .additional-costs {
+            margin-top: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Commission Prices</h1>
+        
+        <!-- 2D Artwork -->
+        <div class="pricing-section">
+            <h2>2D Artwork</h2>
+            <div class="pricing-grid">
+                <div class="pricing-item"><strong>Sketch</strong>
+                    <div>Portrait $8</div><div>Upper Half $10</div><div>Full Body $12</div>
+                </div>
+                <div class="pricing-item"><strong>Line Art</strong>
+                    <div>Portrait $12</div><div>Upper Half $14</div><div>Full Body $16</div>
+                </div>
+                <div class="pricing-item"><strong>Flat Colors</strong>
+                    <div>Portrait $16</div><div>Upper Half $18</div><div>Full Body $20</div>
+                </div>
+                <div class="pricing-item"><strong>Shading</strong>
+                    <div>Portrait $20</div><div>Upper Half $22</div><div>Full Body $24</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 3D Artwork -->
+        <div class="pricing-section">
+            <h2>3D Models</h2>
+            <div class="pricing-grid">
+                <div class="pricing-item"><strong>Low Poly:</strong> $150</div>
+                <div class="pricing-item"><strong>Mid Poly:</strong> $225</div>
+                <div class="pricing-item"><strong>High Poly:</strong> $300</div>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-item"><strong>Static Prop:</strong> $30</div>
+                <div class="pricing-item"><strong>Dynamic Prop:</strong> $50</div>
+                <div class="pricing-item"><strong>Kitbash Character:</strong> $75</div>
+                <div class="pricing-item"><strong>Kitbash Prop:</strong> $75</div>
+            </div>
+        </div>
+        
+        <!-- VRChat Services -->
+        <div class="pricing-section">
+            <h2>VRChat Avatar Services</h2>
+            <div class="pricing-grid">
+                <div class="pricing-item"><strong>Full Avatar (From Scratch)</strong>
+                    <div>$150 - $300</div>
+                </div>
+                <div class="pricing-item"><strong>Kitbashing</strong> 
+                    <div>$75</div>
+                </div>
+                <div class="pricing-item"><strong>Custom Clothing:</strong>
+                    <div>$30 - $75</div>
+                </div>
+                <div class="pricing-item"><strong>Custom Hairstyles</strong>
+                    <div>$30 - $75</div>
+                </div>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-item"><strong>Texturing</strong>
+                    <div>$30 - $75</div>
+                </div>
+                <div class="pricing-item"><strong>Rigging</strong>
+                    <div>$30 - $75</div>
+                </div>
+                <div class="pricing-item"><strong>FBT Optimization</strong>
+                    <div>$30 - $75</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Additional Costs -->
+        <div class="pricing-section additional-costs">
+            <h2>Additional Costs</h2>
+            <p><strong>Rush Order:</strong> +25%</p>
+            <p><strong>Commercial Use:</strong> +50%</p>
+            <p><strong>NSFW Content:</strong> +20%</p>
+            <p><strong>Additional Edits:</strong> $10</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Commission Prices Competitive</h1>
+        
+        <!-- 2D Artwork -->
+        <div class="pricing-section">
+            <h2>2D Artwork</h2>
+            <div class="pricing-grid">
+                <div class="pricing-item"><strong>Sketch</strong>
+                    <div>Portrait $20</div><div>Upper Half $35</div><div>Full Body $50</div>
+                </div>
+                <div class="pricing-item"><strong>Line Art</strong>
+                    <div>Portrait $30</div><div>Upper Half $50</div><div>Full Body $70</div>
+                </div>
+                <div class="pricing-item"><strong>Flat Colors</strong>
+                    <div>Portrait $40</div><div>Upper Half $60</div><div>Full Body $90</div>
+                </div>
+                <div class="pricing-item"><strong>Shading</strong>
+                    <div>Portrait $50</div><div>Upper Half $80</div><div>Full Body $120</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 3D Artwork -->
+        <div class="pricing-section">
+            <h2>3D Models</h2>
+            <div class="pricing-grid">
+                <div class="pricing-item"><strong>Low Poly (PS1-Style)</strong>
+                    <div>$200 - $300</div>
+                </div>
+                <div class="pricing-item"><strong>Mid Poly (Stylized/Hand-Painted)</strong>
+                    <div>$350 - $500</div>
+                </div>
+                <div class="pricing-item"><strong>High Poly (Realistic/Next-Gen)</strong>
+                    <div>$600 - $1000+</div>
+                </div>
+                <div class="pricing-item"><strong>Static Prop</strong>
+                    <div>$50 - $100</div>
+                </div>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-item"><strong>Dynamic Prop (Rigged & Animated)</strong>
+                    <div>$100 - $250</div>
+                </div>
+                <div class="pricing-item"><strong>Kitbash Character</strong>
+                    <div>$150 - $300</div>
+                </div>
+                <div class="pricing-item"><strong>Kitbash Prop</strong>
+                    <div>$100 - $200</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- VRChat Services -->
+        <div class="pricing-section">
+            <h2>VRChat Avatar Services</h2>
+            <div class="pricing-grid">
+                <div class="pricing-item"><strong>Full Avatar (From Scratch)</strong>
+                    <div>$300 - $1200</div>
+                </div>
+                <div class="pricing-item"><strong>Kitbashing</strong> 
+                    <div>$200 - $400</div>
+                </div>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-item"><strong>Custom Clothing</strong>
+                    <div>$50 - $150</div>
+                </div>
+                <div class="pricing-item"><strong>Custom Hairstyles</strong>
+                    <div>$50 - $150</div>
+                </div>
+                <div class="pricing-item"><strong>Texturing</strong>
+                    <div>$50 - $200</div>
+                </div>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-item"><strong>Rigging (Full Body Tracking, FBT Optimization)</strong>
+                    <div>$100 - $300</div>
+                </div>
+                <div class="pricing-item"><strong>General Optimization (Texture Atlas, Polygon Reduction)</strong>
+                    <div>$50 - $200</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- VRChat & Game Asset Conversion -->
+        <div class="pricing-section">
+            <h2>VRChat & Game Asset Conversion</h2>
+            <div class="pricing-grid">
+                <div class="pricing-item"><strong>Dynamic Bones/Phys Bones Setup</strong>
+                    <div>$30 - $100</div>
+                </div>
+                <div class="pricing-item"><strong>Toggle Setups (Animated Props & Gestures)</strong>
+                    <div>$50 - $150</div>
+                </div>
+            </div>                
+            <div class="pricing-grid">
+                <div class="pricing-item"><strong>Custom Animations (Gestures, Emotes, Dances)</strong>
+                    <div>$50 - $200</div>
+                </div>
+                <div class="pricing-item"><strong>Shader Adjustments</strong>
+                    <div>$50 - $150</div>
+                </div>
+            </div>                
+            <div class="pricing-grid">
+                <div class="pricing-item"><strong>Quest Conversion (Optimized for Oculus)</strong>
+                    <div>$100 - $300</div>
+                </div>
+                <div class="pricing-item"><strong>Vtuber Conversion (VRM, ARKit, SRanipal)</strong>
+                    <div>$200 - $500</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Costs -->
+        <div class="pricing-section additional-costs">
+            <h2>Additional Costs</h2>
+            <p><strong>Rush Order:</strong> +50%</p>
+            <p><strong>Commercial Use:</strong> +50%</p>
+            <p><strong>NSFW Content:</strong> +25%</p>
+            <p><strong>Extra Edits/Revisions:</strong> $20 per edit</p>
+        </div>
+    </div>
+</body>
+</html>
