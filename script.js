@@ -689,9 +689,9 @@ function updateComplexityValue() {
     document.getElementById('complexity-value').textContent = `$${complexity}`;
     document.getElementById('complexity-comment').textContent = 
         complexity == 0 ? 'No model' : 
-        complexity <= prices["3d"].lowpoly.high ? 'Low-poly model 3-5k Tris' : 
-        complexity <= prices["3d"].midpoly.high ? 'Mid-poly model 10-20k Tris' : 
-        'High-poly model 50k+ Tris';
+        complexity <= prices["3d"].lowpoly.high ? 'Low-Poly Model (3-5k Tris): Simplified geometry for efficiency, often used in mobile games or distant objects.' : 
+        complexity <= prices["3d"].midpoly.high ? 'Mid-Poly Model (10-20k Tris): Balanced detail suitable for most in-game characters and environments.' : 
+        'High-Poly Model (50k+ Tris): High-detail geometry for realism, used in cinematics or close-up renders.';
 }
 
 // Update Sliders and Inputs
@@ -721,9 +721,9 @@ function updateTexturingValue() {
     document.getElementById('texturing-value').textContent = `$${complexity}`;
     document.getElementById('texturing-comment').textContent = 
         complexity == 0 ? 'No Texturing' : 
-        complexity <= prices["avatar"].texturing.low ? 'Basic Texturing' : 
-        complexity <= prices["avatar"].texturing.high-1 ? 'Intermediate Texturing' : 
-        'High-Quality Texturing';
+        complexity <= prices["avatar"].texturing.low ? 'Basic Texturing: Simple textures with flat colors or basic patterns, minimal detail or shading.' : 
+        complexity <= prices["avatar"].texturing.high-1 ? 'Intermediate Texturing: Moderately detailed textures, including proper UV mapping, basic shading, and surface features.' : 
+        'High-Quality Texturing: Highly detailed textures with advanced realism, including fine surface details, complex shading, and material depth (e.g., PBR workflow).';
 }
 
 // Update rigging complexity
