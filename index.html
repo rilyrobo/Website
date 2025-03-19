@@ -411,7 +411,7 @@
                             <label for="background-complexity">Background Complexity:</label>
                             <span id="background-complexity-value">$0</span>
                             <input type="range" style="width: 80%;" id="background-complexity" min="0" max="150" step="5" value="0" oninput="update2dBackgroundComplexityValue()">
-                            <p class="complexity-comment" id="background-comment">No Background</p>
+                            <p class="complexity-comment" id="background-comment">No Background or just a Gradient</p>
                         </div>
                     </div>
 
@@ -419,13 +419,13 @@
                     <div id="3d-options">
                         <label for="complexity">Character Model Complexity:</label>
                         <span id="complexity-value">$0</span>
-                        <input type="range" style="width: 80%;" id="complexity" min="0" max="300" step="10" value="0" oninput="updateComplexityValue()">
-                        <p class="complexity-comment" id="complexity-comment">Low-poly model</p>
+                        <input type="range" style="width: 80%;" id="complexity" min="0" max="500" step="5" value="0" oninput="updateComplexityValue()">
+                        <p class="complexity-comment" id="complexity-comment">No model</p>
                         
                         <label for="texturing-items">Texture Complexity:</label>
                         <span id="texturing-value">$0</span>
-                        <input type="range" class="range-input" id="texturing" min="0" max="75" step="15" value="0" oninput="updateTexturingValue()" title="Texturing Complexity">
-                        <p class="complexity-comment" id="texturing-comment">Basic Texturing</p>
+                        <input type="range" style="width: 80%;" id="texturing" min="0" max="75" step="5" value="0" oninput="updateTexturingValue()" title="Texturing Complexity">
+                        <p class="complexity-comment" id="texturing-comment">No Texturing</p>
 
                         <div class="pricing-grid">
                             <div class="pricing-section">
@@ -436,8 +436,8 @@
                             <div class="pricing-section">
                                 <label for="clothing-complexity">Clothing Complexity:</label>
                                 <span id="clothing-complexity-value">$0</span>
-                                <input type="range" style="width: 80%;" id="clothing-complexity" min="0" max="75" step="15" value="0" oninput="updateClothingComplexityValue()">
-                                <p class="complexity-comment" id="clothing-comment">Basic Clothing</p>
+                                <input type="range" style="width: 80%;" id="clothing-complexity" min="0" max="75" step="5" value="0" oninput="updateClothingComplexityValue()">
+                                <p class="complexity-comment" id="clothing-comment">No Clothing</p>
                             </div>
                         </div>
 
@@ -451,7 +451,7 @@
                             <div class="pricing-section">
                                 <label for="dynamic-bones">Dynamic Bones Complexity:</label>
                                 <span id="dynamic-bones-value">$0</span>
-                                <input type="range" style="width: 80%;" id="dynamic-bones" min="0" max="50" step="10" value="0" oninput="updateDynamicBonesValue()">
+                                <input type="range" style="width: 80%;" id="dynamic-bones" min="0" max="50" step="5" value="0" oninput="updateDynamicBonesValue()">
                                 <p class="complexity-comment" id="dynamic-bones-comment">Basic Dynamic Bones</p>
                             </div>
                         </div>

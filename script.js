@@ -523,59 +523,59 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const prices = {
     "2d": {
-        sketch: { portrait: 20, upperhalf: 35, fullbody: 50 },
-        lineart: { portrait: 30, upperhalf: 50, fullbody: 70 },
-        flatcolors: { portrait: 40, upperhalf: 60, fullbody: 90 },
-        shading: { portrait: 50, upperhalf: 80, fullbody: 120 },
+        sketch: { portrait: 8, upperhalf: 10, fullbody: 12 },
+        lineart: { portrait: 12, upperhalf: 14, fullbody: 16 },
+        flatcolors: { portrait: 16, upperhalf: 18, fullbody: 20 },
+        shading: { portrait: 20, upperhalf: 22, fullbody: 24 },
         background: {
             colourgradient: 0,
-            splashfilterphoto: 30,
-            vagueenvironment: 60,
-            detailedtargetmidground: 90,
-            detailedbackground: 200
+            splashfilterphoto: 20,
+            vagueenvironment: 40,
+            detailedtargetmidground: 60,
+            detailedbackground: 150
         },
         additionalMultiplier: 0.5
     },
     "3d": {
-        lowpoly: { low: 200, high: 300 },
-        midpoly: { low: 350, high: 500 },
-        highpoly: { low: 600, high: 1000},
-        staticprop: { low: 50, high: 100 },
-        dynamicprop: { low: 100, high: 250 },
-        kitbashchar: { low: 100, high: 300 },
-        kitbashprop: { low: 100, high: 200 },
-        viseme: 50,
+        lowpoly: { low: 150, high: 225 },
+        midpoly: { low: 225, high: 300 },
+        highpoly: { low: 300, high: 500 },
+        staticprop: { low: 30, high: 50 },
+        dynamicprop: { low: 50, high: 100 },
+        kitbashchar: { low: 75, high: 150 },
+        kitbashprop: { low: 75, high: 100 },
+        viseme: 10,
     },
     "avatar": {
-        fromScratch: { lowpoly: 300, midpoly: 600, highpoly: 1000 },
-        kitbashing: { low: 150, high: 400 },
-        customClothing: { low: 50, high: 200 },
-        hairstyle: { low: 50, high: 150 },
-        texturing: { low: 50, high: 200 },
-        expressions: { low: 50, high: 150 },
-        rigging: { low: 100, high: 300 },
-        fbtOptimization: { low: 50, high: 150 },
-        optimization: { low: 50, high: 200 }
+        fromScratch: { lowpoly: 150, midpoly: 225, highpoly: 300 },
+        kitbashing: { low: 75, high: 200 },
+        customClothing: { low: 30, high: 100 },
+        hairstyle: { low: 30, high: 100 },
+        texturing: { low: 30, high: 100 },
+        expressions: { low: 10, high: 50 },
+        rigging: { low: 30, high: 100 },
+        fbtOptimization: { low: 30, high: 100 },
+        optimization: { low: 30, high: 100 }
     },
     "vrchat": {
-        dynamicBones: { low: 30, high: 100 },
-        animations: { low: 50, high: 200 },
-        toggleSetups: { low: 50, high: 150 },
-        shaders: { low: 50, high: 150 },
-        questConversion: { low: 100, high: 300 },
-        customEffects: { low: 50, high: 200 }
+        dynamicBones: { low: 10, high: 50 },
+        animations: { low: 10, high: 50 },
+        toggleSetups: { low: 10, high: 50 },
+        shaders: { low: 30, high: 100 },
+        questConversion: { low: 50, high: 150 },
+        customEffects: { low: 10, high: 100 }
     },
     "conversion": {
-        vtuber: { low: 200, high: 600 },
-        retargeting: { low: 100, high: 300 },
-        faceTracking: { low: 200, high: 600 }
+        vtuber: { low: 50, high: 200 },
+        retargeting: { low: 30, high: 100 },
+        faceTracking: { low: 75, high: 300 }
     },
     "additional": {
-        rushOrder: 0.5,
+        rushOrder: 0.25,
         commercialUse: 0.5,
-        nsfw: 0.25,
+        nsfw: 0.2,
         tax: 0.15,
-        additionalEdits: 20
+        additionalEdits: 10
     }
 };
 
@@ -644,6 +644,20 @@ document.addEventListener("DOMContentLoaded", () => {
         setText('additional-nsfw3d', `${prices["additional"].nsfw * 100}%`);
         setText('additional-nsfw', `${prices["additional"].nsfw * 100}%`);
         setText('additional-edits', prices["additional"].additionalEdits);
+
+        const setMax = (id, value) => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.max = value;
+            }
+        };
+
+        setMax('background-complexity', prices["2d"].background.detailedbackground);
+        setMax('complexity', prices["3d"].highpoly.high);
+        setMax('texturing', prices["avatar"].texturing.high);
+        setMax('clothing-complexity', prices["avatar"].customClothing.high);
+        setMax('rigging-complexity', prices["avatar"].rigging.high);
+        setMax('dynamic-bones', prices["vrchat"].dynamicBones.high);
     }
 
     setPrices(prices);
@@ -661,12 +675,12 @@ function updateOptions() {
 function update2dBackgroundComplexityValue() {
     const complexity = document.getElementById('background-complexity').value;
     document.getElementById('background-complexity-value').textContent = `$${complexity}`;
-    const comment = document.getElementById('background-comment');
-
-    if (complexity == 0) comment.textContent = 'No Background';
-    else if (complexity <= 40) comment.textContent = 'Simple Background';
-    else if (complexity <= 100) comment.textContent = 'Detailed Midground';
-    else comment.textContent = 'Full Detailed Background';
+    document.getElementById('background-comment').textContent = 
+        complexity == 0 ? 'No Background or just a Gradient' : 
+        complexity <= prices["2d"].background.splashfilterphoto ? 'Simple Background: Minimal details or abstract elements, such as gradients, patterns, or a single color.' : 
+        complexity <= prices["2d"].background.vagueenvironment ? 'Vague Environment: General shapes and light details suggest an environment without specific or intricate elements.' : 
+        complexity <= prices["2d"].background.detailedtargetmidground ? 'Detailed Midground: Richly developed central focus with defined objects or scenery, providing clear context for the subject.' : 
+        'Full Detailed Background: Highly elaborate and immersive environment, with intricate details from the foreground to the distant background.';
 }
 
 // Update 3D complexity values
@@ -675,37 +689,41 @@ function updateComplexityValue() {
     document.getElementById('complexity-value').textContent = `$${complexity}`;
     document.getElementById('complexity-comment').textContent = 
         complexity == 0 ? 'No model' : 
-        complexity <= 150 ? 'Low-poly model' : 
-        complexity <= 225 ? 'Mid-poly model' : 'High-poly model';
+        complexity <= prices["3d"].lowpoly.high ? 'Low-poly model 3-5k Tris' : 
+        complexity <= prices["3d"].midpoly.high ? 'Mid-poly model 10-20k Tris' : 
+        'High-poly model 50k+ Tris';
 }
 
 // Update Sliders and Inputs
 function updateClothingComplexityValue() {
-    const value = document.getElementById('clothing-complexity').value;
-    document.getElementById('clothing-complexity-value').textContent = `$${value}`;
+    const complexity = document.getElementById('clothing-complexity').value;
+    document.getElementById('clothing-complexity-value').textContent = `$${complexity}`;
     document.getElementById('clothing-comment').textContent = 
-        value == 0 ? 'No Clothing' : 
-        value <= 30 ? 'Basic Clothing' : 
-        value <= 50 ? 'Intermediate Clothing' : 'High-Quality Clothing';
+        complexity == 0 ? 'No Clothing' : 
+        complexity <= prices["avatar"].customClothing.low ? 'Basic Clothing: Simple garments with minimal detail, like plain shirts or pants.' : 
+        complexity <= prices["avatar"].customClothing.high-1 ? 'Intermediate Clothing: Moderately detailed garments, incorporating folds, seams.' : 
+        'High-Quality Clothing: Highly intricate details, such as realistic fabric textures, stitching, and dynamic folds.';
 }
 
 function updateDynamicBonesValue() {
-    const value = document.getElementById('dynamic-bones').value;
-    document.getElementById('dynamic-bones-value').textContent = `$${value}`;
+    const complexity = document.getElementById('dynamic-bones').value;
+    document.getElementById('dynamic-bones-value').textContent = `$${complexity}`;
     document.getElementById('dynamic-bones-comment').textContent = 
-        value == 0 ? 'No Dynamic Bones' : 
-        value <= 10 ? 'Basic Dynamic Bones' : 
-        value <= 30 ? 'Intermediate Physics' : 'Advanced Physics';
+        complexity == 0 ? 'No Dynamic Bones' : 
+        complexity <= prices["vrchat"].dynamicBones.low ? 'Basic Dynamic Bones: Simple physics applied to a few elements, like hair tips or a single accessory, with minimal movement.' : 
+        complexity <= prices["vrchat"].dynamicBones.high-1 ? 'Intermediate Physics: Moderate use of dynamic bones to create realistic motion in hair, tails, or clothing with noticeable interactions.' : 
+        'Advanced Physics: Complex implementation of dynamic bones affecting multiple parts of the model, offering highly realistic and nuanced motion throughout.';
 }
 
 // Update texturing complexity
 function updateTexturingValue() {
-    const texturing = document.getElementById('texturing').value;
-    document.getElementById('texturing-value').textContent = `$${texturing}`;
+    const complexity = document.getElementById('texturing').value;
+    document.getElementById('texturing-value').textContent = `$${complexity}`;
     document.getElementById('texturing-comment').textContent = 
-        texturing == 0 ? 'No Texturing' : 
-        texturing <= 30 ? 'Basic Texturing' : 
-        texturing <= 50 ? 'Intermediate Texturing' : 'High-Quality Texturing';
+        complexity == 0 ? 'No Texturing' : 
+        complexity <= prices["avatar"].texturing.low ? 'Basic Texturing' : 
+        complexity <= prices["avatar"].texturing.high-1 ? 'Intermediate Texturing' : 
+        'High-Quality Texturing';
 }
 
 // Update rigging complexity
@@ -714,7 +732,8 @@ function updateRiggingComplexityValue() {
     document.getElementById('rigging-complexity-value').textContent = `$${complexity}`;
     document.getElementById('rigging-comment').textContent = 
         complexity == 0 ? 'No Rigging' : 
-        complexity <= 50 ? 'Basic Rigging' : 'Advanced Rigging';
+        complexity <= prices["avatar"].rigging.low ? 'Basic Rigging: A simple rig with minimal bones and basic functionality, allowing for limited movement like simple poses or expressions.' : 
+        'Advanced Rigging: A highly detailed rig with comprehensive functionality, including complex bone structures, IK (inverse kinematics), controllers, and facial expressions for smooth, dynamic animations.';
 }
 
 // Price Calculation
