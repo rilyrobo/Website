@@ -456,8 +456,19 @@
                             </div>
                         </div>
 
-                        <label for="props">Number of Props:</label>
-                        <input type="number" style="width: 80%;" id="props" min="0" value="0">
+
+                        <div class="pricing-grid">
+                            <div class="pricing-section">
+                                <label for="props">Number of Props:</label>
+                                <input type="number" style="width: 80%;" id="props" min="0" value="0">
+                            </div>
+                            <div class="pricing-section">
+                                <label for="props-complexity">Prop Complexity:</label>
+                                <span id="props-complexity-value">$0</span>
+                                <input type="range" style="width: 80%;" id="props-complexity" min="0" max="50" step="5" value="0" oninput="updatePropComplexityValue()">
+                                <p class="complexity-comment" id="props-complexity-comment">No Prop</p>
+                            </div>
+                        </div>
 
                         <div class="pricing-grid">
                             <div class="pricing-section">

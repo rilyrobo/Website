@@ -584,57 +584,57 @@ document.addEventListener("DOMContentLoaded", () => {
         const setText = (id, value) => {
             const element = document.getElementById(id);
             if (element) {
-                element.textContent = `$${value}`;
+                element.textContent = `${value}`;
             }
         };
 
         // 2D Artwork
-        setText('2d-sketch-portrait', prices["2d"].sketch.portrait);
-        setText('2d-sketch-upperhalf', prices["2d"].sketch.upperhalf);
-        setText('2d-sketch-fullbody', prices["2d"].sketch.fullbody);
-        setText('2d-lineart-portrait', prices["2d"].lineart.portrait);
-        setText('2d-lineart-upperhalf', prices["2d"].lineart.upperhalf);
-        setText('2d-lineart-fullbody', prices["2d"].lineart.fullbody);
-        setText('2d-flatcolors-portrait', prices["2d"].flatcolors.portrait);
-        setText('2d-flatcolors-upperhalf', prices["2d"].flatcolors.upperhalf);
-        setText('2d-flatcolors-fullbody', prices["2d"].flatcolors.fullbody);
-        setText('2d-shading-portrait', prices["2d"].shading.portrait);
-        setText('2d-shading-upperhalf', prices["2d"].shading.upperhalf);
-        setText('2d-shading-fullbody', prices["2d"].shading.fullbody);
+        setText('2d-sketch-portrait', `$${prices["2d"].sketch.portrait}`);
+        setText('2d-sketch-upperhalf', `$${prices["2d"].sketch.upperhalf}`);
+        setText('2d-sketch-fullbody', `$${prices["2d"].sketch.fullbody}`);
+        setText('2d-lineart-portrait', `$${prices["2d"].lineart.portrait}`);
+        setText('2d-lineart-upperhalf', `$${prices["2d"].lineart.upperhalf}`);
+        setText('2d-lineart-fullbody', `$${prices["2d"].lineart.fullbody}`);
+        setText('2d-flatcolors-portrait', `$${prices["2d"].flatcolors.portrait}`);
+        setText('2d-flatcolors-upperhalf', `$${prices["2d"].flatcolors.upperhalf}`);
+        setText('2d-flatcolors-fullbody', `$${prices["2d"].flatcolors.fullbody}`);
+        setText('2d-shading-portrait', `$${prices["2d"].shading.portrait}`);
+        setText('2d-shading-upperhalf', `$${prices["2d"].shading.upperhalf}`);
+        setText('2d-shading-fullbody', `$${prices["2d"].shading.fullbody}`);
 
         // Backgrounds
-        setText('2d-background-colourgradient', prices["2d"].background.colourgradient);
-        setText('2d-background-detailedbackground', prices["2d"].background.detailedbackground);
+        setText('2d-background-colourgradient', `$${prices["2d"].background.colourgradient}`);
+        setText('2d-background-detailedbackground', `$${prices["2d"].background.detailedbackground}`);
 
         // 3D Artwork
-        setText('3d-lowpoly', `${prices["3d"].lowpoly.low} - $${prices["3d"].lowpoly.high}`);
-        setText('3d-midpoly', `${prices["3d"].midpoly.low} - $${prices["3d"].midpoly.high}`);
-        setText('3d-highpoly', `${prices["3d"].highpoly.low} - $${prices["3d"].highpoly.high}+`);
-        setText('3d-staticprop', `${prices["3d"].staticprop.low} - $${prices["3d"].staticprop.high}`);
-        setText('3d-dynamicprop', `${prices["3d"].dynamicprop.low} - $${prices["3d"].dynamicprop.high}`);
-        setText('3d-kitbashchar', `${prices["3d"].kitbashchar.low} - $${prices["3d"].kitbashchar.high}`);
-        setText('3d-kitbashprop', `${prices["3d"].kitbashprop.low} - $${prices["3d"].kitbashprop.high}`);
-        setText('3d-viseme', prices["3d"].viseme);
+        setText('3d-lowpoly', `$${prices["3d"].lowpoly.low} - $${prices["3d"].lowpoly.high}`);
+        setText('3d-midpoly', `$${prices["3d"].midpoly.low} - $${prices["3d"].midpoly.high}`);
+        setText('3d-highpoly', `$${prices["3d"].highpoly.low} - $${prices["3d"].highpoly.high}+`);
+        setText('3d-staticprop', `$${prices["3d"].staticprop.low} - $${prices["3d"].staticprop.high}`);
+        setText('3d-dynamicprop', `$${prices["3d"].dynamicprop.low} - $${prices["3d"].dynamicprop.high}`);
+        setText('3d-kitbashchar', `$${prices["3d"].kitbashchar.low} - $${prices["3d"].kitbashchar.high}`);
+        setText('3d-kitbashprop', `$${prices["3d"].kitbashprop.low} - $${prices["3d"].kitbashprop.high}`);
+        setText('3d-viseme', `$${prices["3d"].viseme}`);
 
         // VRChat Avatars
-        setText('avatar-fromScratch', `${prices["avatar"].fromScratch.lowpoly} - $${prices["avatar"].fromScratch.highpoly}+`);
-        setText('avatar-kitbashing', `${prices["avatar"].kitbashing.low} - $${prices["avatar"].kitbashing.high}+`);
-        setText('avatar-customClothing', `${prices["avatar"].customClothing.low} - $${prices["avatar"].customClothing.high}`);
-        setText('avatar-texturing', `${prices["avatar"].texturing.low} - $${prices["avatar"].texturing.high}`);
-        setText('avatar-expressions', `${prices["avatar"].expressions.low} - $${prices["avatar"].expressions.high}`);
-        setText('avatar-rigging', `${prices["avatar"].rigging.low} - $${prices["avatar"].rigging.high}`);
+        setText('avatar-fromScratch', `$${prices["avatar"].fromScratch.lowpoly} - $${prices["avatar"].fromScratch.highpoly}+`);
+        setText('avatar-kitbashing', `$${prices["avatar"].kitbashing.low} - $${prices["avatar"].kitbashing.high}+`);
+        setText('avatar-customClothing', `$${prices["avatar"].customClothing.low} - $${prices["avatar"].customClothing.high}`);
+        setText('avatar-texturing', `$${prices["avatar"].texturing.low} - $${prices["avatar"].texturing.high}`);
+        setText('avatar-expressions', `$${prices["avatar"].expressions.low} - $${prices["avatar"].expressions.high}`);
+        setText('avatar-rigging', `$${prices["avatar"].rigging.low} - $${prices["avatar"].rigging.high}`);
 
         // VRChat Extras
-        setText('vrchat-dynamicBones', `${prices["vrchat"].dynamicBones.low} - $${prices["vrchat"].dynamicBones.high}`);
-        setText('vrchat-animations', `${prices["vrchat"].animations.low} - $${prices["vrchat"].animations.high}`);
-        setText('vrchat-toggleSetups', `${prices["vrchat"].toggleSetups.low} - $${prices["vrchat"].toggleSetups.high}`);
-        setText('vrchat-questConversion', `${prices["vrchat"].questConversion.low} - $${prices["vrchat"].questConversion.high}`);
-        setText('vrchat-customEffects', `${prices["vrchat"].customEffects.low} - $${prices["vrchat"].customEffects.high}`);
+        setText('vrchat-dynamicBones', `$${prices["vrchat"].dynamicBones.low} - $${prices["vrchat"].dynamicBones.high}`);
+        setText('vrchat-animations', `$${prices["vrchat"].animations.low} - $${prices["vrchat"].animations.high}`);
+        setText('vrchat-toggleSetups', `$${prices["vrchat"].toggleSetups.low} - $${prices["vrchat"].toggleSetups.high}`);
+        setText('vrchat-questConversion', `$${prices["vrchat"].questConversion.low} - $${prices["vrchat"].questConversion.high}`);
+        setText('vrchat-customEffects', `$${prices["vrchat"].customEffects.low} - $${prices["vrchat"].customEffects.high}`);
 
         // Game & VTuber Conversion
-        setText('conversion-vtuber', `${prices["conversion"].vtuber.low} - $${prices["conversion"].vtuber.high}`);
-        setText('conversion-retargeting', `${prices["conversion"].retargeting.low} - $${prices["conversion"].retargeting.high}`);
-        setText('conversion-faceTracking', `${prices["conversion"].faceTracking.low} - $${prices["conversion"].faceTracking.high}`);
+        setText('conversion-vtuber', `$${prices["conversion"].vtuber.low} - $${prices["conversion"].vtuber.high}`);
+        setText('conversion-retargeting', `$${prices["conversion"].retargeting.low} - $${prices["conversion"].retargeting.high}`);
+        setText('conversion-faceTracking', `$${prices["conversion"].faceTracking.low} - $${prices["conversion"].faceTracking.high}`);
 
         // Additional Costs
         setText('2d-adition-character', `${prices["2d"].additionalMultiplier * 100}%`);
@@ -643,7 +643,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setText('additional-nsfw2d', `${prices["additional"].nsfw * 100}%`);
         setText('additional-nsfw3d', `${prices["additional"].nsfw * 100}%`);
         setText('additional-nsfw', `${prices["additional"].nsfw * 100}%`);
-        setText('additional-edits', prices["additional"].additionalEdits);
+        setText('additional-edits', `$${prices["additional"].additionalEdits}`);
 
         const setMax = (id, value) => {
             const element = document.getElementById(id);
@@ -658,6 +658,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setMax('clothing-complexity', prices["avatar"].customClothing.high);
         setMax('rigging-complexity', prices["avatar"].rigging.high);
         setMax('dynamic-bones', prices["vrchat"].dynamicBones.high);
+        setMax('props-complexity', prices["3d"].dynamicprop.high);
     }
 
     setPrices(prices);
@@ -736,6 +737,16 @@ function updateRiggingComplexityValue() {
         'Advanced Rigging: A highly detailed rig with comprehensive functionality, including complex bone structures, IK (inverse kinematics), controllers, and facial expressions for smooth, dynamic animations.';
 }
 
+function updatePropComplexityValue() {
+    const complexity = document.getElementById('props-complexity').value;
+    document.getElementById('props-complexity-value').textContent = `$${complexity}`;
+    document.getElementById('props-complexity-comment').textContent = 
+        complexity == 0 ? 'No Props' : 
+        complexity <= prices["3d"].staticprop.low ? 'Basic Prop: Simple static prop with minimal details.' : 
+        complexity <= prices["3d"].dynamicprop.high-1 ? 'Intermediate Prop: Moderately detailed prop with some dynamic elements.' : 
+        'Advanced Prop: Highly detailed prop with complex dynamic elements.';
+}
+
 // Price Calculation
 function calculatePrice() {
     const type = document.getElementById('type').value;
@@ -752,21 +763,20 @@ function calculatePrice() {
         basePrice += background;
     } else if (type === '3d') {
         basePrice = parseInt(document.getElementById('complexity').value);
-        basePrice += parseInt(document.getElementById('clothing-complexity').value);
-        basePrice += parseInt(document.getElementById('customClothing-items').value) * 50;
-        basePrice += parseInt(document.getElementById('props').value) * 50;
+        basePrice += parseInt(document.getElementById('clothing-complexity').value) * parseInt(document.getElementById('customClothing-items').value);
+        basePrice += parseInt(document.getElementById('props-complexity').value) * parseInt(document.getElementById('props').value);
         basePrice += parseInt(document.getElementById('texturing').value);
         basePrice += parseInt(document.getElementById('rigging-complexity').value);
         basePrice += parseInt(document.getElementById('dynamic-bones').value);
-        basePrice += parseInt(document.getElementById('toggles').value) * 15;
-        basePrice += parseInt(document.getElementById('custom-expressions').value) * 10;
-        if (document.getElementById('quest-optimization').checked) basePrice += 100;
+        basePrice += parseInt(document.getElementById('toggles').value) * prices["vrchat"].toggleSetups.low;
+        basePrice += parseInt(document.getElementById('custom-expressions').value) * prices["avatar"].expressions.low;
+        if (document.getElementById('quest-optimization').checked) basePrice += prices["vrchat"].questConversion.low;
     }
 
     // Additional Costs
-    const nsfw = document.getElementById('nsfw').checked ? basePrice * 0.2 : 0;
-    const rushOrder = document.getElementById('rushOrder').checked ? basePrice * 0.25 : 0;
-    const commercialUse = document.getElementById('commercialUse').checked ? basePrice * 0.5 : 0;
+    const nsfw = document.getElementById('nsfw').checked ? basePrice * prices["additional"].nsfw : 0;
+    const rushOrder = document.getElementById('rushOrder').checked ? basePrice * prices["additional"].rushOrder : 0;
+    const commercialUse = document.getElementById('commercialUse').checked ? basePrice * prices["additional"].commercialUse : 0;
 
     basePrice += nsfw + rushOrder + commercialUse;
     document.getElementById('result').innerText = `Total Price: $${basePrice.toFixed(2)}`;
