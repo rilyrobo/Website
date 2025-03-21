@@ -32,7 +32,7 @@
                 <div class="nav-item">
                     <a href="#gallery" onclick="showPage('gallery')">Gallery</a>
                 </div>
-                <div class="dropdown nav-item">
+                <div class="nav-item">
                     <a href="#comics" onclick="showPage('comics')">Comics</a>
                 </div>
                 <div class="nav-item">
@@ -61,14 +61,25 @@
                 <a href="#home" onclick="showPage('home')">Home</a>
                 <div id="nav-image"></div>
             </div>
-            <div class="nav-item">
+            <div class="dropdown nav-item">
                 <a href="#gallery" onclick="showPage('gallery')">Gallery</a>
                 <div id="nav-image" style="background: url('images/nav_icon_Gallery.gif') center/cover no-repeat;"></div>
+                <div class="dropdown-content dropdown-content-gallery">
+                    <a href="#gallery" onclick="showPage('gallery')">Gallery</a>
+                    <div class="dropdown-item">
+                        <a href="#gallery-1" onclick="showPage('gallery-1')">Gallery 1</a>
+                        <div class="nav-hover-image-side"></div>
+                    </div>
+                    <div class="dropdown-item">
+                        <a href="#gallery-2" onclick="showPage('gallery-2')">Gallery 2</a>
+                        <div class="nav-hover-image-side"></div>
+                    </div>
+                </div>
             </div>
             <div class="dropdown nav-item">
                 <a href="#comics" onclick="showPage('comics')">Comics</a>
                 <div id="nav-image"></div>
-                <div class="dropdown-content">
+                <div class="dropdown-content dropdown-content-comics">
                     <a href="#comics" onclick="showPage('comics')">Comics</a>
                     <div class="dropdown-item">
                         <a href="#comic-1" onclick="showPage('comic-1')">Comic 1</a>
@@ -121,7 +132,7 @@
                 <!-- Latest Artworks Section -->
                 <div class="latest-gallery">
                     <h3 class="latest-artworks-heading">Latest Artworks</h3>
-                    <div class="gallery-grid-home">
+                    <div class="gallery-grid gallery-grid-home">
                         <!-- Artwork thumbnails will be inserted dynamically -->
                     </div>
                     <div class="margin-top-20">
@@ -145,7 +156,7 @@
             <div id="gallery" class="page">
                 <h2 class="center-text">Gallery</h2>
                 <p  class="center-text">Discover my artwork: Drawings, 3D Renders, Comics, and Writing</p>
-                <div class="gallery-grid-full">
+                <div class="gallery-grid gallery-grid-full">
                     <!-- Artwork thumbnails will be inserted dynamically -->
                 </div>
                 <div  class="button-container">
