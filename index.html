@@ -598,4 +598,588 @@
         <script src="script.js"></script>
     </body>
 </html>
+=======
+        <header>
+            <h1>Art by RilyRobo</h1>
+            <p>Explore my world of creativity: Drawings, 3D Renders, Comics, Writing, and more</p>
+            <div class="social-media social-media-icon"></div>
+        </header>
+
+        
+        <!-- Navigation -->
+        <nav id="mobile-nav" class="mobile-nav">
+            <div class="hamburger-menu" onclick="toggleMobileNav()">
+                &#9776;
+            </div>
+            <div id="nav-links" class="nav-links">
+                <div class="nav-item">
+                    <a href="#home" onclick="showPage('home')">Home</a>
+                </div>
+                <div class="nav-item">
+                    <a href="#gallery" onclick="showPage('gallery')">Gallery</a>
+                </div>
+                <div class="nav-item">
+                    <a href="#comics" onclick="showPage('comics')">Comics</a>
+                </div>
+                <div class="nav-item">
+                    <a href="#videos" onclick="showPage('videos')">Videos</a>
+                </div>
+                <div class="nav-item">
+                    <a href="#games" onclick="showPage('games')">Games</a>
+                </div>
+                <div class="nav-item">
+                    <a href="#commissions" onclick="showPage('commissions')">Commissions</a>
+                </div>
+                <div class="nav-item">
+                    <a href="#social" onclick="showPage('social')">Social Media</a>
+                </div>
+                <div class="nav-item">
+                    <a href="#storefront" onclick="showPage('storefront')">Merch Store</a>
+                </div>
+                <div class="nav-item">
+                    <a href="#gumroad-shop" onclick="showPage('gumroad-shop')">Gumroad Shop</a>
+                </div>
+            </div>
+        </nav>
+
+        <nav id="desktop-nav" class="sticky-nav">
+            <div class="nav-item">
+                <a href="#home" onclick="showPage('home')">Home</a>
+                <div id="nav-image"></div>
+            </div>
+            <div class="dropdown nav-item">
+                <a href="#gallery" onclick="showPage('gallery')">Gallery</a>
+                <div id="nav-image" style="background: url('images/nav_icon_Gallery.gif') center/cover no-repeat;"></div>
+                <div class="dropdown-content dropdown-content-gallery">
+                    <a href="#gallery" onclick="showPage('gallery')">Gallery</a>
+                    <div class="dropdown-item">
+                        <a href="#gallery-1" onclick="showPage('gallery-1')">Gallery 1</a>
+                        <div class="nav-hover-image-side"></div>
+                    </div>
+                    <div class="dropdown-item">
+                        <a href="#gallery-2" onclick="showPage('gallery-2')">Gallery 2</a>
+                        <div class="nav-hover-image-side"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="dropdown nav-item">
+                <a href="#comics" onclick="showPage('comics')">Comics</a>
+                <div id="nav-image"></div>
+                <div class="dropdown-content dropdown-content-comics">
+                    <a href="#comics" onclick="showPage('comics')">Comics</a>
+                    <div class="dropdown-item">
+                        <a href="#comic-1" onclick="showPage('comic-1')">Comic 1</a>
+                        <div class="nav-hover-image-side"></div>
+                    </div>
+                    <div class="dropdown-item">
+                        <a href="#comic-2" onclick="showPage('comic-2')">Comic 2</a>
+                        <div class="nav-hover-image-side"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-item">
+                <a href="#videos" onclick="showPage('videos')">Videos</a>
+                <div id="nav-image"></div>
+            </div>
+            <div class="nav-item">
+                <a href="#games" onclick="showPage('games')">Games</a>
+                <div id="nav-image" style="background: url('images/nav_icon_Game.gif') center/cover no-repeat;"></div>
+            </div>
+            <div class="nav-item">
+                <a href="#commissions" onclick="showPage('commissions')">Commissions</a>
+                <div id="nav-image" style="background: url('images/nav_icon_Work.gif') center/cover no-repeat;"></div>
+            </div>
+            <div class="nav-item">
+                <a href="#social" onclick="showPage('social')">Social Media</a>
+                <div id="nav-image"></div>
+            </div>
+            <div class="nav-item">
+                <a href="#storefront" onclick="showPage('storefront')">Merch Store</a>
+                <div id="nav-image" style="background: url('images/nav_icon_Merch.gif') center/cover no-repeat;"></div>
+            </div>
+            <div class="nav-item">
+                <a href="#gumroad-shop" onclick="showPage('gumroad-shop')">Gumroad Shop</a>
+                <div id="nav-image" style="background: url('images/nav_icon_Store.gif') center/cover no-repeat;"></div>
+            </div>
+        </nav>
+
+        <page>
+            <!-- Home Page -->
+            <div id="home" class="page active home-page">
+                <h2 class="welcome-heading">Welcome to My Creative World</h2>
+                <p>
+                    Explore a unique collection of art, from <strong>drawings</strong> and <strong>3D renders</strong> to <strong>comics</strong> and <strong>writings</strong>. Let creativity take you on a journey.
+                </p>
+                <div class="button-container">
+                    <a href="#gallery" onclick="showPage('gallery')" class="button view-gallery-button">View Gallery</a>
+                    <a href="#commissions" onclick="showPage('commissions')" class="button get-commission-button">Get a Commission</a>
+                </div>
+                
+                <!-- Latest Artworks Section -->
+                <div class="latest-gallery">
+                    <h3 class="latest-artworks-heading">Latest Artworks</h3>
+                    <div class="gallery-grid gallery-grid-home">
+                        <!-- Artwork thumbnails will be inserted dynamically -->
+                    </div>
+                    <div class="margin-top-20">
+                        <a href="#gallery" onclick="showPage('gallery')" class="button view-full-gallery-button">View Full Gallery</a>
+                    </div>
+                </div>
+                
+                <!-- Latest Videos Section -->
+                <div class="latest-videos">
+                    <h3 class="latest-videos-heading">Latest Videos</h3>
+                    <div class="video-grid-home">
+                        <!-- Latest videos will be inserted dynamically -->
+                    </div>
+                    <div class="view-videos-button-container">
+                    <a href="#videos" onclick="showPage('videos')" class="button view-videos-button">View Videos</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gallery Page -->
+            <div id="gallery" class="page">
+                <h2 class="center-text">Gallery</h2>
+                <p  class="center-text">Discover my artwork: Drawings, 3D Renders, Comics, and Writing</p>
+                <div class="gallery-grid gallery-grid-full">
+                    <!-- Artwork thumbnails will be inserted dynamically -->
+                </div>
+                <div  class="button-container">
+                    <a href="https://www.deviantart.com/RilyRobo" target="_blank" rel="noopener noreferrer" class="button deviantart-button">
+                        More on DeviantArt
+                    </a>
+                </div>
+            </div>            
+
+            <!-- Comics Page -->
+            <div id="comics" class="page">
+                <h2  class="center-text">Comics</h2>
+                <div id="comics-grid" class="comics-grid"></div>
+            </div>
+
+            <!-- Videos Page -->
+            <div id="videos" class="page">
+                <h2  class="center-text">Videos</h2>
+                <p  class="center-text">Watch my tutorials, speed paintings, and more.</p>
+                <div class="intro-video">
+                    <iframe src="https://www.youtube.com/embed/yaDXBP_9nLM?controls=0" frameborder="0" allowfullscreen class="intro-video-iframe" title="Introductory Video"></iframe>
+                    <h3 class="intro-video-heading">Introductory Video</h3>
+                </div>
+                <div class="video-grid-full">
+                    <!-- Artwork thumbnails will be inserted dynamically -->
+                </div>
+            </div>
+            
+            <!-- Games Page -->
+            <div id="games" class="page">
+                <h2  class="center-text">Solo Game Development</h2>
+                <div class="game-grid" id="my-games-grid">
+                    <!-- Dynamically populated -->
+                </div>
+                <h2  class="center-text">Games I Contributed To</h2>
+                <div class="game-grid" id="contributed-games-grid">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+            
+            <!-- Commissions Page -->
+            <div id="commissions" class="page">
+                <h2  class="center-text">Commissions and Pricing</h2>
+                <p  class="center-text">Interested in personalized artwork? Explore my 2D and 3D commission options below (All prices in USD):</p>
+
+                <div class="button-container">
+                    <a id="open-tos-modal-button" class="button view-gallery-button">View Terms of Service</a>
+                </div>
+
+                <!-- 2D Commissions Section -->
+                <div id="2d-commissions">
+                    <h3  class="center-text">2D Commissions</h3>
+                    <p  class="center-text">Choose from sketches, line art, flat colors, or shading. Prices vary by character coverage (portrait, upper half, or full body), additional characters, and background complexity.</p>
+                    <div class="pricing-grid-container">
+                        <div class="pricing-grid">
+                            <div class="pricing-section">
+                                <ul>
+                                    <li><strong>Sketch</strong>: 
+                                        <ul>
+                                            <li>Portrait: <strong id="2d-sketch-portrait"></strong></li>
+                                            <li>Upper Half: <strong id="2d-sketch-upperhalf"></strong></li>
+                                            <li>Full Body: <strong id="2d-sketch-fullbody"></strong></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="pricing-section">
+                                <ul>
+                                    <li><strong>Line Art</strong>: 
+                                        <ul>
+                                            <li>Portrait: <strong id="2d-lineart-portrait"></strong></li>
+                                            <li>Upper Half: <strong id="2d-lineart-upperhalf"></strong></li>
+                                            <li>Full Body: <strong id="2d-lineart-fullbody"></strong></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="pricing-section">
+                                <ul>
+                                    <li><strong>Flat Colors</strong>: 
+                                        <ul>
+                                            <li>Portrait: <strong id="2d-flatcolors-portrait"></strong></li>
+                                            <li>Upper Half: <strong id="2d-flatcolors-upperhalf"></strong></li>
+                                            <li>Full Body: <strong id="2d-flatcolors-fullbody"></strong></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="pricing-section">
+                                <ul>
+                                    <li><strong>Shading</strong>: 
+                                        <ul>
+                                            <li>Portrait: <strong id="2d-shading-portrait"></strong></li>
+                                            <li>Upper Half: <strong id="2d-shading-upperhalf"></strong></li>
+                                            <li>Full Body: <strong id="2d-shading-fullbody"></strong></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p  class="center-text"><strong>Additional Costs:</strong></p>
+                    <p  class="center-text">Additional Characters: <strong id="2d-adition-character"></strong> per character</p>
+                    <p  class="center-text">Backgrounds: <strong id="2d-background-colourgradient"></strong>–<strong id="2d-background-detailedbackground"></strong> depending on complexity</p>
+                    <p class="center-text">NSFW Content: <strong id="additional-nsfw2d"></strong> base cost</p>
+        
+                    <!-- Example Images -->
+                    <div class="examples">
+                        <img src="images/2d_example-1.jpg" alt="2D Example" class="example-image">
+                        <img src="images/2d_example-2.jpg" alt="2D Example" class="example-image">
+                        <img src="images/2d_example-3.jpg" alt="2D Example" class="example-image">
+                        <img src="images/2d_example-4.jpg" alt="2D Example" class="example-image">
+                        <img src="images/2d_example-5.jpg" alt="2D Example" class="example-image">
+                    </div>
+                </div>
+        
+                <!-- 3D Commissions Section -->
+                <div id="3d-commissions">
+                    <h3 class="center-text">3D Commissions</h3>
+                    <p class="center-text">Offering fully rigged and textured 3D models, props, and character avatars. Prices vary based on complexity.</p>
+
+                    <div class="pricing-grid-container">
+                        <div class="pricing-grid">
+                            <div class="pricing-section">
+                                <ul>
+                                    <li><strong>Low Poly Model</strong>: <strong id="3d-lowpoly"></strong></li>
+                                    <li><strong>Mid Poly Model</strong>: <strong id="3d-midpoly"></strong></li>
+                                    <li><strong>High Poly Model</strong>: <strong id="3d-highpoly"></strong></li>
+                                </ul>
+                            </div>
+                            <div class="pricing-section">
+                                <ul>
+                                    <li><strong>Static Prop</strong>: <strong id="3d-staticprop"></strong></li>
+                                    <li><strong>Dynamic Prop</strong>: <strong id="3d-dynamicprop"></strong></li>
+                                </ul>
+                            </div>
+                            <div class="pricing-section">
+                                <ul>
+                                    <li><strong>Kitbash Character</strong>: <strong id="3d-kitbashchar"></strong></li>
+                                    <li><strong>Kitbash Prop</strong>: <strong id="3d-kitbashprop"></strong></li>
+                                </ul>
+                            </div>
+                            <div class="pricing-section">
+                                <ul>
+                                    <li><strong>Facial Visemes</strong>: <strong id="3d-viseme"></strong></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="center-text"><strong>Additional Costs:</strong></p>
+                    <p class="center-text">NSFW Content: <strong id="additional-nsfw3d"></strong> base cost</p>
+
+                    <!-- Example Images -->
+                    <div class="examples">
+                        <img src="images/3d_example-1.jpg" alt="3D Example" class="example-image">
+                        <img src="images/3d_example-2.jpg" alt="3D Example" class="example-image">
+                        <img src="images/3d_example-3.jpg" alt="3D Example" class="example-image">
+                        <img src="images/3d_example-4.jpg" alt="3D Example" class="example-image">
+                        <img src="images/3d_example-5.jpg" alt="3D Example" class="example-image">
+                    </div>
+                </div>
+
+        
+                <!-- VRChat Avatar Services -->
+                <div id="vrchat-services">
+                    <h3 class="center-text">VRChat Avatar Services</h3>
+                    <p class="center-text">Fully customized VRChat avatars, rigging, optimization, and animation setups.</p>
+
+                    <div class="pricing-grid-container">
+                        <div class="pricing-grid">
+                            <div class="pricing-section">
+                                <ul>
+                                    <li><strong>From Scratch Avatar</strong>: <strong id="avatar-fromScratch"></strong></li>
+                                    <li><strong>Kitbashing</strong>: <strong id="avatar-kitbashing"></strong></li>
+                                </ul>
+                            </div>
+                            <div class="pricing-section">
+                                <ul>
+                                    <li><strong>Texturing</strong>: <strong id="avatar-texturing"></strong></li>
+                                    <li><strong>Expressions</strong>: <strong id="avatar-expressions"></strong></li>
+                                    <li><strong>Rigging</strong>: <strong id="avatar-rigging"></strong></li>
+                                </ul>
+                            </div>
+                            <div class="pricing-section">
+                                <ul>
+                                    <li><strong>Custom Clothing</strong>: <strong id="avatar-customClothing"></strong></li>
+                                    <li><strong>Dynamic Bones/Phys Bones Setup</strong>: <strong id="vrchat-dynamicBones"></strong></li>
+                                </ul>
+                            </div>
+                            <div class="pricing-section">
+                                <ul>
+                                    <li><strong>Toggle Setups (Animated Props & Gestures)</strong>: <strong id="vrchat-toggleSetups"></strong></li>
+                                    <li><strong>Custom Animations (Gestures, Emotes, Dances)</strong>: <strong id="vrchat-animations"></strong></li>
+                                </ul>
+                            </div>
+                            <div class="pricing-section">
+                                <ul>
+                                    <li><strong>Quest Conversion (Optimized for Oculus)</strong>: <strong id="vrchat-questConversion"></strong></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="center-text"><strong>Additional Costs:</strong></p>
+                    <p class="center-text">Rush Order: <strong id="additional-rushOrder"></strong> base cost</p>
+                    <p class="center-text">Commercial Use: <strong id="additional-commercialUse"></strong> base cost</p>
+                    <p class="center-text">NSFW Content: <strong id="additional-nsfw"></strong> base cost</p>
+                    <p class="center-text">Extra Edits/Revisions: <strong id="additional-edits"></strong></p>
+
+                    <!-- Example Images -->
+                    <div class="examples">
+                        <img src="images/vrchat_example-1.jpg" alt="VRChat Example" class="example-image">
+                        <img src="images/vrchat_example-2.jpg" alt="VRChat Example" class="example-image">
+                        <img src="images/vrchat_example-3.jpg" alt="VRChat Example" class="example-image">
+                    </div>
+                </div>
+
+
+                <!-- Commissions Slider -->
+                <h2  class="center-text">Recent Commissions</h2>
+                <div class="commissions-slider">
+                    <!-- Images will be dynamically added here by JavaScript -->
+                </div>
+
+
+                <!-- Commission Price Calculator -->
+                <h2 class="center-text">Commission Price Calculator</h2>
+                <div class="calculator">
+                    <label for="type">Commission Type:</label>
+                    <select id="type" onchange="updateOptions()">
+                        <option value="2d">2D Art</option>
+                        <option value="3d">3D Modeling (Avatar/Props)</option>
+                    </select>
+
+                    <!-- 2D Commission Options -->
+                    <div id="2d-options">
+                        <label for="2d-type">2D Type:</label>
+                        <select id="2d-type">
+                            <option value="sketch">Sketch</option>
+                            <option value="lineart">Line Art</option>
+                            <option value="flatcolors">Flat Colors</option>
+                            <option value="shading">Shading</option>
+                        </select>
+
+                        <div class="pricing-grid">
+                            <div class="pricing-section">
+                                <label for="coverage">Character Coverage:</label>
+                                <select id="coverage" style="width: 85%;" >
+                                    <option value="portrait">Portrait</option>
+                                    <option value="upperhalf">Upper Half</option>
+                                    <option value="fullbody">Full Body</option>
+                                </select>
+                            </div>
+                            <div class="pricing-section">
+                                <label for="additional">Additional Characters:</label>
+                                <input type="number" style="width: 80%;" id="additional" min="0" value="0">
+                            </div>
+                        </div> 
+
+                        <div>
+                            <label for="background-complexity">Background Complexity:</label>
+                            <span id="background-complexity-value">$0</span>
+                            <input type="range" style="width: 80%;" id="background-complexity" min="0" max="150" step="5" value="0" oninput="update2dBackgroundComplexityValue()">
+                            <p class="complexity-comment" id="background-comment">No Background or just a Gradient</p>
+                        </div>
+                    </div>
+
+                    <!-- 3D Commission Options -->
+                    <div id="3d-options">
+                        <label for="complexity">Character Model Complexity:</label>
+                        <span id="complexity-value">$0</span>
+                        <input type="range" style="width: 80%;" id="complexity" min="0" max="500" step="5" value="0" oninput="updateComplexityValue()">
+                        <p class="complexity-comment" id="complexity-comment">No model</p>
+                        
+                        <label for="texturing-items">Texture Complexity:</label>
+                        <span id="texturing-value">$0</span>
+                        <input type="range" style="width: 80%;" id="texturing" min="0" max="75" step="5" value="0" oninput="updateTexturingValue()" title="Texturing Complexity">
+                        <p class="complexity-comment" id="texturing-comment">No Texturing</p>
+
+                        <div class="pricing-grid">
+                            <div class="pricing-section">
+                                <label for="customClothing-items">Number of Additional Clothing Items:</label>
+                                <input type="number" style="width: 80%;" id="customClothing-items" min="0" value="0">
+                            </div>
+
+                            <div class="pricing-section">
+                                <label for="clothing-complexity">Clothing Complexity:</label>
+                                <span id="clothing-complexity-value">$0</span>
+                                <input type="range" style="width: 80%;" id="clothing-complexity" min="0" max="75" step="5" value="0" oninput="updateClothingComplexityValue()">
+                                <p class="complexity-comment" id="clothing-comment">No Clothing</p>
+                            </div>
+                        </div>
+
+                        <div class="pricing-grid">
+                            <div class="pricing-section">
+                                <label for="rigging-complexity">Rigging Complexity:</label>
+                                <span id="rigging-complexity-value">$0</span>
+                                <input type="range" style="width: 80%;" id="rigging-complexity" min="0" max="100" step="5" value="0" oninput="updateRiggingComplexityValue()">
+                                <p class="complexity-comment" id="rigging-comment">No Rigging</p>
+                            </div>
+                            <div class="pricing-section">
+                                <label for="dynamic-bones">Dynamic Bones Complexity:</label>
+                                <span id="dynamic-bones-value">$0</span>
+                                <input type="range" style="width: 80%;" id="dynamic-bones" min="0" max="50" step="5" value="0" oninput="updateDynamicBonesValue()">
+                                <p class="complexity-comment" id="dynamic-bones-comment">Basic Dynamic Bones</p>
+                            </div>
+                        </div>
+
+
+                        <div class="pricing-grid">
+                            <div class="pricing-section">
+                                <label for="props">Number of Props:</label>
+                                <input type="number" style="width: 80%;" id="props" min="0" value="0">
+                            </div>
+                            <div class="pricing-section">
+                                <label for="props-complexity">Prop Complexity:</label>
+                                <span id="props-complexity-value">$0</span>
+                                <input type="range" style="width: 80%;" id="props-complexity" min="0" max="50" step="5" value="0" oninput="updatePropComplexityValue()">
+                                <p class="complexity-comment" id="props-complexity-comment">No Prop</p>
+                            </div>
+                        </div>
+
+                        <div class="pricing-grid">
+                            <div class="pricing-section">
+                                <label for="toggles">Number of Toggles & Custom Animations:</label>
+                                <input type="number" style="width: 80%;" id="toggles" min="0" value="0">
+                            </div>
+                            <div class="pricing-section">
+                                <label for="custom-expressions">Number of Custom Expressions:</label>
+                                <input type="number" style="width: 80%;" id="custom-expressions" min="0" value="0">
+                            </div>
+                            <div class="pricing-section">
+                                <label for="quest-optimization">Quest Optimization:</label>
+                                <input type="checkbox" id="quest-optimization">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Features -->
+                    <div class="pricing-grid">
+                        <div class="pricing-section">
+                            <label for="nsfw">NSFW Content:</label>
+                            <input type="checkbox" id="nsfw">
+                        </div>
+                        <div class="pricing-section">
+                            <label for="rushOrder">Rush Order:</label>
+                            <input type="checkbox" id="rushOrder">
+                        </div>
+                        <div class="pricing-section">
+                            <label for="commercialUse">Commercial Use:</label>
+                            <input type="checkbox" id="commercialUse">
+                        </div>
+                    </div>
+
+                    <button onclick="calculatePrice()">Calculate Price</button>
+                    <div class="result" id="result">Total Price: ?</div>
+                </div>
+
+            </div>
+
+            <!-- Social Media Page -->
+            <div id="social" class="page">
+                <h2  class="center-text">Social Media</h2>
+                <div class="social-media social-media-grid"></div>
+            </div>
+
+            <!-- Merchandise Store Page -->
+            <div id="storefront" class="page">
+                <h2  class="center-text">Merchandise Store</h2>
+                <div class="teespring-store">
+                    <iframe id="teespring-iframe" 
+                            src="https://my-store-c7ca26-2.creator-spring.com" 
+                            class="teespring-iframe" 
+                            scrolling="yes"
+                            title="Teespring Merchandise Store">
+                    </iframe>
+                </div>            
+            </div>
+            
+            <!-- Gumroad Shop Page -->
+            <div id="gumroad-shop" class="page">
+                <h2  class="center-text">Gumroad Shop</h2>
+                <iframe id="gumroad-iframe"
+                    src="https://gumroad.com/rilyrobo"
+                    class="gumroad-iframe"
+                    scrolling="yes"
+                    title="Gumroad Shop">
+                </iframe>
+            </div>
+
+            <!--    Modals    -->
+            
+            <!--   Terms of Service Modal    -->
+            <div id="tos-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close"><strong>&times;</strong></span>
+                    <h2>Terms of Service</h2>
+                    <div id="tos-content">
+                        <!-- TOS content will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!--  Gallery Modal    -->
+            <div id="gallery-modal" class="modal">
+                <div class="modal-content">
+                    <img id="modal-image" src="" alt="Enlarged Art">
+                    <div class="modal-caption">
+                        <a id="modal-link" href="#" target="_blank" class="button">View on DeviantArt</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Example Media Modal -->
+            <div id="example-image-modal" class="modal">
+                <div class="modal-content">
+                    <img id="example-image-modal-img" src="" alt="Example Image" style="display: none;">
+                    <video id="example-image-modal-video" alt="Example Video" loop style="display: none;">
+                        <source src="" type="video/webm">
+                        Your browser does not support the video tag.
+                    </video>
+                    <span class="close"><strong>&times;</strong></span>
+                </div>
+            </div>
+        </page>
+
+        <footer>
+            <div class="footer-content">
+                <p>&copy; 2024 Art by RilyRobo. All rights reserved.</p>
+                <div class="social-media social-media-icon"></div>
+            </div>
+        </footer>
+
+        <script src="script.js"></script>
+    </body>
+</html>
+>>>>>>> b2a7fa41cd9a1006eb0e63bc006ffc23705b42cf
     
