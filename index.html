@@ -32,7 +32,7 @@
                 <div class="nav-item">
                     <a href="#gallery" onclick="showPage('gallery')">Gallery</a>
                 </div>
-                <div class="dropdown nav-item">
+                <div class="nav-item">
                     <a href="#comics" onclick="showPage('comics')">Comics</a>
                 </div>
                 <div class="nav-item">
@@ -61,14 +61,25 @@
                 <a href="#home" onclick="showPage('home')">Home</a>
                 <div id="nav-image"></div>
             </div>
-            <div class="nav-item">
+            <div class="dropdown nav-item">
                 <a href="#gallery" onclick="showPage('gallery')">Gallery</a>
                 <div id="nav-image" style="background: url('images/nav_icon_Gallery.gif') center/cover no-repeat;"></div>
+                <div class="dropdown-content dropdown-content-gallery">
+                    <a href="#gallery" onclick="showPage('gallery')">Gallery</a>
+                    <div class="dropdown-item">
+                        <a href="#gallery-1" onclick="showPage('gallery-1')">Gallery 1</a>
+                        <div class="nav-hover-image-side"></div>
+                    </div>
+                    <div class="dropdown-item">
+                        <a href="#gallery-2" onclick="showPage('gallery-2')">Gallery 2</a>
+                        <div class="nav-hover-image-side"></div>
+                    </div>
+                </div>
             </div>
             <div class="dropdown nav-item">
                 <a href="#comics" onclick="showPage('comics')">Comics</a>
                 <div id="nav-image"></div>
-                <div class="dropdown-content">
+                <div class="dropdown-content dropdown-content-comics">
                     <a href="#comics" onclick="showPage('comics')">Comics</a>
                     <div class="dropdown-item">
                         <a href="#comic-1" onclick="showPage('comic-1')">Comic 1</a>
@@ -121,7 +132,7 @@
                 <!-- Latest Artworks Section -->
                 <div class="latest-gallery">
                     <h3 class="latest-artworks-heading">Latest Artworks</h3>
-                    <div class="gallery-grid-home">
+                    <div class="gallery-grid gallery-grid-home">
                         <!-- Artwork thumbnails will be inserted dynamically -->
                     </div>
                     <div class="margin-top-20">
@@ -145,12 +156,15 @@
             <div id="gallery" class="page">
                 <h2 class="center-text">Gallery</h2>
                 <p  class="center-text">Discover my artwork: Drawings, 3D Renders, Comics, and Writing</p>
-                <div class="gallery-grid-full">
+                <div class="gallery-grid gallery-grid-full">
                     <!-- Artwork thumbnails will be inserted dynamically -->
                 </div>
                 <div  class="button-container">
                     <a href="https://www.deviantart.com/RilyRobo" target="_blank" rel="noopener noreferrer" class="button deviantart-button">
                         More on DeviantArt
+                    </a>
+                    <a href="https://www.artstation.com/RilyRobo" target="_blank" rel="noopener noreferrer" class="button artstation-button">
+                        More on Artstation
                     </a>
                 </div>
             </div>            
@@ -165,7 +179,7 @@
             <div id="videos" class="page">
                 <h2  class="center-text">Videos</h2>
                 <p  class="center-text">Watch my tutorials, speed paintings, and more.</p>
-                <div class="intro-video">
+                <div class="intro-video gallery-youtube">
                     <iframe src="https://www.youtube.com/embed/yaDXBP_9nLM?controls=0" frameborder="0" allowfullscreen class="intro-video-iframe" title="Introductory Video"></iframe>
                     <h3 class="intro-video-heading">Introductory Video</h3>
                 </div>
@@ -456,8 +470,19 @@
                             </div>
                         </div>
 
-                        <label for="props">Number of Props:</label>
-                        <input type="number" style="width: 80%;" id="props" min="0" value="0">
+
+                        <div class="pricing-grid">
+                            <div class="pricing-section">
+                                <label for="props">Number of Props:</label>
+                                <input type="number" style="width: 80%;" id="props" min="0" value="0">
+                            </div>
+                            <div class="pricing-section">
+                                <label for="props-complexity">Prop Complexity:</label>
+                                <span id="props-complexity-value">$0</span>
+                                <input type="range" style="width: 80%;" id="props-complexity" min="0" max="50" step="5" value="0" oninput="updatePropComplexityValue()">
+                                <p class="complexity-comment" id="props-complexity-comment">No Prop</p>
+                            </div>
+                        </div>
 
                         <div class="pricing-grid">
                             <div class="pricing-section">

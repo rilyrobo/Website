@@ -9,12 +9,48 @@ document.addEventListener("DOMContentLoaded", () => {
 
     displayVideos('.video-grid-home', videoData.slice(0, 3));
     displayVideos('.video-grid-full', videoData);
+
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-    const galleryEndpoint = 'https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/31357645/featured';
-    fetchGalleryData(galleryEndpoint, '.gallery-grid-home', 5);
-    fetchGalleryData(galleryEndpoint, '.gallery-grid-full');
+    const galleryData = [
+        {
+            title: 'Featured',
+            icon: 'images/nav_icon_Work.gif',
+            description: 'A collection of my latest work',
+            urls: [
+                { platform: 'DeviantArt', url: 'https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/31357645/featured' },
+            ]
+        },
+        {
+            title: '2D Art',
+            icon: 'images/nav_icon_Work.gif',
+            description: 'A collection of my 2D artwork',
+            urls: [
+                { platform: 'DeviantArt', url: 'https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/96210416/2d-art' },
+            ]
+        },
+        {
+            title: '3D Art',
+            icon: 'images/nav_icon_Work.gif',
+            description: 'A collection of my 3D artwork',
+            urls: [
+                { platform: 'DeviantArt', url: 'https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/96210354/3d-art' },
+            ]
+        },
+        {
+            title: 'Character Design',
+            icon: 'images/nav_icon_Work.gif',
+            description: 'A collection of my character designs',
+            urls: [
+                { platform: 'DeviantArt', url: 'https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/57218144/reference-images' }
+            ]
+        }
+    ];
+
+    fetchGalleryData(galleryData[0], '.gallery-grid-home', 5);
+    fetchGalleryData(galleryData[0], '.gallery-grid-full');
+    setupGalleries(galleryData);
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -85,7 +121,7 @@ function displayVideos(gridSelector, videos) {
 
     videos.forEach(video => {
         html += `
-            <div class="video-card">
+            <div class="video-card gallery-youtube">
                 <iframe src="https://www.youtube.com/embed/${video.id}" frameborder="0" allowfullscreen></iframe>
                 <h4>${video.title}</h4>
             </div>`;
@@ -95,23 +131,41 @@ function displayVideos(gridSelector, videos) {
 }   
 
 function fetchGalleryData(endpoint, gridSelector, limit = null) {
-    fetch(endpoint)
-        .then(response => response.text())
-        .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
-        .then(data => {
-            const items = Array.from(data.querySelectorAll("item"));
+    const fetchPromises = endpoint.urls.map(urlObj => fetch(urlObj.url).then(response => response.text()));
+    
+    Promise.all(fetchPromises)
+        .then(responses => {
+            const parser = new window.DOMParser();
+            const itemsMap = new Map();
+
+            responses.forEach((response, index) => {
+                const data = parser.parseFromString(response, "text/xml");
+                const items = Array.from(data.querySelectorAll("item"));
+                const platform = endpoint.urls[index].platform.toLowerCase();
+
+                items.forEach(el => {
+                    const title = el.querySelector("title").textContent;
+                    const link = el.querySelector("link").textContent;
+                    const image = el.querySelector("media\\:content, content").getAttribute("url");
+
+                    if (!itemsMap.has(title)) {
+                        itemsMap.set(title, { title, link, image, platforms: [platform] });
+                    } else {
+                        const existingItem = itemsMap.get(title);
+                        existingItem.platforms.push(platform);
+                    }
+                });
+            });
+
             let html = '';
-            const displayedItems = limit ? items.slice(0, limit) : items;
+            const displayedItems = limit ? Array.from(itemsMap.values()).slice(0, limit) : Array.from(itemsMap.values());
 
-            displayedItems.forEach(el => {
-                const title = el.querySelector("title").textContent;
-                const link = el.querySelector("link").textContent;
-                const image = el.querySelector("media\\:content, content").getAttribute("url");
-
+            displayedItems.forEach(item => {
+                const platformClasses = item.platforms.length > 1 ? '' : item.platforms.map(platform => `gallery-${platform}`).join(' ');
                 html += `
-                    <div class="gallery-card grid-item" data-link="${link}" data-image="${image}">
-                        <img src="${image}" alt="${title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
-                        <h4 style="color: #FFFFFF; margin-top: 10px; font-size: 1em;">${title}</h4>
+                    <div class="gallery-card ${platformClasses} grid-item" data-link="${item.link}" data-image="${item.image}">
+                        <img src="${item.image}" alt="${item.title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
+                        <h4 style="color: #FFFFFF; margin-top: 10px; font-size: 1em;">${item.title}</h4>
                     </div>`;
             });
 
@@ -124,6 +178,53 @@ function fetchGalleryData(endpoint, gridSelector, limit = null) {
             errorMessage.innerHTML = 'Failed to load items. Please try again later.';
             errorMessage.classList.add('error-message');
         });
+}
+
+function setupGalleries(galleryData) {
+    const dropdownContent = document.querySelector(".dropdown-content-gallery");
+    const mainContainer = document.querySelector('page');
+
+    let dropdownHtml = '';
+
+    galleryData.slice(1).forEach((gallery) => {
+        const urlFriendlyTitle = gallery.title.replace(/\s+/g, '-');
+        dropdownHtml += `
+            <div class="dropdown-item">
+                <a href="#gallery-${urlFriendlyTitle}" onclick="showPage('gallery-${urlFriendlyTitle}')">${gallery.title}</a>
+                <div class="nav-hover-image-dropdown" style="background: url('${gallery.icon}') center/cover no-repeat;"></div>
+            </div>`;
+
+        const galleryPage = document.createElement('div');
+        galleryPage.id = `gallery-${gallery.title.replace(/\s+/g, '-')}`;
+        galleryPage.className = 'page';
+
+        galleryPage.innerHTML = `
+            <h2 class="center-text">${gallery.title}</h2>
+            <p class="center-text">${gallery.description}</p>
+            <div class="gallery-grid gallery-grid-${urlFriendlyTitle}">
+                <!-- Artwork thumbnails will be inserted dynamically -->
+            </div>
+            <div class="button-container">
+                    <a href="https://www.deviantart.com/RilyRobo" target="_blank" rel="noopener noreferrer" class="button deviantart-button">
+                        More on DeviantArt
+                    </a>
+                    <a href="https://www.artstation.com/RilyRobo" target="_blank" rel="noopener noreferrer" class="button artstation-button">
+                        More on Artstation
+                    </a>
+            </div>`;
+        mainContainer.appendChild(galleryPage);
+
+        fetchGalleryData(gallery, `.gallery-grid-${urlFriendlyTitle}`);
+    });
+
+    dropdownContent.innerHTML = dropdownHtml;
+    const galleryPreviews = document.querySelectorAll(".gallery-preview");
+    galleryPreviews.forEach(preview => {
+        preview.addEventListener("click", () => {
+            const target = preview.getAttribute("data-target");
+            showPage(target);
+        });
+    });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -145,7 +246,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function setupComics(comicsList) {
-    const dropdownContent = document.querySelector(".dropdown-content");
+    const dropdownContent = document.querySelector(".dropdown-content-comics");
     const comicsGrid = document.querySelector("#comics-grid");
 
     let dropdownHtml =  '';//`<a href="#comics" onclick="showPage('comics')">Comics</a>`;
@@ -584,57 +685,57 @@ document.addEventListener("DOMContentLoaded", () => {
         const setText = (id, value) => {
             const element = document.getElementById(id);
             if (element) {
-                element.textContent = `$${value}`;
+                element.textContent = `${value}`;
             }
         };
 
         // 2D Artwork
-        setText('2d-sketch-portrait', prices["2d"].sketch.portrait);
-        setText('2d-sketch-upperhalf', prices["2d"].sketch.upperhalf);
-        setText('2d-sketch-fullbody', prices["2d"].sketch.fullbody);
-        setText('2d-lineart-portrait', prices["2d"].lineart.portrait);
-        setText('2d-lineart-upperhalf', prices["2d"].lineart.upperhalf);
-        setText('2d-lineart-fullbody', prices["2d"].lineart.fullbody);
-        setText('2d-flatcolors-portrait', prices["2d"].flatcolors.portrait);
-        setText('2d-flatcolors-upperhalf', prices["2d"].flatcolors.upperhalf);
-        setText('2d-flatcolors-fullbody', prices["2d"].flatcolors.fullbody);
-        setText('2d-shading-portrait', prices["2d"].shading.portrait);
-        setText('2d-shading-upperhalf', prices["2d"].shading.upperhalf);
-        setText('2d-shading-fullbody', prices["2d"].shading.fullbody);
+        setText('2d-sketch-portrait', `$${prices["2d"].sketch.portrait}`);
+        setText('2d-sketch-upperhalf', `$${prices["2d"].sketch.upperhalf}`);
+        setText('2d-sketch-fullbody', `$${prices["2d"].sketch.fullbody}`);
+        setText('2d-lineart-portrait', `$${prices["2d"].lineart.portrait}`);
+        setText('2d-lineart-upperhalf', `$${prices["2d"].lineart.upperhalf}`);
+        setText('2d-lineart-fullbody', `$${prices["2d"].lineart.fullbody}`);
+        setText('2d-flatcolors-portrait', `$${prices["2d"].flatcolors.portrait}`);
+        setText('2d-flatcolors-upperhalf', `$${prices["2d"].flatcolors.upperhalf}`);
+        setText('2d-flatcolors-fullbody', `$${prices["2d"].flatcolors.fullbody}`);
+        setText('2d-shading-portrait', `$${prices["2d"].shading.portrait}`);
+        setText('2d-shading-upperhalf', `$${prices["2d"].shading.upperhalf}`);
+        setText('2d-shading-fullbody', `$${prices["2d"].shading.fullbody}`);
 
         // Backgrounds
-        setText('2d-background-colourgradient', prices["2d"].background.colourgradient);
-        setText('2d-background-detailedbackground', prices["2d"].background.detailedbackground);
+        setText('2d-background-colourgradient', `$${prices["2d"].background.colourgradient}`);
+        setText('2d-background-detailedbackground', `$${prices["2d"].background.detailedbackground}`);
 
         // 3D Artwork
-        setText('3d-lowpoly', `${prices["3d"].lowpoly.low} - $${prices["3d"].lowpoly.high}`);
-        setText('3d-midpoly', `${prices["3d"].midpoly.low} - $${prices["3d"].midpoly.high}`);
-        setText('3d-highpoly', `${prices["3d"].highpoly.low} - $${prices["3d"].highpoly.high}+`);
-        setText('3d-staticprop', `${prices["3d"].staticprop.low} - $${prices["3d"].staticprop.high}`);
-        setText('3d-dynamicprop', `${prices["3d"].dynamicprop.low} - $${prices["3d"].dynamicprop.high}`);
-        setText('3d-kitbashchar', `${prices["3d"].kitbashchar.low} - $${prices["3d"].kitbashchar.high}`);
-        setText('3d-kitbashprop', `${prices["3d"].kitbashprop.low} - $${prices["3d"].kitbashprop.high}`);
-        setText('3d-viseme', prices["3d"].viseme);
+        setText('3d-lowpoly', `$${prices["3d"].lowpoly.low} - $${prices["3d"].lowpoly.high}`);
+        setText('3d-midpoly', `$${prices["3d"].midpoly.low} - $${prices["3d"].midpoly.high}`);
+        setText('3d-highpoly', `$${prices["3d"].highpoly.low} - $${prices["3d"].highpoly.high}+`);
+        setText('3d-staticprop', `$${prices["3d"].staticprop.low} - $${prices["3d"].staticprop.high}`);
+        setText('3d-dynamicprop', `$${prices["3d"].dynamicprop.low} - $${prices["3d"].dynamicprop.high}`);
+        setText('3d-kitbashchar', `$${prices["3d"].kitbashchar.low} - $${prices["3d"].kitbashchar.high}`);
+        setText('3d-kitbashprop', `$${prices["3d"].kitbashprop.low} - $${prices["3d"].kitbashprop.high}`);
+        setText('3d-viseme', `$${prices["3d"].viseme}`);
 
         // VRChat Avatars
-        setText('avatar-fromScratch', `${prices["avatar"].fromScratch.lowpoly} - $${prices["avatar"].fromScratch.highpoly}+`);
-        setText('avatar-kitbashing', `${prices["avatar"].kitbashing.low} - $${prices["avatar"].kitbashing.high}+`);
-        setText('avatar-customClothing', `${prices["avatar"].customClothing.low} - $${prices["avatar"].customClothing.high}`);
-        setText('avatar-texturing', `${prices["avatar"].texturing.low} - $${prices["avatar"].texturing.high}`);
-        setText('avatar-expressions', `${prices["avatar"].expressions.low} - $${prices["avatar"].expressions.high}`);
-        setText('avatar-rigging', `${prices["avatar"].rigging.low} - $${prices["avatar"].rigging.high}`);
+        setText('avatar-fromScratch', `$${prices["avatar"].fromScratch.lowpoly} - $${prices["avatar"].fromScratch.highpoly}+`);
+        setText('avatar-kitbashing', `$${prices["avatar"].kitbashing.low} - $${prices["avatar"].kitbashing.high}+`);
+        setText('avatar-customClothing', `$${prices["avatar"].customClothing.low} - $${prices["avatar"].customClothing.high}`);
+        setText('avatar-texturing', `$${prices["avatar"].texturing.low} - $${prices["avatar"].texturing.high}`);
+        setText('avatar-expressions', `$${prices["avatar"].expressions.low} - $${prices["avatar"].expressions.high}`);
+        setText('avatar-rigging', `$${prices["avatar"].rigging.low} - $${prices["avatar"].rigging.high}`);
 
         // VRChat Extras
-        setText('vrchat-dynamicBones', `${prices["vrchat"].dynamicBones.low} - $${prices["vrchat"].dynamicBones.high}`);
-        setText('vrchat-animations', `${prices["vrchat"].animations.low} - $${prices["vrchat"].animations.high}`);
-        setText('vrchat-toggleSetups', `${prices["vrchat"].toggleSetups.low} - $${prices["vrchat"].toggleSetups.high}`);
-        setText('vrchat-questConversion', `${prices["vrchat"].questConversion.low} - $${prices["vrchat"].questConversion.high}`);
-        setText('vrchat-customEffects', `${prices["vrchat"].customEffects.low} - $${prices["vrchat"].customEffects.high}`);
+        setText('vrchat-dynamicBones', `$${prices["vrchat"].dynamicBones.low} - $${prices["vrchat"].dynamicBones.high}`);
+        setText('vrchat-animations', `$${prices["vrchat"].animations.low} - $${prices["vrchat"].animations.high}`);
+        setText('vrchat-toggleSetups', `$${prices["vrchat"].toggleSetups.low} - $${prices["vrchat"].toggleSetups.high}`);
+        setText('vrchat-questConversion', `$${prices["vrchat"].questConversion.low} - $${prices["vrchat"].questConversion.high}`);
+        setText('vrchat-customEffects', `$${prices["vrchat"].customEffects.low} - $${prices["vrchat"].customEffects.high}`);
 
         // Game & VTuber Conversion
-        setText('conversion-vtuber', `${prices["conversion"].vtuber.low} - $${prices["conversion"].vtuber.high}`);
-        setText('conversion-retargeting', `${prices["conversion"].retargeting.low} - $${prices["conversion"].retargeting.high}`);
-        setText('conversion-faceTracking', `${prices["conversion"].faceTracking.low} - $${prices["conversion"].faceTracking.high}`);
+        setText('conversion-vtuber', `$${prices["conversion"].vtuber.low} - $${prices["conversion"].vtuber.high}`);
+        setText('conversion-retargeting', `$${prices["conversion"].retargeting.low} - $${prices["conversion"].retargeting.high}`);
+        setText('conversion-faceTracking', `$${prices["conversion"].faceTracking.low} - $${prices["conversion"].faceTracking.high}`);
 
         // Additional Costs
         setText('2d-adition-character', `${prices["2d"].additionalMultiplier * 100}%`);
@@ -643,7 +744,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setText('additional-nsfw2d', `${prices["additional"].nsfw * 100}%`);
         setText('additional-nsfw3d', `${prices["additional"].nsfw * 100}%`);
         setText('additional-nsfw', `${prices["additional"].nsfw * 100}%`);
-        setText('additional-edits', prices["additional"].additionalEdits);
+        setText('additional-edits', `$${prices["additional"].additionalEdits}`);
 
         const setMax = (id, value) => {
             const element = document.getElementById(id);
@@ -658,6 +759,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setMax('clothing-complexity', prices["avatar"].customClothing.high);
         setMax('rigging-complexity', prices["avatar"].rigging.high);
         setMax('dynamic-bones', prices["vrchat"].dynamicBones.high);
+        setMax('props-complexity', prices["3d"].dynamicprop.high);
     }
 
     setPrices(prices);
@@ -689,9 +791,9 @@ function updateComplexityValue() {
     document.getElementById('complexity-value').textContent = `$${complexity}`;
     document.getElementById('complexity-comment').textContent = 
         complexity == 0 ? 'No model' : 
-        complexity <= prices["3d"].lowpoly.high ? 'Low-poly model 3-5k Tris' : 
-        complexity <= prices["3d"].midpoly.high ? 'Mid-poly model 10-20k Tris' : 
-        'High-poly model 50k+ Tris';
+        complexity <= prices["3d"].lowpoly.high ? 'Low-Poly Model (3-5k Tris): Simplified geometry for efficiency, often used in mobile games or distant objects.' : 
+        complexity <= prices["3d"].midpoly.high ? 'Mid-Poly Model (10-20k Tris): Balanced detail suitable for most in-game characters and environments.' : 
+        'High-Poly Model (50k+ Tris): High-detail geometry for realism, used in cinematics or close-up renders.';
 }
 
 // Update Sliders and Inputs
@@ -721,9 +823,9 @@ function updateTexturingValue() {
     document.getElementById('texturing-value').textContent = `$${complexity}`;
     document.getElementById('texturing-comment').textContent = 
         complexity == 0 ? 'No Texturing' : 
-        complexity <= prices["avatar"].texturing.low ? 'Basic Texturing' : 
-        complexity <= prices["avatar"].texturing.high-1 ? 'Intermediate Texturing' : 
-        'High-Quality Texturing';
+        complexity <= prices["avatar"].texturing.low ? 'Basic Texturing: Simple textures with flat colors or basic patterns, minimal detail or shading.' : 
+        complexity <= prices["avatar"].texturing.high-1 ? 'Intermediate Texturing: Moderately detailed textures, including proper UV mapping, basic shading, and surface features.' : 
+        'High-Quality Texturing: Highly detailed textures with advanced realism, including fine surface details, complex shading, and material depth (e.g., PBR workflow).';
 }
 
 // Update rigging complexity
@@ -734,6 +836,16 @@ function updateRiggingComplexityValue() {
         complexity == 0 ? 'No Rigging' : 
         complexity <= prices["avatar"].rigging.low ? 'Basic Rigging: A simple rig with minimal bones and basic functionality, allowing for limited movement like simple poses or expressions.' : 
         'Advanced Rigging: A highly detailed rig with comprehensive functionality, including complex bone structures, IK (inverse kinematics), controllers, and facial expressions for smooth, dynamic animations.';
+}
+
+function updatePropComplexityValue() {
+    const complexity = document.getElementById('props-complexity').value;
+    document.getElementById('props-complexity-value').textContent = `$${complexity}`;
+    document.getElementById('props-complexity-comment').textContent = 
+        complexity == 0 ? 'No Props' : 
+        complexity <= prices["3d"].staticprop.low ? 'Basic Prop: Simple static prop with minimal details.' : 
+        complexity <= prices["3d"].dynamicprop.high-1 ? 'Intermediate Prop: Moderately detailed prop with some dynamic elements.' : 
+        'Advanced Prop: Highly detailed prop with complex dynamic elements.';
 }
 
 // Price Calculation
@@ -752,21 +864,20 @@ function calculatePrice() {
         basePrice += background;
     } else if (type === '3d') {
         basePrice = parseInt(document.getElementById('complexity').value);
-        basePrice += parseInt(document.getElementById('clothing-complexity').value);
-        basePrice += parseInt(document.getElementById('customClothing-items').value) * 50;
-        basePrice += parseInt(document.getElementById('props').value) * 50;
+        basePrice += parseInt(document.getElementById('clothing-complexity').value) * parseInt(document.getElementById('customClothing-items').value);
+        basePrice += parseInt(document.getElementById('props-complexity').value) * parseInt(document.getElementById('props').value);
         basePrice += parseInt(document.getElementById('texturing').value);
         basePrice += parseInt(document.getElementById('rigging-complexity').value);
         basePrice += parseInt(document.getElementById('dynamic-bones').value);
-        basePrice += parseInt(document.getElementById('toggles').value) * 15;
-        basePrice += parseInt(document.getElementById('custom-expressions').value) * 10;
-        if (document.getElementById('quest-optimization').checked) basePrice += 100;
+        basePrice += parseInt(document.getElementById('toggles').value) * prices["vrchat"].toggleSetups.low;
+        basePrice += parseInt(document.getElementById('custom-expressions').value) * prices["avatar"].expressions.low;
+        if (document.getElementById('quest-optimization').checked) basePrice += prices["vrchat"].questConversion.low;
     }
 
     // Additional Costs
-    const nsfw = document.getElementById('nsfw').checked ? basePrice * 0.2 : 0;
-    const rushOrder = document.getElementById('rushOrder').checked ? basePrice * 0.25 : 0;
-    const commercialUse = document.getElementById('commercialUse').checked ? basePrice * 0.5 : 0;
+    const nsfw = document.getElementById('nsfw').checked ? basePrice * prices["additional"].nsfw : 0;
+    const rushOrder = document.getElementById('rushOrder').checked ? basePrice * prices["additional"].rushOrder : 0;
+    const commercialUse = document.getElementById('commercialUse').checked ? basePrice * prices["additional"].commercialUse : 0;
 
     basePrice += nsfw + rushOrder + commercialUse;
     document.getElementById('result').innerText = `Total Price: $${basePrice.toFixed(2)}`;
