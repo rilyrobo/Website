@@ -656,6 +656,14 @@ form button:hover {
   text-align: center;
 }
 
+.gallery-deviantart {
+  border: 1px solid #04A045;
+}
+
+.gallery-artstation {
+  border: 1px solid #42A5F5FF;
+}
+
 .gallery-card img, .video-card iframe {
   width: 100%;
   height: auto;
