@@ -212,6 +212,9 @@ function setupGalleries(galleryData) {
                     <a href="https://www.deviantart.com/RilyRobo" target="_blank" rel="noopener noreferrer" class="button deviantart-button">
                         More on DeviantArt
                     </a>
+                    <a href="https://www.artstation.com/RilyRobo" target="_blank" rel="noopener noreferrer" class="button artstation-button">
+                        More on Artstation
+                    </a>
                 </div>`;
             mainContainer.appendChild(galleryPage);
 
