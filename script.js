@@ -14,10 +14,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener("DOMContentLoaded", () => {
     const galleryData = [
-        {url: 'https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/31357645/featured', title: 'Featured', icon: 'images/nav_icon_Work.gif', description: 'A collection of my latest work'},
-        {url: 'https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/96210416/2d-art', title: '2D Art', icon: 'images/nav_icon_Work.gif', description: 'A collection of my 2D artwork'},
-        {url: 'https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/96210354/3d-art', title: '3D Art', icon: 'images/nav_icon_Work.gif', description: 'A collection of my 3D artwork'},
-        {url: 'https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/57218144/reference-images', title: 'Character Design', icon: 'images/nav_icon_Work.gif', description: 'A collection of my character designs'},
+        {url: 'https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/31357645/featured', title: 'Featured', icon: 'images/icon/nav_icon_Work.gif', description: 'A collection of my latest work'},
+        {url: 'https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/96210416/2d-art', title: '2D Art', icon: 'images/icon/nav_icon_Work.gif', description: 'A collection of my 2D artwork'},
+        {url: 'https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/96210354/3d-art', title: '3D Art', icon: 'images/icon/nav_icon_3D.gif', description: 'A collection of my 3D artwork'},
+        {url: 'https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/57218144/reference-images', title: 'Character Design', icon: 'images/icon/nav_icon_Work.gif', description: 'A collection of my character designs'},
     ];
     
     fetchGalleryData(galleryData[0], '.gallery-grid-home', 5);
@@ -234,8 +234,8 @@ function setupGalleries(galleryData) {
 
 document.addEventListener("DOMContentLoaded", () => {
     const comicsList = [
-        { title: "The Day Nobody Died", file: "comics/day-nobody-died.csv", icon: "images/comic_icon_The-Day-Nobody-Died.ico" },
-        { title: "The King and Guardian", file: "comics/king-and-guardian.csv", icon: "images/comic_icon_The-King-and-Guardian.ico" },
+        { title: "The Day Nobody Died", file: "comics/day-nobody-died.csv", icon: "images/icon/comic_icon_The-Day-Nobody-Died.ico" },
+        { title: "The King and Guardian", file: "comics/king-and-guardian.csv", icon: "images/icon/comic_icon_The-King-and-Guardian.ico" },
     ];
 
     setupComics(comicsList);
@@ -440,6 +440,7 @@ function displayComicImage(images, comicIndex, currentIndex) {
         const { Title, ImageUrl } = images[currentIndex];
         imageElement.src = ImageUrl;
         imageElement.alt = Title;
+        ScrollToTop();
     } else {
         console.error(`Error fetching comic gallery for index ${comicIndex}: Image data is undefined.`);
     }
@@ -526,7 +527,7 @@ function showPage(pageId) {
     navLinks.classList.remove('show');
 
     history.pushState(null, '', `#${pageId}`);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    ScrollToTop();
 }
     
 document.querySelectorAll("nav a:not([href^='http'])").forEach(link => {
@@ -540,7 +541,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const myGames = [
         {
             title: "Unnamed Game Project",
-            image: "images/game_projectt.jpg",
+            image: "images/game/game_projectt.jpg",
             description: "2013 A horror game project that was never completed. The game was to be a 2D gamemaker 8 engine horror, adventure game with a focus on story and atmosphere. The player would explore a world overtaken by monsters and fleshy masses with pills to swap between the apocolyptic world and a modern world with the ability to by pass threats and puzzles by changing worlds.",
             links: [
                 
@@ -548,7 +549,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             title: "Secured Maze",
-            image: "images/game_securedmaze.jpg",
+            image: "images/game/game_securedmaze.jpg",
             description: "2016 The Secured Maze was a 2.5D gamemaker 8 engine horror game, the player would travel through mazes gathering keys to open gates to find elevators to travel deeper.The players own sense would betray them as some monsters would rely on the players use of hearing and sight to track them down, requiring the player to block these sense and struggle to make it through the mazes",
             links: [
                 
@@ -556,7 +557,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             title: "VRChat Retro Game Recreation",
-            image: "images/game_arcaderecreation.jpg",
+            image: "images/game/game_arcaderecreation.jpg",
             description: "2023- An on-going project to create immersive retro arcade game cabinent assets and standalone games for use in VRChat. With various gameplay styles such as space invaders, arcanoid / block breaker, pong, snake, and more.",
             links: [
                 { name: "Circus", url: "https://vrchat.com/home/launch?worldId=wrld_62530ca6-fbec-4b70-b249-7b79cc38d825" },
@@ -568,7 +569,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const contributedGames = [
         {
             title: "Insert Paper",
-            image: "images/game_insertpaper.jpg",
+            image: "images/game/game_insertpaper.jpg",
             description: "2017 Before any professional training I joined the group Startreming for a short while. I did character modeling, UV unwrapping, texturing, rigging and test animating those characters",
             links: [
                 { name: "Steam", url: "https://store.steampowered.com/app/661490/Insert_Paper/" }
@@ -576,7 +577,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             title: "CRITICAL MASS EPISODE I",
-            image: "images/game_criticalmass.jpg",
+            image: "images/game/game_criticalmass.jpg",
             description: "2021-2023 As a Technical Animator, I was responsible for rigging characters and props, creating placeholder animations, and I animated some background assets. My contributions ensured smooth and realistic movement were possible, enhancing the overall visual experience of the game.",
             links: [
                 { name: "Website", url: "https://www.arcadiagameworks.com/games" },
@@ -941,7 +942,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-    const commissionsFolder = 'commissions';
+    const commissionsFolder = 'images/commissions';
     const commissionsSlider = document.querySelector('.commissions-slider');
     const exampleImageModal = document.getElementById('example-image-modal');
     const exampleImageModalImg = document.getElementById('example-image-modal-img');
@@ -1023,3 +1024,7 @@ function toggleMobileNav() {
     const navLinks = document.getElementById('nav-links');
     navLinks.classList.toggle('show');
 };
+
+function ScrollToTop() {
+    window.scrollTo(0,0);
+}

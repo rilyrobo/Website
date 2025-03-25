@@ -107,7 +107,7 @@ nav a:hover {
   width: 75px;
   height: 75px;
   background-color: #ffcc00;
-  background: url('images/nav_icon.gif') center/cover no-repeat;
+  background: url('images/icon/nav_icon.gif') center/cover no-repeat;
   display: none;
   transition: all 0.3s;
   opacity: 0;
@@ -254,7 +254,7 @@ nav a:hover {
 }
 
 .home-page {
-  background: url('images/background.jpg') center/cover repeat;
+  background: url('images/background.png') center/cover repeat;
   color: white;
   text-align: center;
   padding: 50px 20px;
