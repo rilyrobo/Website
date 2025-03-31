@@ -532,7 +532,7 @@ nav a:hover {
   color: #d3b8b8;
 }
 
-.social-media a {
+.social-media a, .social-contact a {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -546,11 +546,11 @@ nav a:hover {
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-.social-media a:hover {
+.social-media a:hover, .social-contact a:hover {
   transform: scale(1.05);
 }
 
-.social-media-icon {
+.social-media-icon, .social-contact-icon {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -558,7 +558,7 @@ nav a:hover {
   gap: 10px;
 }
 
-.social-media-icon a {
+.social-media-icon a, .social-contact-icon a {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -571,35 +571,35 @@ nav a:hover {
   transition: transform 0.3s ease;
 }
 
-.social-media-icon a:hover {
+.social-media-icon a:hover, .social-contact-icon a:hover {
   transform: scale(1.2);
 }
 
-.social-media-icon img {
+.social-media-icon img, .social-contact-icon img {
   width: 24px;
   height: 24px;
   margin: 0;
 }
 
-.social-post {
+.social-post, .contact-post {
   margin-bottom: 20px;
 }
 
-.social-media-grid {
+.social-media-grid, .social-contact-grid {
   text-align: center;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
 }
 
-.social-media-grid a:hover {
-    transform: scale(1.2);
+.social-media-grid a:hover, .social-contact-grid a:hover {
+  transform: scale(1.2);
 }
 
-.social-media-grid img {
-    width: 24px;
-    height: 24px;
-    margin: 0;
+.social-media-grid img, .social-contact-grid img {
+  width: 24px;
+  height: 24px;
+  margin: 0;
 }
 
 footer {
@@ -1204,4 +1204,9 @@ a:hover, button:hover, .card:hover {
     font-size: 0.9em;
     color: #666;
   }
+}
+
+.tab {
+  display: inline-block;
+  margin-left: 40;
 }
