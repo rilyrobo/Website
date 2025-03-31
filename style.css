@@ -44,7 +44,7 @@ header p {
 nav {
   position: sticky;
   top: 0;
-  background: linear-gradient(to right, black, #660000, black);
+  background: radial-gradient(ellipse at top center, #660000, black);
   display: flex;
   justify-content: center;
   gap: 1rem;
