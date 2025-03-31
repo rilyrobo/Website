@@ -26,6 +26,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 const username = "RilyRobo";
+const discordID = "277498825403531264";
+
 const platforms = [
     { name: "Twitter", url: `https://twitter.com/${username}`, icon: "https://img.icons8.com/?size=100&id=phOKFKYpe00C&format=png&color=ffffff" , color: "#1A91DA" },
     { name: "Instagram", url: `https://instagram.com/${username}`, icon: "https://img.icons8.com/?size=100&id=32309&format=png&color=ffffff" , color: "#C13584" },
@@ -44,7 +46,7 @@ const contacts = [
     { name: "Twitter", url: `https://twitter.com/${username}`, icon: "https://img.icons8.com/?size=100&id=phOKFKYpe00C&format=png&color=ffffff" , color: "#1A91DA" },
     { name: "Ko-fi", url: `https://www.ko-fi.com/${username}`, icon: "https://img.icons8.com/?size=100&id=8342&format=png&color=ffffff" , color: "#E6C200" },
     { name: "Email", url: `mailto:${username}@gmail.com`, icon: "https://img.icons8.com/?size=100&id=60688&format=png&color=ffffff" , color: "#ffffff" },
-    { name: "Discord", url: `https://discordapp.com/users/277498825403531264`, icon: "https://img.icons8.com/?size=100&id=30888&format=png&color=ffffff" , color: "#7289da" },
+    { name: "Discord", url: `https://discordapp.com/users/${discordID}`, icon: "https://img.icons8.com/?size=100&id=30888&format=png&color=ffffff" , color: "#7289da" },
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -1107,5 +1109,4 @@ function loadAboutContent() {
         });
 }
 
-// Call the function when the page loads
 document.addEventListener('DOMContentLoaded', loadAboutContent);
