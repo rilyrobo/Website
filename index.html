@@ -47,12 +47,21 @@
                 <div class="nav-item">
                     <a href="#social" onclick="showPage('social')">Social Media</a>
                 </div>
-                <div class="nav-item">
-                    <a href="#storefront" onclick="showPage('storefront')">Merch Store</a>
+                
+                <div class="dropdown nav-item">
+                    <a>Shops</a>
+                    <div class="dropdown-content dropdown-content-stores">
+                        <div class="dropdown-item">
+                            <a href="#merch-shop" onclick="showPage('merch-shop')">Merch Shop</a>
+                            <div class="nav-hover-image-dropdown" style="background: url('images/icon/nav_icon_Gallery.gif') center/cover no-repeat;"></div>
+                        </div>
+                        <div class="dropdown-item">
+                            <a href="#gumroad-shop" onclick="showPage('gumroad-shop')">Gumroad Shop</a>
+                            <div class="nav-hover-image-dropdown" style="background: url('images/icon/nav_icon_Gallery.gif') center/cover no-repeat;"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="nav-item">
-                    <a href="#gumroad-shop" onclick="showPage('gumroad-shop')">Gumroad Shop</a>
-                </div>
+
                 <div class="nav-item">
                     <a href="#about-me" onclick="showPage('about-me')">About</a>
                 </div>
@@ -110,14 +119,22 @@
                 <a href="#social" onclick="showPage('social')">Social Media</a>
                 <div id="nav-image"></div>
             </div>
-            <div class="nav-item">
-                <a href="#storefront" onclick="showPage('storefront')">Merch Store</a>
-                <div id="nav-image" style="background: url('images/icon/nav_icon_Merch.gif') center/cover no-repeat;"></div>
+                
+            <div class="dropdown nav-item">
+                <a>Shops</a>
+                <div id="nav-image" style="background: url('images/icon/nav_icon_Gallery.gif') center/cover no-repeat;"></div>
+                <div class="dropdown-content dropdown-content-stores">
+                    <div class="dropdown-item">
+                        <a href="#merch-shop" onclick="showPage('merch-shop')">Merch Shop</a>
+                        <div class="nav-hover-image-dropdown" style="background: url('images/icon/nav_icon_Gallery.gif') center/cover no-repeat;"></div>
+                    </div>
+                    <div class="dropdown-item">
+                        <a href="#gumroad-shop" onclick="showPage('gumroad-shop')">Gumroad Shop</a>
+                        <div class="nav-hover-image-dropdown" style="background: url('images/icon/nav_icon_Gallery.gif') center/cover no-repeat;"></div>
+                    </div>
+                </div>
             </div>
-            <div class="nav-item">
-                <a href="#gumroad-shop" onclick="showPage('gumroad-shop')">Gumroad Shop</a>
-                <div id="nav-image" style="background: url('images/icon/nav_icon_Store.gif') center/cover no-repeat;"></div>
-            </div>
+
             <div class="nav-item">
                 <a href="#about-me" onclick="showPage('about-me')">About</a>
                 <div id="nav-image" style="background: url('images/icon/nav_icon_About.gif') center/cover no-repeat;"></div>
@@ -541,8 +558,8 @@
             </div>
 
             <!-- Merchandise Store Page -->
-            <div id="storefront" class="page">
-                <h2  class="center-text">Merchandise Store</h2>
+            <div id="merch-shop" class="page">
+                <h2  class="center-text">Merchandise Shop</h2>
                 <div class="teespring-store">
                     <iframe id="teespring-iframe" 
                             src="https://my-store-c7ca26-2.creator-spring.com" 
