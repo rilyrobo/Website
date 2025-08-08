@@ -427,6 +427,13 @@ nav a:hover {
   overflow: auto;
 }
 
+.jinxxy-iframe {
+  width: 100%;
+  min-height: 3000px;
+  border: none;
+  overflow: auto;
+}
+
 .gumroad-item {
   border: 1px solid #ccc;
   border-radius: 10px;

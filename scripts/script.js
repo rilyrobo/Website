@@ -215,12 +215,16 @@ document.querySelectorAll("nav a:not([href^='http'])").forEach(link => {
 document.addEventListener("DOMContentLoaded", () => {
     const teespringIframe = document.getElementById("teespring-iframe");
     const gumroadIframe = document.getElementById("gumroad-iframe");
+    const jinxxyIframe = document.getElementById("jinxxy-iframe");
 
     if (teespringIframe) {
         teespringIframe.src = "https://my-store-c7ca26-2.creator-spring.com";
     }
     if (gumroadIframe) {
         gumroadIframe.src = "https://gumroad.com/rilyrobo";
+    }
+    if (jinxxyIframe) {
+        jinxxyIframe.src = "https://jinxxy.com/rilyrobo";
     }
 });
 

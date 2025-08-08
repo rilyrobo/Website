@@ -53,17 +53,23 @@
                     <div class="dropdown-content dropdown-content-stores">
                         <div class="dropdown-item">
                             <a href="#merch-shop" onclick="showPage('merch-shop')">Merch Shop</a>
-                            <div class="nav-hover-image-dropdown" style="background: url('images/icon/nav_icon_Gallery.gif') center/cover no-repeat;"></div>
+                            <div class="nav-hover-image-dropdown" style="background: url('https://img.icons8.com/?size=100&id=4tClae3w0QTm&format=png&color=FFFFFF') center/cover no-repeat;"></div>
                         </div>
                         <div class="dropdown-item">
                             <a href="#gumroad-shop" onclick="showPage('gumroad-shop')">Gumroad Shop</a>
-                            <div class="nav-hover-image-dropdown" style="background: url('images/icon/nav_icon_Gallery.gif') center/cover no-repeat;"></div>
+                            <div class="nav-hover-image-dropdown" style="background: url('https://img.icons8.com/?size=100&id=UhoUR89JYXbb&format=png&color=FFFFFF') center/cover no-repeat;"></div>
                         </div>
                         <div class="dropdown-item">
                             <a href="https://rilyrobo.booth.pm/" target="_blank" rel="noopener noreferrer">
                             <img src="https://asset.booth.pm/assets/booth_logo-cd38e1da31e93676b081bd8f0aca2805f758f514c8e95dc3f1a8aac5e58dffec.svg" alt="Booth Store">
                             </a>
                             <div class="nav-hover-image-dropdown" style="background: url('https://img.icons8.com/?size=100&id=85777&format=png&color=FFFFFF') center/cover no-repeat;"></div>
+                        </div>
+                        <div class="dropdown-item">
+                            <a href="#jinxxy-shop" onclick="showPage('jinxxy-shop')">
+                            <img src="images/icon/logo_jinxxy.jpg" alt="Jinxxy Store">
+                            </a>
+                            <div class="nav-hover-image-dropdown" style="background: url('images/icon/nav_icon_Gallery.gif') center/cover no-repeat;"></div>
                         </div>
                     </div>
                 </div>
@@ -127,16 +133,16 @@
             </div>
                 
             <div class="dropdown nav-item">
-                <a>Shops</a>
+                <a href="#all-shop" onclick="showPage('all-shop')">Shops</a>
                 <div id="nav-image" style="background: url('images/icon/nav_icon_Gallery.gif') center/cover no-repeat;"></div>
                 <div class="dropdown-content dropdown-content-stores">
                     <div class="dropdown-item">
                         <a href="#merch-shop" onclick="showPage('merch-shop')">Merch Shop</a>
-                        <div class="nav-hover-image-dropdown" style="background: url('images/icon/nav_icon_Gallery.gif') center/cover no-repeat;"></div>
+                        <div class="nav-hover-image-dropdown" style="background: url('https://img.icons8.com/?size=100&id=4tClae3w0QTm&format=png&color=FFFFFF') center/cover no-repeat;"></div>
                     </div>
                     <div class="dropdown-item">
                         <a href="#gumroad-shop" onclick="showPage('gumroad-shop')">Gumroad Shop</a>
-                        <div class="nav-hover-image-dropdown" style="background: url('images/icon/nav_icon_Gallery.gif') center/cover no-repeat;"></div>
+                        <div class="nav-hover-image-dropdown" style="background: url('https://img.icons8.com/?size=100&id=UhoUR89JYXbb&format=png&color=FFFFFF') center/cover no-repeat;"></div>
                     </div>
                     <div class="dropdown-item">
                         <a href="https://rilyrobo.booth.pm/" target="_blank" rel="noopener noreferrer">
@@ -144,6 +150,12 @@
                         </a>
                         <div class="nav-hover-image-dropdown" style="background: url('https://img.icons8.com/?size=100&id=85777&format=png&color=FFFFFF') center/cover no-repeat;"></div>
                     </div>
+                        <div class="dropdown-item">
+                            <a href="#jinxxy-shop" onclick="showPage('jinxxy-shop')">
+                            <img src="images/icon/logo_jinxxy.jpg" alt="Jinxxy Store">
+                            </a>
+                            <div class="nav-hover-image-dropdown" style="background: url('images/icon/nav_icon_Gallery.gif') center/cover no-repeat;"></div>
+                        </div>
                 </div>
             </div>
 
@@ -588,6 +600,12 @@
                     <a href="https://rilyrobo.booth.pm/" target="_blank" rel="noopener noreferrer" style="display: block; text-align: center;">
                     <img src="https://asset.booth.pm/assets/booth_logo-cd38e1da31e93676b081bd8f0aca2805f758f514c8e95dc3f1a8aac5e58dffec.svg" alt="Booth Store">
                     </a>
+                </div> 
+                <h2  class="center-text">Jinxxy Shop</h2>
+                <div class="jinxxy-store">
+                    <a href="#jinxxy-shop" onclick="showPage('jinxxy-shop')" style="display: block; text-align: center;">
+                    <img src="images/icon/logo_jinxxy.jpg" alt="Jinxxy Store">
+                    </a>
                 </div>    
             </div>
 
@@ -612,6 +630,17 @@
                     class="gumroad-iframe"
                     scrolling="yes"
                     title="Gumroad Shop">
+                </iframe>
+            </div>
+            
+            <!-- Jinxxy Shop Page -->
+            <div id="jinxxy-shop" class="page">
+                <h2  class="center-text">Jinxxy Shop</h2>
+                <iframe id="jinxxy-iframe"
+                    src="https://jinxxy.com/rilyrobo"
+                    class="jinxxy-iframe"
+                    scrolling="no"
+                    title="Jinxxy Shop">
                 </iframe>
             </div>
             
