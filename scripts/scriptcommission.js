@@ -1,391 +1,551 @@
+// ── Price table ───────────────────────────────────────────────────────────────
 const prices = {
     "2d": {
-        sketch: { portrait: 8, upperhalf: 10, fullbody: 12 },
-        lineart: { portrait: 12, upperhalf: 14, fullbody: 16 },
+        sketch:     { portrait: 8,  upperhalf: 10, fullbody: 12 },
+        lineart:    { portrait: 12, upperhalf: 14, fullbody: 16 },
         flatcolors: { portrait: 16, upperhalf: 18, fullbody: 20 },
-        shading: { portrait: 20, upperhalf: 22, fullbody: 24 },
-        background: {
-            colourgradient: 0,
-            splashfilterphoto: 20,
-            vagueenvironment: 40,
-            detailedtargetmidground: 60,
-            detailedbackground: 150
-        },
-        additionalMultiplier: 0.5
+        shading:    { portrait: 20, upperhalf: 22, fullbody: 24 },
+        charMult: 0.5
     },
     "3d": {
-        lowpoly: { low: 150, high: 225 },
-        midpoly: { low: 225, high: 300 },
+        lowpoly:  { low: 150, high: 225 },
+        midpoly:  { low: 225, high: 300 },
         highpoly: { low: 300, high: 500 },
-        staticprop: { low: 30, high: 50 },
-        dynamicprop: { low: 50, high: 100 },
-        kitbashchar: { low: 75, high: 150 },
-        kitbashprop: { low: 75, high: 100 },
-        viseme: 10,
+        clothPerItem: { low: 30, high: 100 },
+        propPerItem:  { low: 50, high: 100 },
+        togglePer: 10, exprPer: 10, dynbonesPer: 10, quest: 50
     },
-    "avatar": {
-        fromScratch: { lowpoly: 150, midpoly: 225, highpoly: 300 },
-        kitbashing: { low: 75, high: 200 },
-        customClothing: { low: 30, high: 100 },
-        hairstyle: { low: 30, high: 100 },
-        texturing: { low: 30, high: 100 },
-        expressions: { low: 10, high: 50 },
-        rigging: { low: 30, high: 100 },
-        fbtOptimization: { low: 30, high: 100 },
-        optimization: { low: 30, high: 100 }
-    },
-    "vrchat": {
-        dynamicBones: { low: 10, high: 50 },
-        animations: { low: 10, high: 50 },
-        toggleSetups: { low: 10, high: 50 },
-        shaders: { low: 30, high: 100 },
-        questConversion: { low: 50, high: 150 },
-        customEffects: { low: 10, high: 100 }
-    },
-    "conversion": {
-        vtuber: { low: 50, high: 200 },
-        retargeting: { low: 30, high: 100 },
-        faceTracking: { low: 75, high: 300 }
-    },
-    "additional": {
-        rushOrder: 0.25,
-        commercialUse: 0.5,
-        nsfw: 0.2,
-        tax: 0.15,
-        additionalEdits: 10
-    }
+    bg: { splash: 20, vague: 40, mid: 60, full: 150 },
+    rig: { basic: 30, mid: 65, advanced: 100 },
+    tex: { low: 30, high: 100 },
+    additional: { nsfw: 0.20, rush: 0.25, commercial: 0.50 }
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-    function setPrices(prices) {
-        const setText = (id, value) => {
-            const element = document.getElementById(id);
-            if (element) {
-                element.textContent = `${value}`;
-            }
-        };
+// ── Calculator state ──────────────────────────────────────────────────────────
+const state = {
+    type: '2d',
+    style: 'sketch', coverage: 'portrait', chars: 1, bg: 0,
+    mesh: 'lowpoly', tex: 30, rig: 0,
+    cloth: 0, props: 0, toggles: 0, exprs: 0, dynbones: 0, quest: false,
+    nsfw: false, rush: false, commercial: false
+};
 
-        // 2D Artwork
-        setText('2d-sketch-portrait', `$${prices["2d"].sketch.portrait}`);
-        setText('2d-sketch-upperhalf', `$${prices["2d"].sketch.upperhalf}`);
-        setText('2d-sketch-fullbody', `$${prices["2d"].sketch.fullbody}`);
-        setText('2d-lineart-portrait', `$${prices["2d"].lineart.portrait}`);
-        setText('2d-lineart-upperhalf', `$${prices["2d"].lineart.upperhalf}`);
-        setText('2d-lineart-fullbody', `$${prices["2d"].lineart.fullbody}`);
-        setText('2d-flatcolors-portrait', `$${prices["2d"].flatcolors.portrait}`);
-        setText('2d-flatcolors-upperhalf', `$${prices["2d"].flatcolors.upperhalf}`);
-        setText('2d-flatcolors-fullbody', `$${prices["2d"].flatcolors.fullbody}`);
-        setText('2d-shading-portrait', `$${prices["2d"].shading.portrait}`);
-        setText('2d-shading-upperhalf', `$${prices["2d"].shading.upperhalf}`);
-        setText('2d-shading-fullbody', `$${prices["2d"].shading.fullbody}`);
-
-        // Backgrounds
-        setText('2d-background-colourgradient', `$${prices["2d"].background.colourgradient}`);
-        setText('2d-background-detailedbackground', `$${prices["2d"].background.detailedbackground}`);
-
-        // 3D Artwork
-        setText('3d-lowpoly', `$${prices["3d"].lowpoly.low} - $${prices["3d"].lowpoly.high}`);
-        setText('3d-midpoly', `$${prices["3d"].midpoly.low} - $${prices["3d"].midpoly.high}`);
-        setText('3d-highpoly', `$${prices["3d"].highpoly.low} - $${prices["3d"].highpoly.high}+`);
-        setText('3d-staticprop', `$${prices["3d"].staticprop.low} - $${prices["3d"].staticprop.high}`);
-        setText('3d-dynamicprop', `$${prices["3d"].dynamicprop.low} - $${prices["3d"].dynamicprop.high}`);
-        setText('3d-kitbashchar', `$${prices["3d"].kitbashchar.low} - $${prices["3d"].kitbashchar.high}`);
-        setText('3d-kitbashprop', `$${prices["3d"].kitbashprop.low} - $${prices["3d"].kitbashprop.high}`);
-        setText('3d-viseme', `$${prices["3d"].viseme}`);
-
-        // VRChat Avatars
-        setText('avatar-fromScratch', `$${prices["avatar"].fromScratch.lowpoly} - $${prices["avatar"].fromScratch.highpoly}+`);
-        setText('avatar-kitbashing', `$${prices["avatar"].kitbashing.low} - $${prices["avatar"].kitbashing.high}+`);
-        setText('avatar-customClothing', `$${prices["avatar"].customClothing.low} - $${prices["avatar"].customClothing.high}`);
-        setText('avatar-texturing', `$${prices["avatar"].texturing.low} - $${prices["avatar"].texturing.high}`);
-        setText('avatar-expressions', `$${prices["avatar"].expressions.low} - $${prices["avatar"].expressions.high}`);
-        setText('avatar-rigging', `$${prices["avatar"].rigging.low} - $${prices["avatar"].rigging.high}`);
-
-        // VRChat Extras
-        setText('vrchat-dynamicBones', `$${prices["vrchat"].dynamicBones.low} - $${prices["vrchat"].dynamicBones.high}`);
-        setText('vrchat-animations', `$${prices["vrchat"].animations.low} - $${prices["vrchat"].animations.high}`);
-        setText('vrchat-toggleSetups', `$${prices["vrchat"].toggleSetups.low} - $${prices["vrchat"].toggleSetups.high}`);
-        setText('vrchat-questConversion', `$${prices["vrchat"].questConversion.low} - $${prices["vrchat"].questConversion.high}`);
-        setText('vrchat-customEffects', `$${prices["vrchat"].customEffects.low} - $${prices["vrchat"].customEffects.high}`);
-
-        // Game & VTuber Conversion
-        setText('conversion-vtuber', `$${prices["conversion"].vtuber.low} - $${prices["conversion"].vtuber.high}`);
-        setText('conversion-retargeting', `$${prices["conversion"].retargeting.low} - $${prices["conversion"].retargeting.high}`);
-        setText('conversion-faceTracking', `$${prices["conversion"].faceTracking.low} - $${prices["conversion"].faceTracking.high}`);
-
-        // Additional Costs
-        setText('2d-adition-character', `${prices["2d"].additionalMultiplier * 100}%`);
-        setText('additional-rushOrder', `${prices["additional"].rushOrder * 100}%`);
-        setText('additional-commercialUse', `${prices["additional"].commercialUse * 100}%`);
-        setText('additional-nsfw2d', `${prices["additional"].nsfw * 100}%`);
-        setText('additional-nsfw3d', `${prices["additional"].nsfw * 100}%`);
-        setText('additional-nsfw', `${prices["additional"].nsfw * 100}%`);
-        setText('additional-edits', `$${prices["additional"].additionalEdits}`);
-
-        const setMax = (id, value) => {
-            const element = document.getElementById(id);
-            if (element) {
-                element.max = value;
-            }
-        };
-
-        setMax('background-complexity', prices["2d"].background.detailedbackground);
-        setMax('complexity', prices["3d"].highpoly.high);
-        setMax('texturing', prices["avatar"].texturing.high);
-        setMax('clothing-complexity', prices["avatar"].customClothing.high);
-        setMax('rigging-complexity', prices["avatar"].rigging.high);
-        setMax('dynamic-bones', prices["vrchat"].dynamicBones.high);
-        setMax('props-complexity', prices["3d"].dynamicprop.high);
-    }
-
-    setPrices(prices);
-});document.addEventListener("DOMContentLoaded", () => {
-    updateOptions();
+// ── Boot ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    buildCalculator();
+    initTosModal();
+    initNavImageScroll();
+    initCommissionSlider();
+    setPriceLabels();
 });
 
-function updateOptions() {
-    const type = document.getElementById('type').value;
-    document.getElementById('2d-options').style.display = type === '2d' ? 'block' : 'none';
-    document.getElementById('3d-options').style.display = type === '3d' ? 'block' : 'none';
+// ── Build the calculator HTML inside #commission-calculator ───────────────────
+function buildCalculator() {
+    const root = document.getElementById('commission-calculator');
+    if (!root) return;
+
+    root.innerHTML = `
+    <div class="calc-type-tabs">
+        <button class="calc-tab active" data-type="2d" onclick="calcSwitchType('2d',this)">
+            <span class="calc-tab-icon">✏️</span>
+            <span>2D Art</span>
+        </button>
+        <button class="calc-tab" data-type="3d" onclick="calcSwitchType('3d',this)">
+            <span class="calc-tab-icon">📦</span>
+            <span>3D / Avatar</span>
+        </button>
+    </div>
+
+    <!-- 2D panel -->
+    <div id="calc-panel-2d" class="calc-panel active">
+
+        <div class="calc-card">
+            <div class="calc-card-title">Style</div>
+            <div class="calc-chip-group" id="calc-style-chips">
+                <button class="calc-chip active" data-val="sketch"    onclick="calcSelectChip(this,'calc-style-chips','style')">Sketch <em>$8+</em></button>
+                <button class="calc-chip"        data-val="lineart"   onclick="calcSelectChip(this,'calc-style-chips','style')">Line Art <em>$12+</em></button>
+                <button class="calc-chip"        data-val="flatcolors"onclick="calcSelectChip(this,'calc-style-chips','style')">Flat Colours <em>$16+</em></button>
+                <button class="calc-chip"        data-val="shading"   onclick="calcSelectChip(this,'calc-style-chips','style')">Full Shading <em>$20+</em></button>
+            </div>
+        </div>
+
+        <div class="calc-card">
+            <div class="calc-card-title">Coverage</div>
+            <div class="calc-chip-group" id="calc-coverage-chips">
+                <button class="calc-chip active" data-val="portrait"  onclick="calcSelectChip(this,'calc-coverage-chips','coverage')">Portrait <em>head &amp; shoulders</em></button>
+                <button class="calc-chip"        data-val="upperhalf" onclick="calcSelectChip(this,'calc-coverage-chips','coverage')">Upper Half</button>
+                <button class="calc-chip"        data-val="fullbody"  onclick="calcSelectChip(this,'calc-coverage-chips','coverage')">Full Body</button>
+            </div>
+        </div>
+
+        <div class="calc-card">
+            <div class="calc-card-title">Characters</div>
+            <div class="calc-stepper-row">
+                <span class="calc-stepper-label">Number of characters</span>
+                <div class="calc-stepper">
+                    <button class="calc-step-btn" id="chars-minus" onclick="calcStep('chars',-1)" disabled>−</button>
+                    <span class="calc-step-val" id="chars-val">1</span>
+                    <button class="calc-step-btn" onclick="calcStep('chars',1)">+</button>
+                </div>
+            </div>
+            <p class="calc-hint" id="chars-hint">First character included. Each additional is +50% of base.</p>
+        </div>
+
+        <div class="calc-card">
+            <div class="calc-card-title">Background</div>
+            <div class="calc-slider-row">
+                <input type="range" min="0" max="150" step="1" value="0" id="bg-slider" oninput="calcBgSlide()">
+                <span class="calc-slider-val" id="bg-val">$0</span>
+            </div>
+            <p class="calc-hint" id="bg-hint">None — transparent or plain colour</p>
+        </div>
+    </div>
+
+    <!-- 3D panel -->
+    <div id="calc-panel-3d" class="calc-panel">
+
+        <div class="calc-card">
+            <div class="calc-card-title">Base Mesh</div>
+            <div class="calc-chip-group" id="calc-mesh-chips">
+                <button class="calc-chip active" data-val="lowpoly"  onclick="calcSelectChip(this,'calc-mesh-chips','mesh')">Low-Poly <em>$150–225</em></button>
+                <button class="calc-chip"        data-val="midpoly"  onclick="calcSelectChip(this,'calc-mesh-chips','mesh')">Mid-Poly <em>$225–300</em></button>
+                <button class="calc-chip"        data-val="highpoly" onclick="calcSelectChip(this,'calc-mesh-chips','mesh')">High-Poly <em>$300–500+</em></button>
+            </div>
+            <p class="calc-hint" id="mesh-hint">Quest / mobile ready. Minimal geometry, optimised for performance.</p>
+        </div>
+
+        <div class="calc-card">
+            <div class="calc-card-title">Texturing</div>
+            <div class="calc-slider-row">
+                <input type="range" min="30" max="100" step="1" value="30" id="tex-slider" oninput="calcTexSlide()">
+                <span class="calc-slider-val" id="tex-val">$30</span>
+            </div>
+            <p class="calc-hint">Simple flat textures → complex PBR materials with hand-painting</p>
+        </div>
+
+        <div class="calc-card">
+            <div class="calc-card-title">Rigging</div>
+            <div class="calc-slider-row">
+                <input type="range" min="0" max="100" step="1" value="0" id="rig-slider" oninput="calcRigSlide()">
+                <span class="calc-slider-val" id="rig-val">$0</span>
+            </div>
+            <p class="calc-hint" id="rig-hint">No rigging</p>
+        </div>
+
+        <div class="calc-card">
+            <div class="calc-card-title">Clothing &amp; Props</div>
+            <div class="calc-stepper-row">
+                <span class="calc-stepper-label">Custom clothing items</span>
+                <div class="calc-stepper">
+                    <button class="calc-step-btn" id="cloth-minus" onclick="calcStep('cloth',-1)" disabled>−</button>
+                    <span class="calc-step-val" id="cloth-val">0</span>
+                    <button class="calc-step-btn" onclick="calcStep('cloth',1)">+</button>
+                </div>
+            </div>
+            <div class="calc-stepper-row">
+                <span class="calc-stepper-label">Props</span>
+                <div class="calc-stepper">
+                    <button class="calc-step-btn" id="props-minus" onclick="calcStep('props',-1)" disabled>−</button>
+                    <span class="calc-step-val" id="props-val">0</span>
+                    <button class="calc-step-btn" onclick="calcStep('props',1)">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="calc-card">
+            <div class="calc-card-title">VRChat Extras</div>
+            <div class="calc-stepper-row">
+                <span class="calc-stepper-label">Toggle setups</span>
+                <div class="calc-stepper">
+                    <button class="calc-step-btn" id="toggles-minus" onclick="calcStep('toggles',-1)" disabled>−</button>
+                    <span class="calc-step-val" id="toggles-val">0</span>
+                    <button class="calc-step-btn" onclick="calcStep('toggles',1)">+</button>
+                </div>
+            </div>
+            <div class="calc-stepper-row">
+                <span class="calc-stepper-label">Custom expressions</span>
+                <div class="calc-stepper">
+                    <button class="calc-step-btn" id="exprs-minus" onclick="calcStep('exprs',-1)" disabled>−</button>
+                    <span class="calc-step-val" id="exprs-val">0</span>
+                    <button class="calc-step-btn" onclick="calcStep('exprs',1)">+</button>
+                </div>
+            </div>
+            <div class="calc-stepper-row">
+                <span class="calc-stepper-label">Dynamic bones / physics chains</span>
+                <div class="calc-stepper">
+                    <button class="calc-step-btn" id="dynbones-minus" onclick="calcStep('dynbones',-1)" disabled>−</button>
+                    <span class="calc-step-val" id="dynbones-val">0</span>
+                    <button class="calc-step-btn" onclick="calcStep('dynbones',1)">+</button>
+                </div>
+            </div>
+            <div class="calc-toggle-row" onclick="calcToggle('quest')">
+                <div class="calc-toggle-left">
+                    <span class="calc-toggle-label">Quest / mobile optimisation</span>
+                    <span class="calc-toggle-sub">+$50 flat fee</span>
+                </div>
+                <div class="calc-toggle-switch" id="quest-toggle"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add-ons (shared) -->
+    <div class="calc-card">
+        <div class="calc-card-title">Add-ons</div>
+        <div class="calc-toggle-row" onclick="calcToggle('nsfw')">
+            <div class="calc-toggle-left">
+                <span class="calc-toggle-label">NSFW / adult content</span>
+                <span class="calc-toggle-sub">+20% of base price</span>
+            </div>
+            <div class="calc-toggle-switch" id="nsfw-toggle"></div>
+        </div>
+        <div class="calc-toggle-row" onclick="calcToggle('rush')">
+            <div class="calc-toggle-left">
+                <span class="calc-toggle-label">Rush order</span>
+                <span class="calc-toggle-sub">+25% — priority queue placement</span>
+            </div>
+            <div class="calc-toggle-switch" id="rush-toggle"></div>
+        </div>
+        <div class="calc-toggle-row" onclick="calcToggle('commercial')">
+            <div class="calc-toggle-left">
+                <span class="calc-toggle-label">Commercial use</span>
+                <span class="calc-toggle-sub">+50% — covers commercial licensing</span>
+            </div>
+            <div class="calc-toggle-switch" id="commercial-toggle"></div>
+        </div>
+    </div>
+
+    <!-- Result -->
+    <div class="calc-result" id="calc-result">
+        <div class="calc-result-header">
+            <span class="calc-result-label">Estimate</span>
+            <span class="calc-result-total" id="calc-total">—</span>
+        </div>
+        <div id="calc-breakdown"><p class="calc-result-empty">Select options above to see your estimate.</p></div>
+    </div>`;
+
+    calcUpdatePrice();
 }
 
-// Update background pricing
-function update2dBackgroundComplexityValue() {
-    const complexity = document.getElementById('background-complexity').value;
-    document.getElementById('background-complexity-value').textContent = `$${complexity}`;
-    document.getElementById('background-comment').textContent = 
-        complexity == 0 ? 'No Background or just a Gradient' : 
-        complexity <= prices["2d"].background.splashfilterphoto ? 'Simple Background: Minimal details or abstract elements, such as gradients, patterns, or a single color.' : 
-        complexity <= prices["2d"].background.vagueenvironment ? 'Vague Environment: General shapes and light details suggest an environment without specific or intricate elements.' : 
-        complexity <= prices["2d"].background.detailedtargetmidground ? 'Detailed Midground: Richly developed central focus with defined objects or scenery, providing clear context for the subject.' : 
-        'Full Detailed Background: Highly elaborate and immersive environment, with intricate details from the foreground to the distant background.';
+// ── Type tabs ─────────────────────────────────────────────────────────────────
+function calcSwitchType(type, btn) {
+    state.type = type;
+    document.querySelectorAll('.calc-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.calc-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('calc-panel-' + type).classList.add('active');
+    calcUpdatePrice();
 }
 
-// Update 3D complexity values
-function updateComplexityValue() {
-    const complexity = document.getElementById('complexity').value;
-    document.getElementById('complexity-value').textContent = `$${complexity}`;
-    document.getElementById('complexity-comment').textContent = 
-        complexity == 0 ? 'No model' : 
-        complexity <= prices["3d"].lowpoly.high ? 'Low-Poly Model (3-5k Tris): Simplified geometry for efficiency, often used in mobile games or distant objects.' : 
-        complexity <= prices["3d"].midpoly.high ? 'Mid-Poly Model (10-20k Tris): Balanced detail suitable for most in-game characters and environments.' : 
-        'High-Poly Model (50k+ Tris): High-detail geometry for realism, used in cinematics or close-up renders.';
-}
+// ── Chip selectors ────────────────────────────────────────────────────────────
+function calcSelectChip(el, groupId, stateKey) {
+    document.querySelectorAll('#' + groupId + ' .calc-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    state[stateKey] = el.dataset.val;
 
-// Update Sliders and Inputs
-function updateClothingComplexityValue() {
-    const complexity = document.getElementById('clothing-complexity').value;
-    document.getElementById('clothing-complexity-value').textContent = `$${complexity}`;
-    document.getElementById('clothing-comment').textContent = 
-        complexity == 0 ? 'No Clothing' : 
-        complexity <= prices["avatar"].customClothing.low ? 'Basic Clothing: Simple garments with minimal detail, like plain shirts or pants.' : 
-        complexity <= prices["avatar"].customClothing.high-1 ? 'Intermediate Clothing: Moderately detailed garments, incorporating folds, seams.' : 
-        'High-Quality Clothing: Highly intricate details, such as realistic fabric textures, stitching, and dynamic folds.';
-}
-
-function updateDynamicBonesValue() {
-    const complexity = document.getElementById('dynamic-bones').value;
-    document.getElementById('dynamic-bones-value').textContent = `$${complexity}`;
-    document.getElementById('dynamic-bones-comment').textContent = 
-        complexity == 0 ? 'No Dynamic Bones' : 
-        complexity <= prices["vrchat"].dynamicBones.low ? 'Basic Dynamic Bones: Simple physics applied to a few elements, like hair tips or a single accessory, with minimal movement.' : 
-        complexity <= prices["vrchat"].dynamicBones.high-1 ? 'Intermediate Physics: Moderate use of dynamic bones to create realistic motion in hair, tails, or clothing with noticeable interactions.' : 
-        'Advanced Physics: Complex implementation of dynamic bones affecting multiple parts of the model, offering highly realistic and nuanced motion throughout.';
-}
-
-// Update texturing complexity
-function updateTexturingValue() {
-    const complexity = document.getElementById('texturing').value;
-    document.getElementById('texturing-value').textContent = `$${complexity}`;
-    document.getElementById('texturing-comment').textContent = 
-        complexity == 0 ? 'No Texturing' : 
-        complexity <= prices["avatar"].texturing.low ? 'Basic Texturing: Simple textures with flat colors or basic patterns, minimal detail or shading.' : 
-        complexity <= prices["avatar"].texturing.high-1 ? 'Intermediate Texturing: Moderately detailed textures, including proper UV mapping, basic shading, and surface features.' : 
-        'High-Quality Texturing: Highly detailed textures with advanced realism, including fine surface details, complex shading, and material depth (e.g., PBR workflow).';
-}
-
-// Update rigging complexity
-function updateRiggingComplexityValue() {
-    const complexity = document.getElementById('rigging-complexity').value;
-    document.getElementById('rigging-complexity-value').textContent = `$${complexity}`;
-    document.getElementById('rigging-comment').textContent = 
-        complexity == 0 ? 'No Rigging' : 
-        complexity <= prices["avatar"].rigging.low ? 'Basic Rigging: A simple rig with minimal bones and basic functionality, allowing for limited movement like simple poses or expressions.' : 
-        'Advanced Rigging: A highly detailed rig with comprehensive functionality, including complex bone structures, IK (inverse kinematics), controllers, and facial expressions for smooth, dynamic animations.';
-}
-
-function updatePropComplexityValue() {
-    const complexity = document.getElementById('props-complexity').value;
-    document.getElementById('props-complexity-value').textContent = `$${complexity}`;
-    document.getElementById('props-complexity-comment').textContent = 
-        complexity == 0 ? 'No Props' : 
-        complexity <= prices["3d"].staticprop.low ? 'Basic Prop: Simple static prop with minimal details.' : 
-        complexity <= prices["3d"].dynamicprop.high-1 ? 'Intermediate Prop: Moderately detailed prop with some dynamic elements.' : 
-        'Advanced Prop: Highly detailed prop with complex dynamic elements.';
-}
-
-// Price Calculation
-function calculatePrice() {
-    const type = document.getElementById('type').value;
-    let basePrice = 0;
-
-    if (type === '2d') {
-        const type2D = document.getElementById('2d-type').value;
-        const coverage = document.getElementById('coverage').value;
-        const additional = parseInt(document.getElementById('additional').value);
-        const background = parseInt(document.getElementById('background-complexity').value);
-
-        basePrice = prices["2d"][type2D][coverage];
-        basePrice += additional * basePrice * 0.5;
-        basePrice += background;
-    } else if (type === '3d') {
-        basePrice = parseInt(document.getElementById('complexity').value);
-        basePrice += parseInt(document.getElementById('clothing-complexity').value) * parseInt(document.getElementById('customClothing-items').value);
-        basePrice += parseInt(document.getElementById('props-complexity').value) * parseInt(document.getElementById('props').value);
-        basePrice += parseInt(document.getElementById('texturing').value);
-        basePrice += parseInt(document.getElementById('rigging-complexity').value);
-        basePrice += parseInt(document.getElementById('dynamic-bones').value);
-        basePrice += parseInt(document.getElementById('toggles').value) * prices["vrchat"].toggleSetups.low;
-        basePrice += parseInt(document.getElementById('custom-expressions').value) * prices["avatar"].expressions.low;
-        if (document.getElementById('quest-optimization').checked) basePrice += prices["vrchat"].questConversion.low;
+    if (stateKey === 'mesh') {
+        const hints = {
+            lowpoly:  'Quest / mobile ready. Minimal geometry, optimised for performance.',
+            midpoly:  'Balanced detail. Suitable for PC VR and most game engines.',
+            highpoly: 'Cinematic or hero-asset quality. Rich geometry and surface detail.'
+        };
+        document.getElementById('mesh-hint').textContent = hints[el.dataset.val];
     }
-
-    // Additional Costs
-    const nsfw = document.getElementById('nsfw').checked ? basePrice * prices["additional"].nsfw : 0;
-    const rushOrder = document.getElementById('rushOrder').checked ? basePrice * prices["additional"].rushOrder : 0;
-    const commercialUse = document.getElementById('commercialUse').checked ? basePrice * prices["additional"].commercialUse : 0;
-
-    basePrice += nsfw + rushOrder + commercialUse;
-    document.getElementById('result').innerText = `Total Price: $${basePrice.toFixed(2)}`;
+    calcUpdatePrice();
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    const openTosModalButton = document.getElementById("open-tos-modal-button");
-    const tosModal = document.getElementById("tos-modal");
-    const closeTosModalButton = tosModal.querySelector(".close");
-    const tosContent = document.getElementById("tos-content");
+// ── Steppers ──────────────────────────────────────────────────────────────────
+const stepperConfig = {
+    chars:    { min: 1,  max: 20, stateKey: 'chars'    },
+    cloth:    { min: 0,  max: 20, stateKey: 'cloth'    },
+    props:    { min: 0,  max: 20, stateKey: 'props'    },
+    toggles:  { min: 0,  max: 30, stateKey: 'toggles'  },
+    exprs:    { min: 0,  max: 30, stateKey: 'exprs'    },
+    dynbones: { min: 0,  max: 20, stateKey: 'dynbones' }
+};
 
-    openTosModalButton.addEventListener("click", (event) => {
-        event.preventDefault();
-        fetch('tos.html')
-            .then(response => response.text())
-            .then(data => {
-                tosContent.innerHTML = data;
-                tosModal.style.display = "block";
-            })
-            .catch(error => console.error('Error loading TOS:', error));
-    });
+function calcStep(key, dir) {
+    const cfg = stepperConfig[key];
+    state[cfg.stateKey] = Math.max(cfg.min, Math.min(cfg.max, state[cfg.stateKey] + dir));
+    const val = state[cfg.stateKey];
+    document.getElementById(key + '-val').textContent = val;
+    const minusBtn = document.getElementById(key + '-minus');
+    if (minusBtn) minusBtn.disabled = (val <= cfg.min);
+    if (key === 'chars') {
+        document.getElementById('chars-hint').textContent = val === 1
+            ? 'First character included. Each additional is +50% of base.'
+            : `${val - 1} extra character${val > 2 ? 's' : ''} — +${(val - 1) * 50}% added on top of base.`;
+    }
+    calcUpdatePrice();
+}
 
-    closeTosModalButton.addEventListener("click", () => {
-        tosModal.style.display = "none";
-    });
+// ── Sliders ───────────────────────────────────────────────────────────────────
+function calcBgSlide() {
+    const v = parseInt(document.getElementById('bg-slider').value);
+    state.bg = v;
+    document.getElementById('bg-val').textContent = '$' + v;
+    const bg = prices.bg;
+    const hint = v === 0          ? 'None — transparent or plain colour'
+               : v <= bg.splash   ? 'Simple: gradient, splash colour, or filtered photo'
+               : v <= bg.vague    ? 'Vague environment: loose shapes suggesting a setting'
+               : v <= bg.mid      ? 'Detailed mid-ground: recognisable scene with some detail'
+               :                    'Fully detailed: complex environment, fore / mid / background elements';
+    document.getElementById('bg-hint').textContent = hint;
+    calcUpdatePrice();
+}
 
-    window.addEventListener("click", (event) => {
-        if (event.target === tosModal) {
-            tosModal.style.display = "none";
+function calcTexSlide() {
+    const v = parseInt(document.getElementById('tex-slider').value);
+    state.tex = v;
+    document.getElementById('tex-val').textContent = '$' + v;
+    calcUpdatePrice();
+}
+
+function calcRigSlide() {
+    const v = parseInt(document.getElementById('rig-slider').value);
+    state.rig = v;
+    document.getElementById('rig-val').textContent = '$' + v;
+    const hint = v === 0             ? 'No rigging'
+               : v <= prices.rig.basic ? 'Basic rig: standard humanoid bones, no advanced features'
+               : v <= prices.rig.mid   ? 'Intermediate: IK chains, finger bones, facial controls'
+               :                         'Advanced: full-body IK, dynamic secondary motion, custom constraints';
+    document.getElementById('rig-hint').textContent = hint;
+    calcUpdatePrice();
+}
+
+// ── Toggles ───────────────────────────────────────────────────────────────────
+function calcToggle(key) {
+    state[key] = !state[key];
+    document.getElementById(key + '-toggle').classList.toggle('on', state[key]);
+    calcUpdatePrice();
+}
+
+// ── Price calculation ─────────────────────────────────────────────────────────
+function calcUpdatePrice() {
+    const lines   = [];
+    let base      = 0;
+
+    if (state.type === '2d') {
+        const b = prices["2d"][state.style][state.coverage];
+        base += b;
+        lines.push({ label: capStyle(state.style) + ' — ' + capCoverage(state.coverage), amount: b });
+
+        if (state.chars > 1) {
+            const extra = (state.chars - 1) * b * prices["2d"].charMult;
+            base += extra;
+            lines.push({ label: `+${state.chars - 1} extra character${state.chars > 2 ? 's' : ''} (+${(state.chars - 1) * 50}%)`, amount: extra });
         }
+        if (state.bg > 0) {
+            base += state.bg;
+            lines.push({ label: 'Background', amount: state.bg });
+        }
+
+    } else {
+        const mesh    = prices["3d"][state.mesh];
+        const meshMid = Math.round((mesh.low + mesh.high) / 2);
+        base += meshMid;
+        lines.push({ label: capMesh(state.mesh) + ' mesh', amount: meshMid });
+
+        base += state.tex;
+        lines.push({ label: 'Texturing', amount: state.tex });
+
+        if (state.rig > 0) {
+            base += state.rig;
+            lines.push({ label: 'Rigging', amount: state.rig });
+        }
+        if (state.cloth > 0) {
+            const c = state.cloth * Math.round((prices["3d"].clothPerItem.low + prices["3d"].clothPerItem.high) / 2);
+            base += c;
+            lines.push({ label: `${state.cloth} clothing item${state.cloth > 1 ? 's' : ''}`, amount: c });
+        }
+        if (state.props > 0) {
+            const p = state.props * Math.round((prices["3d"].propPerItem.low + prices["3d"].propPerItem.high) / 2);
+            base += p;
+            lines.push({ label: `${state.props} prop${state.props > 1 ? 's' : ''}`, amount: p });
+        }
+        if (state.toggles > 0) {
+            const t = state.toggles * prices["3d"].togglePer;
+            base += t;
+            lines.push({ label: `${state.toggles} toggle setup${state.toggles > 1 ? 's' : ''}`, amount: t });
+        }
+        if (state.exprs > 0) {
+            const e = state.exprs * prices["3d"].exprPer;
+            base += e;
+            lines.push({ label: `${state.exprs} custom expression${state.exprs > 1 ? 's' : ''}`, amount: e });
+        }
+        if (state.dynbones > 0) {
+            const d = state.dynbones * prices["3d"].dynbonesPer;
+            base += d;
+            lines.push({ label: `${state.dynbones} dynamic bone chain${state.dynbones > 1 ? 's' : ''}`, amount: d });
+        }
+        if (state.quest) {
+            base += prices["3d"].quest;
+            lines.push({ label: 'Quest / mobile optimisation', amount: prices["3d"].quest });
+        }
+    }
+
+    const addons = [];
+    if (state.nsfw)       addons.push({ label: 'NSFW (+20%)',          amount: Math.round(base * prices.additional.nsfw)       });
+    if (state.rush)       addons.push({ label: 'Rush order (+25%)',    amount: Math.round(base * prices.additional.rush)       });
+    if (state.commercial) addons.push({ label: 'Commercial use (+50%)',amount: Math.round(base * prices.additional.commercial) });
+
+    const addonTotal = addons.reduce((s, a) => s + a.amount, 0);
+    const total      = base + addonTotal;
+
+    renderCalcResult(total, lines, addons, base);
+}
+
+// ── Render result panel ───────────────────────────────────────────────────────
+function renderCalcResult(total, lines, addons, base) {
+    const totalEl     = document.getElementById('calc-total');
+    const breakdownEl = document.getElementById('calc-breakdown');
+    if (!totalEl || !breakdownEl) return;
+
+    if (base === 0) {
+        totalEl.textContent = '—';
+        breakdownEl.innerHTML = '<p class="calc-result-empty">Select options above to see your estimate.</p>';
+        return;
+    }
+
+    totalEl.textContent = '$' + total.toFixed(0);
+
+    let html = '<div class="calc-breakdown-list">';
+    lines.forEach(l => {
+        html += `<div class="calc-breakdown-row"><span>${l.label}</span><span class="calc-breakdown-amt">$${l.amount.toFixed(0)}</span></div>`;
     });
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-    const header = document.querySelector('header');
-    const navItems = document.querySelectorAll('#nav-image');
-
-    function checkHeaderVisibility() {
-        const headerRect = header.getBoundingClientRect();
-        const headerVisibleHeight = Math.max(0, headerRect.bottom - Math.max(0, headerRect.top));
-        const headerVisiblePercentage = (headerVisibleHeight / headerRect.height) * 100;
-
-        navItems.forEach(navItem => {
-            if (headerVisiblePercentage < 10) {
-                navItem.classList.remove('nav-hover-image');
-                navItem.classList.add('nav-hover-image-side');
-            } else {
-                navItem.classList.remove('nav-hover-image-side');
-                navItem.classList.add('nav-hover-image');
-            }
+    if (addons.length > 0) {
+        html += `<div class="calc-breakdown-row subtotal"><span>Subtotal</span><span class="calc-breakdown-amt">$${base.toFixed(0)}</span></div>`;
+        addons.forEach(a => {
+            html += `<div class="calc-breakdown-row addon"><span>${a.label}</span><span class="calc-breakdown-amt">+$${a.amount.toFixed(0)}</span></div>`;
         });
     }
+    html += '</div>';
+    html += '<p class="calc-result-note">This is an estimate. Final price is confirmed after discussing your project in detail.</p>';
+    breakdownEl.innerHTML = html;
+}
 
-    window.addEventListener('scroll', checkHeaderVisibility);
-    checkHeaderVisibility();
-});
+// ── Label helpers ─────────────────────────────────────────────────────────────
+function capStyle(s) {
+    return { sketch: 'Sketch', lineart: 'Line Art', flatcolors: 'Flat Colours', shading: 'Full Shading' }[s] || s;
+}
+function capCoverage(s) {
+    return { portrait: 'Portrait', upperhalf: 'Upper Half', fullbody: 'Full Body' }[s] || s;
+}
+function capMesh(s) {
+    return { lowpoly: 'Low-Poly', midpoly: 'Mid-Poly', highpoly: 'High-Poly' }[s] || s;
+}
 
-document.addEventListener("DOMContentLoaded", () => {
-    const commissionsFolder = 'images/commissions';
-    const commissionsSlider = document.querySelector('.commissions-slider');
-    const exampleImageModal = document.getElementById('example-image-modal');
-    const exampleImageModalImg = document.getElementById('example-image-modal-img');
-    const exampleImageModalVideo = document.getElementById('example-image-modal-video');
-    const exampleImageModalVideoSource = exampleImageModalVideo.querySelector('source');
-    const closeModalButton = exampleImageModal.querySelector('.close');
+// ── Static price labels (for the price list section) ─────────────────────────
+function setPriceLabels() {
+    const set   = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    const range = (o)       => `$${o.low} – $${o.high}`;
+
+    set('2d-sketch-portrait',        `$${prices["2d"].sketch.portrait}`);
+    set('2d-sketch-upperhalf',       `$${prices["2d"].sketch.upperhalf}`);
+    set('2d-sketch-fullbody',        `$${prices["2d"].sketch.fullbody}`);
+    set('2d-lineart-portrait',       `$${prices["2d"].lineart.portrait}`);
+    set('2d-lineart-upperhalf',      `$${prices["2d"].lineart.upperhalf}`);
+    set('2d-lineart-fullbody',       `$${prices["2d"].lineart.fullbody}`);
+    set('2d-flatcolors-portrait',    `$${prices["2d"].flatcolors.portrait}`);
+    set('2d-flatcolors-upperhalf',   `$${prices["2d"].flatcolors.upperhalf}`);
+    set('2d-flatcolors-fullbody',    `$${prices["2d"].flatcolors.fullbody}`);
+    set('2d-shading-portrait',       `$${prices["2d"].shading.portrait}`);
+    set('2d-shading-upperhalf',      `$${prices["2d"].shading.upperhalf}`);
+    set('2d-shading-fullbody',       `$${prices["2d"].shading.fullbody}`);
+    set('2d-adition-character',      `${prices["2d"].charMult * 100}%`);
+    set('additional-rushOrder',      `+${prices.additional.rush * 100}%`);
+    set('additional-commercialUse',  `+${prices.additional.commercial * 100}%`);
+    set('additional-nsfw2d',         `+${prices.additional.nsfw * 100}%`);
+    set('additional-nsfw3d',         `+${prices.additional.nsfw * 100}%`);
+    set('additional-nsfw',           `+${prices.additional.nsfw * 100}%`);
+}
+
+// ── TOS modal ─────────────────────────────────────────────────────────────────
+function initTosModal() {
+    const btn   = document.getElementById('open-tos-modal-button');
+    const modal = document.getElementById('tos-modal');
+    if (!btn || !modal) return;
+    const closeBtn   = modal.querySelector('.close');
+    const tosContent = document.getElementById('tos-content');
+
+    btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        fetch('tos.html')
+            .then(r => r.text())
+            .then(html => { if (tosContent) tosContent.innerHTML = html; modal.style.display = 'block'; })
+            .catch(err => console.error('TOS load error:', err));
+    });
+    closeBtn?.addEventListener('click', () => { modal.style.display = 'none'; });
+    window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+}
+
+// ── Nav hover image: switch between above/beside based on header visibility ───
+function initNavImageScroll() {
+    const header = document.querySelector('header');
+    if (!header) return;
+    function check() {
+        const rect       = header.getBoundingClientRect();
+        const visiblePct = (Math.max(0, rect.bottom - Math.max(0, rect.top)) / rect.height) * 100;
+        document.querySelectorAll('.nav-hover-image, .nav-hover-image-side').forEach(el => {
+            el.classList.toggle('nav-hover-image',      visiblePct >= 10);
+            el.classList.toggle('nav-hover-image-side', visiblePct <  10);
+        });
+    }
+    window.addEventListener('scroll', check, { passive: true });
+    check();
+}
+
+// ── Commission media showcase slider ─────────────────────────────────────────
+function initCommissionSlider() {
+    const slider     = document.querySelector('.commissions-slider');
+    const modal      = document.getElementById('example-image-modal');
+    const modalImg   = document.getElementById('example-image-modal-img');
+    const modalVideo = document.getElementById('example-image-modal-video');
+    if (!slider || !modal) return;
+
+    const closeBtn = modal.querySelector('.close');
+    const videoSrc = modalVideo?.querySelector('source');
 
     const commissionMedia = [
-        { icon: `${commissionsFolder}/3d_scr_image01.gif`, showcase: `${commissionsFolder}/3d_scr_image01.webm` },
-        { icon: `${commissionsFolder}/3d_scr_image02.gif`, showcase: `${commissionsFolder}/3d_scr_image02.webm` },
-        { icon: `${commissionsFolder}/3d_scr_image03.gif`, showcase: `${commissionsFolder}/3d_scr_image03.webm` },
+        { icon: 'images/commissions/3d_scr_image01.gif',  showcase: 'images/commissions/3d_scr_image01.webm' },
+        { icon: 'images/commissions/3d_scr_image02.gif',  showcase: 'images/commissions/3d_scr_image02.webm' },
+        { icon: 'images/commissions/3d_scr_image03.gif',  showcase: 'images/commissions/3d_scr_image03.webm' },
     ];
 
     commissionMedia.forEach(media => {
-        let mediaElement;
-        if (media.icon.endsWith('.webm') || media.icon.endsWith('.mp4')) {
-            mediaElement = document.createElement('video');
-            mediaElement.src = media.icon;
-            mediaElement.loop = true;
-            mediaElement.muted = true;
+        const isVideo = /\.(webm|mp4)$/i.test(media.icon);
+        let el;
+        if (isVideo) {
+            el = document.createElement('video');
+            el.src = media.icon; el.loop = true; el.muted = true; el.autoplay = true;
         } else {
-            mediaElement = document.createElement('img');
-            mediaElement.src = media.icon;
+            el = document.createElement('img');
+            el.src = media.icon;
         }
-        mediaElement.alt = 'Commission Media';
-        mediaElement.classList.add('example-image');
+        el.alt = 'Commission example';
+        el.classList.add('example-image');
 
-        mediaElement.addEventListener('click', () => {
-            if (media.showcase.endsWith('.webm') || media.showcase.endsWith('.mp4')) {
-                exampleImageModalImg.style.display = 'none';
-                exampleImageModalVideo.style.display = 'flex';
-                exampleImageModalVideoSource.src = media.showcase;
-                exampleImageModalVideo.load();
-                exampleImageModalVideo.play();
-            } else {
-                exampleImageModalVideo.style.display = 'none';
-                exampleImageModalImg.style.display = 'flex';
-                exampleImageModalImg.src = media.showcase;
+        el.addEventListener('click', () => {
+            const isShowcaseVideo = /\.(webm|mp4)$/i.test(media.showcase);
+            if (isShowcaseVideo && modalVideo && videoSrc) {
+                if (modalImg) modalImg.style.display = 'none';
+                modalVideo.style.display = 'block';
+                videoSrc.src = media.showcase;
+                modalVideo.load(); modalVideo.play();
+            } else if (modalImg) {
+                if (modalVideo) modalVideo.style.display = 'none';
+                modalImg.style.display = 'block';
+                modalImg.src = media.showcase;
             }
-            exampleImageModal.style.display = 'flex';
+            modal.style.display = 'flex';
         });
-        commissionsSlider.appendChild(mediaElement);
+        slider.appendChild(el);
     });
 
-    closeModalButton.addEventListener('click', () => {
-        exampleImageModal.style.display = 'none';
-        exampleImageModalVideo.pause();
-        exampleImageModalVideo.style.display = 'none';
-        exampleImageModalImg.style.display = 'flex';
-    });
-
-    window.addEventListener('click', (event) => {
-        if (event.target === exampleImageModal) {
-            exampleImageModal.style.display = 'none';
-            exampleImageModalVideo.pause();
-            exampleImageModalVideo.style.display = 'none';
-            exampleImageModalImg.style.display = 'flex';
-        }
-    });
-});
-
-document.querySelectorAll(".example-image").forEach(img => {
-    img.addEventListener("click", () => {
-        const modal = document.getElementById("example-image-modal");
-        const modalImg = document.getElementById("example-image-modal-img");
-
-        modalImg.src = img.src;
-        modal.style.display = "flex";
-    });
-});
-
-document.getElementById("example-image-modal").addEventListener("click", (e) => {
-    if (e.target.id === "example-image-modal") {
-        e.target.style.display = "none";
+    function closeModal() {
+        modal.style.display = 'none';
+        if (modalVideo) { modalVideo.pause(); modalVideo.style.display = 'none'; }
+        if (modalImg)   modalImg.style.display = 'block';
     }
-});
+    closeBtn?.addEventListener('click', closeModal);
+    window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+}
