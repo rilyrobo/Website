@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initTosModal();
     initNavImageScroll();
     initCommissionSlider();
+    initStaticExampleGalleries();
     setPriceLabels();
 });
 
@@ -643,15 +644,74 @@ function initNavImageScroll() {
 }
 
 // ── Commission media showcase slider ─────────────────────────────────────────
-function initCommissionSlider() {
-    const slider     = document.querySelector('.commissions-slider');
+// ── Shared example-media lightbox (used by both the JS-built commission
+// slider and the static .examples reference galleries in the HTML) ───────────
+let exampleModalRefs = null;
+
+function getExampleModalRefs() {
+    if (exampleModalRefs) return exampleModalRefs;
+
     const modal      = document.getElementById('example-image-modal');
     const modalImg   = document.getElementById('example-image-modal-img');
     const modalVideo = document.getElementById('example-image-modal-video');
-    if (!slider || !modal) return;
+    if (!modal) return null;
+
+    // .page ancestors use CSS transform for their slide-in animation, and a
+    // transformed ancestor becomes the containing block for position:fixed
+    // children — breaking true viewport-fixed centering. Move the modal to
+    // be a direct child of <body> so it escapes that ancestor entirely.
+    if (modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
+    }
 
     const closeBtn = modal.querySelector('.close');
     const videoSrc = modalVideo?.querySelector('source');
+
+    function closeModal() {
+        modal.style.display = 'none';
+        if (modalVideo) { modalVideo.pause(); modalVideo.style.display = 'none'; }
+        if (modalImg)   modalImg.style.display = 'block';
+        window.releaseModalLock?.();
+    }
+
+    closeBtn?.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.style.display === 'flex') closeModal();
+    });
+
+    exampleModalRefs = { modal, modalImg, modalVideo, videoSrc, closeModal };
+    return exampleModalRefs;
+}
+
+// Opens the lightbox showing either a still image or a video, picking
+// whichever matches the given showcase URL's extension.
+function openExampleMediaModal(showcaseUrl) {
+    const refs = getExampleModalRefs();
+    if (!refs) return;
+    const { modal, modalImg, modalVideo, videoSrc } = refs;
+
+    const isVideo = /\.(webm|mp4)$/i.test(showcaseUrl);
+    if (isVideo && modalVideo && videoSrc) {
+        if (modalImg) modalImg.style.display = 'none';
+        modalVideo.style.display = 'block';
+        videoSrc.src = showcaseUrl;
+        modalVideo.load();
+        modalVideo.play();
+    } else if (modalImg) {
+        if (modalVideo) modalVideo.style.display = 'none';
+        modalImg.style.display = 'block';
+        modalImg.src = showcaseUrl;
+    }
+    modal.style.display = 'flex';
+    window.acquireModalLock?.();
+}
+
+// ── Commission media showcase slider (JS-generated thumbnails) ────────────────
+function initCommissionSlider() {
+    const slider = document.querySelector('.commissions-slider');
+    if (!slider) return;
+    if (!getExampleModalRefs()) return;
 
     const commissionMedia = [
         { icon: 'images/commissions/3d_scr_image01.gif',  showcase: 'images/commissions/3d_scr_image01.webm' },
@@ -671,31 +731,22 @@ function initCommissionSlider() {
         }
         el.alt = 'Commission example';
         el.classList.add('example-image');
-
-        el.addEventListener('click', () => {
-            const isShowcaseVideo = /\.(webm|mp4)$/i.test(media.showcase);
-            if (isShowcaseVideo && modalVideo && videoSrc) {
-                if (modalImg) modalImg.style.display = 'none';
-                modalVideo.style.display = 'block';
-                videoSrc.src = media.showcase;
-                modalVideo.load(); modalVideo.play();
-            } else if (modalImg) {
-                if (modalVideo) modalVideo.style.display = 'none';
-                modalImg.style.display = 'block';
-                modalImg.src = media.showcase;
-            }
-            modal.style.display = 'flex';
-        });
+        el.addEventListener('click', () => openExampleMediaModal(media.showcase));
         slider.appendChild(el);
     });
+}
 
-    function closeModal() {
-        modal.style.display = 'none';
-        if (modalVideo) { modalVideo.pause(); modalVideo.style.display = 'none'; }
-        if (modalImg)   modalImg.style.display = 'block';
-    }
-    closeBtn?.addEventListener('click', closeModal);
-    window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+// ── Static example reference galleries (2D / 3D / VRChat price sections) ──────
+// These are plain <img class="example-image"> tags already in index.html —
+// no JS builds them, so they need their click listeners attached directly.
+// Clicking shows the same image full-size in the shared lightbox above.
+function initStaticExampleGalleries() {
+    if (!getExampleModalRefs()) return;
+
+    document.querySelectorAll('.examples .example-image').forEach(img => {
+        img.style.cursor = 'pointer';
+        img.addEventListener('click', () => openExampleMediaModal(img.src));
+    });
 }
 
 // ── Commission intake form ──────────────────────────────────────────────────────

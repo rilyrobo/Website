@@ -176,25 +176,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ── Gallery modal ─────────────────────────────────────────────────────────────
-function attachModalListeners(gridSelector) {
-    const galleryGrid = document.querySelector(gridSelector);
-    if (!galleryGrid) return;
-    const modal      = document.getElementById("gallery-modal");
-    const modalImage = document.getElementById("modal-image");
-    const modalLink  = document.getElementById("modal-link");
-
-    galleryGrid.addEventListener("click", (e) => {
-        const card = e.target.closest(".gallery-card");
-        if (card) {
-            modalImage.src  = card.dataset.image;
-            modalLink.href  = card.dataset.link;
-            modal.style.display = "flex";
-        }
-    });
-    modal.addEventListener("click", (e) => {
-        if (e.target === modal) modal.style.display = "none";
-    });
-}
+// ── Gallery modal ─────────────────────────────────────────────────────────────
+// attachModalListeners is defined in scriptgallery.js (self-contained there
+// so it doesn't depend on this file's load order). Keeping only one copy
+// avoids the two versions silently overwriting each other and reintroducing
+// fixed bugs depending on which script tag loads last.
 
 // ── Iframes ───────────────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
