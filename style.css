@@ -1557,7 +1557,57 @@ header p {
 }
 
 .form-send-btn { border-radius: 6px; }
-.form-copy-hint { font-size: 0.75rem; opacity: 0.7; }
+
+/* Row of quick-access contact icons below the copy-to-clipboard button */
+.form-copy-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.form-copy-btn { margin: 0; }
+
+.form-copy-hint {
+  display: block;
+  font-size: 0.7rem;
+  opacity: 0.75;
+  margin-top: 2px;
+}
+
+.form-contact-icon {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  transition: all var(--transition);
+}
+
+.form-contact-icon:hover {
+  border-color: var(--accent-gold);
+  background: rgba(200,150,12,0.12);
+  transform: translateY(-2px);
+}
+
+.form-contact-icon img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.form-copy-caption {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-style: italic;
+  text-align: center;
+  margin-top: 6px;
+}
 
 /* Mobile tweaks */
 @media (max-width: 480px) {

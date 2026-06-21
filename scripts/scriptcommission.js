@@ -753,9 +753,18 @@ function initStaticExampleGalleries() {
 // Set this to your preferred contact channel. 'discord' shows a copy-to-clipboard
 // summary (since Discord has no mailto-style deep link), 'email' opens the user's
 // mail client with the summary pre-filled.
+// Mirrors the URLs already used in script.js's `contacts` array — kept
+// separate here so this file has no load-order dependency on script.js.
 const COMMISSION_CONTACT = {
     email: 'RilyRobo@gmail.com',
-    discordHandle: 'RilyRobo'
+    twitterUrl: 'https://twitter.com/RilyRobo',
+    kofiUrl: 'https://www.ko-fi.com/RilyRobo',
+    discordUrl: 'https://discordapp.com/users/277498825403531264',
+    icons: {
+        twitter: 'https://img.icons8.com/?size=100&id=phOKFKYpe00C&format=png&color=ffffff',
+        kofi:    'https://img.icons8.com/?size=100&id=8342&format=png&color=ffffff',
+        discord: 'https://img.icons8.com/?size=100&id=30888&format=png&color=ffffff'
+    }
 };
 
 function openCommissionForm() {
@@ -941,9 +950,25 @@ function submitCommissionForm() {
         <a href="${mailtoUrl}" class="calc-request-btn form-send-btn" target="_blank" rel="noopener noreferrer">
             Send via Email
         </a>
-        <button class="calc-request-btn form-send-btn secondary" onclick="copyCommissionSummary(this)">
-            Copy to Clipboard <span class="form-copy-hint">(for Discord)</span>
-        </button>`;
+
+        <div class="form-copy-row">
+            <button class="calc-request-btn form-send-btn secondary form-copy-btn" onclick="copyCommissionSummary(this)">
+                Copy to Clipboard <span class="form-copy-hint">paste into a DM</span>
+            </button>
+        </div>
+
+        <div class="form-copy-row">
+            <a href="${COMMISSION_CONTACT.twitterUrl}" class="form-contact-icon" target="_blank" rel="noopener noreferrer" aria-label="Message on Twitter / X" title="Twitter / X">
+                <img src="${COMMISSION_CONTACT.icons.twitter}" alt="">
+            </a>
+            <a href="${COMMISSION_CONTACT.kofiUrl}" class="form-contact-icon" target="_blank" rel="noopener noreferrer" aria-label="Message on Ko-fi" title="Ko-fi">
+                <img src="${COMMISSION_CONTACT.icons.kofi}" alt="">
+            </a>
+            <a href="${COMMISSION_CONTACT.discordUrl}" class="form-contact-icon" target="_blank" rel="noopener noreferrer" aria-label="Message on Discord" title="Discord">
+                <img src="${COMMISSION_CONTACT.icons.discord}" alt="">
+            </a>
+        </div>
+        <p class="form-copy-caption">Copy the summary, then open whichever platform you'd like to send it through.</p>`;
 }
 
 function copyCommissionSummary(btn) {
