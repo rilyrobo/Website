@@ -3,20 +3,23 @@
 
 /* ── CSS Variables ─────────────────────────────────────────────────────────── */
 :root {
-  --bg-deep:        #0a0203;
-  --bg-mid:         #12050a;
-  --bg-surface:     #1e0710;
-  --bg-card:        #2d0b18;
-  --accent-gold:    #c8880a;
+  --bg-deep:        #0d0505;
+  --bg-mid:         #1a0a0a;
+  --bg-surface:     #2a1212;
+  --bg-card:        #1e0e0e;
+  --accent-gold:    #c8960c;
   --accent-amber:   #e07010;
-  --accent-red:     #d63a4a;
-  --accent-red-hot: #a01e2e;
-  --accent-cosmic:  #4a1b3e;
-  --text-primary:   #f5f0e8;
-  --text-secondary: #c8a0b0;
-  --text-muted:     #8a5868;
-  --border:         rgba(107,22,36,0.25);
-  --border-strong:  rgba(160,30,46,0.55);
+  --accent-red:     #8b0000;
+  --accent-red-hot: #cc2200;
+  --text-primary:   #f0e0d0;
+  --text-secondary: #c8a890;
+  --text-muted:     #8a6858;
+  --border:         rgba(200,150,12,0.25);
+  --border-strong:  rgba(200,150,12,0.55);
+  --shadow:         0 4px 24px rgba(0,0,0,0.7);
+  --radius:         10px;
+  --nav-height:     56px;
+  --transition:     0.3s ease;
 }
 
 /* ── Reset & Base ──────────────────────────────────────────────────────────── */
@@ -1205,14 +1208,377 @@ header p {
   border-top: 1px solid rgba(200,150,12,0.08);
 }
 
+/* Request commission button (sits inside .calc-result) */
+.calc-request-btn {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 14px 1.25rem;
+  background: linear-gradient(135deg, #1a7a1a, #0e5210);
+  color: var(--text-primary);
+  border: none;
+  border-top: 1px solid rgba(200,150,12,0.15);
+  border-radius: 0 0 var(--radius) var(--radius);
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.calc-request-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #22a022, #1a7a1a);
+}
+
+.calc-request-btn:disabled {
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  border-top-color: var(--border);
+}
+
+.calc-request-btn.secondary {
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+}
+
+.calc-request-btn.secondary:hover {
+  border-color: var(--accent-gold);
+  color: var(--text-primary);
+}
+
+/* ── Commission intake form modal ────────────────────────────────────────────── */
+.form-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2100;
+  background: rgba(0,0,0,0.85);
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.form-modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  max-height: 88vh;
+  overflow-y: auto;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  padding: 1.75rem 1.5rem;
+  box-shadow: 0 8px 48px rgba(0,0,0,0.9);
+  margin: auto;
+}
+
+.form-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+}
+
+/* Progress indicator */
+.form-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 1.75rem;
+}
+
+.form-progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  transition: all var(--transition);
+}
+
+.form-progress-step span {
+  position: absolute;
+  top: 36px;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+}
+
+.form-progress-step.active {
+  border-color: var(--accent-gold);
+  background: rgba(200,150,12,0.15);
+  color: var(--accent-gold);
+}
+
+.form-progress-step.active span { color: var(--accent-gold); }
+
+.form-progress-step.done {
+  border-color: var(--accent-gold);
+  background: var(--accent-gold);
+  color: var(--bg-deep);
+}
+
+.form-progress-line {
+  width: 36px;
+  height: 1px;
+  background: var(--border-strong);
+}
+
+/* Steps */
+.form-step { display: none; }
+.form-step.active { display: block; }
+
+.form-step-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.2rem;
+  color: var(--accent-gold);
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.form-step-hint {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-style: italic;
+  text-align: center;
+  margin-bottom: 1.25rem;
+  line-height: 1.5;
+}
+
+/* Form fields */
+.form-label {
+  display: block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+  margin-bottom: 5px;
+  margin-top: 14px;
+}
+
+.form-label:first-of-type { margin-top: 0; }
+
+.form-optional {
+  color: var(--text-muted);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+  width: 100%;
+  padding: 9px 12px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  font-family: 'Crimson Text', serif;
+  font-size: 0.95rem;
+  transition: border-color var(--transition);
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+}
+
+.form-textarea { resize: vertical; min-height: 60px; }
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* TOS agreement checkbox row on the review step */
+.form-tos-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 1.25rem;
+  padding: 12px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.form-tos-row:hover { border-color: var(--border-strong); }
+
+.form-tos-row input[type="checkbox"] {
+  margin-top: 2px;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  accent-color: var(--accent-gold);
+  cursor: pointer;
+}
+
+.form-tos-row span {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.form-tos-row a {
+  color: var(--accent-gold);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.form-tos-row a:hover { color: var(--accent-amber); }
+
+.form-tos-row-error {
+  border-color: var(--accent-red) !important;
+  animation: tosShake 0.4s ease;
+}
+
+@keyframes tosShake {
+  0%, 100% { transform: translateX(0); }
+  25%      { transform: translateX(-4px); }
+  75%      { transform: translateX(4px); }
+}
+
+.form-btn-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 1.5rem;
+}
+
+.form-step .calc-request-btn {
+  margin-top: 1.5rem;
+  border-radius: 6px;
+  border-top: none;
+}
+
+/* Summary (review step) */
+.form-summary-section {
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(200,150,12,0.1);
+}
+
+.form-summary-section:last-child { border-bottom: none; margin-bottom: 0; }
+
+.form-summary-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.form-summary-breakdown {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.form-summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(200,150,12,0.08);
+}
+
+.form-summary-row:last-child { border-bottom: none; }
+.form-summary-row.addon { color: var(--accent-amber); }
+.form-summary-row.subtotal { color: var(--text-primary); font-weight: 600; border-top: 1px solid var(--border); }
+.form-summary-row.total {
+  background: var(--bg-surface);
+  color: var(--accent-gold);
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+}
+
+.form-summary-text {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 4px;
+}
+
+.form-summary-text strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Confirmation step */
+#form-step-confirm { text-align: center; }
+
+.form-confirm-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background: rgba(26,122,26,0.2);
+  border: 1px solid #1a7a1a;
+  color: #4caf50;
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-send-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 1.25rem 0;
+}
+
+.form-send-btn { border-radius: 6px; }
+.form-copy-hint { font-size: 0.75rem; opacity: 0.7; }
+
 /* Mobile tweaks */
 @media (max-width: 480px) {
   .calc-type-tabs { flex-direction: column; }
   .calc-chip { font-size: 0.88rem; }
   .calc-result-total { font-size: 1.3rem; }
+  .form-grid-2 { grid-template-columns: 1fr; }
+  .form-btn-row { grid-template-columns: 1fr; }
+  .form-modal-content { padding: 1.25rem 1rem; max-height: 92vh; }
+  .form-progress-step span { font-size: 0.58rem; }
 }
 
+
+
 /* ── Modals ─────────────────────────────────────────────────────────────────── */
+/* Applied to <body> while any modal is open. Locks background scroll without
+   touching the modal's own scroll container. */
+body.modal-open {
+  overflow: hidden;
+}
+
 .modal {
   display: none;
   position: fixed;
@@ -1222,6 +1588,13 @@ header p {
   justify-content: center;
   align-items: center;
   padding: 1rem;
+  overflow-y: auto;
+}
+
+/* TOS modal can be opened from inside the commission form modal (z-index
+   2100), so it needs to stack above it. */
+#tos-modal {
+  z-index: 2200;
 }
 
 .modal-content {
@@ -1236,6 +1609,7 @@ header p {
   text-align: center;
   color: var(--text-primary);
   box-shadow: 0 8px 48px rgba(0,0,0,0.9);
+  margin: auto;
 }
 
 .modal-content img,

@@ -6,6 +6,14 @@ function attachModalListeners(gridSelector) {
     const modalLink  = document.getElementById("modal-link");
     if (!grid || !modal || !modalImage || !modalLink) return;
 
+    // .page ancestors use CSS transform for their slide-in animation, and a
+    // transformed ancestor becomes the containing block for position:fixed
+    // children — breaking true viewport-fixed centering. Move the modal to
+    // be a direct child of <body> so it escapes that ancestor entirely.
+    if (modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
+    }
+
     // Clone to strip any previously-bound duplicate listeners
     const fresh = grid.cloneNode(true);
     grid.parentNode.replaceChild(fresh, grid);
@@ -16,13 +24,23 @@ function attachModalListeners(gridSelector) {
             modalImage.src = card.dataset.image;
             modalLink.href = card.dataset.link;
             modal.style.display = "flex";
+            window.acquireModalLock?.();
         }
     });
     // Only bind the close handler once
     if (!modal.dataset.listenerBound) {
         modal.dataset.listenerBound = "1";
         modal.addEventListener("click", (e) => {
-            if (e.target === modal) modal.style.display = "none";
+            if (e.target === modal) {
+                modal.style.display = "none";
+                window.releaseModalLock?.();
+            }
+        });
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && modal.style.display === "flex") {
+                modal.style.display = "none";
+                window.releaseModalLock?.();
+            }
         });
     }
 }

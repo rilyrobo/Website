@@ -39,6 +39,26 @@ document.addEventListener('DOMContentLoaded', () => {
     setPriceLabels();
 });
 
+// ── Shared modal scroll-lock (reference counted) ───────────────────────────────
+// Multiple modals can stack (e.g. TOS opened from inside the commission
+// form). A simple add/remove of 'modal-open' breaks if the inner modal
+// closes first — it would unlock scroll while the outer modal is still
+// open. window.modalLock tracks how many modals are currently open and
+// only releases the body lock once that count returns to zero.
+window.modalLockCount = window.modalLockCount || 0;
+
+window.acquireModalLock = function () {
+    window.modalLockCount++;
+    document.body.classList.add('modal-open');
+};
+
+window.releaseModalLock = function () {
+    window.modalLockCount = Math.max(0, window.modalLockCount - 1);
+    if (window.modalLockCount === 0) {
+        document.body.classList.remove('modal-open');
+    }
+};
+
 // ── Build the calculator HTML inside #commission-calculator ───────────────────
 function buildCalculator() {
     const root = document.getElementById('commission-calculator');
@@ -221,6 +241,105 @@ function buildCalculator() {
             <span class="calc-result-total" id="calc-total">—</span>
         </div>
         <div id="calc-breakdown"><p class="calc-result-empty">Select options above to see your estimate.</p></div>
+        <button class="calc-request-btn" id="calc-request-btn" onclick="openCommissionForm()" disabled>
+            Request This Commission
+        </button>
+    </div>
+
+    <!-- Intake form modal -->
+    <div class="form-modal" id="commission-form-modal">
+        <div class="form-modal-content">
+            <button class="close form-close" onclick="closeCommissionForm()" aria-label="Close">&times;</button>
+
+            <div class="form-progress">
+                <div class="form-progress-step active" data-step="1">1<span>Brief</span></div>
+                <div class="form-progress-line"></div>
+                <div class="form-progress-step" data-step="2">2<span>References</span></div>
+                <div class="form-progress-line"></div>
+                <div class="form-progress-step" data-step="3">3<span>Review</span></div>
+            </div>
+
+            <!-- Step 1: Brief -->
+            <div class="form-step active" id="form-step-1">
+                <h3 class="form-step-title">Tell me about your commission</h3>
+
+                <label class="form-label" for="cf-name">Your name / handle</label>
+                <input type="text" id="cf-name" class="form-input" placeholder="How should I address you?">
+
+                <label class="form-label" for="cf-contact">Best way to reach you</label>
+                <input type="text" id="cf-contact" class="form-input" placeholder="Discord, email, or Twitter handle">
+
+                <label class="form-label" for="cf-charname">Character name <span class="form-optional">(optional)</span></label>
+                <input type="text" id="cf-charname" class="form-input" placeholder="e.g. Mireille the Ringmaster">
+
+                <label class="form-label" for="cf-desc">Describe the vibe &amp; concept</label>
+                <textarea id="cf-desc" class="form-textarea" rows="4" placeholder="Personality, mood, key features — anything that helps me see what you see."></textarea>
+
+                <label class="form-label" for="cf-nonneg">Non-negotiable details <span class="form-optional">(optional)</span></label>
+                <textarea id="cf-nonneg" class="form-textarea" rows="2" placeholder="Hair colour, specific markings, must-have accessories, etc."></textarea>
+
+                <div class="form-grid-2">
+                    <div>
+                        <label class="form-label" for="cf-usage">Where will this be used?</label>
+                        <select id="cf-usage" class="form-select">
+                            <option value="personal">Personal use only</option>
+                            <option value="streaming">Streaming / content creation</option>
+                            <option value="commercial">Commercial / business use</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label" for="cf-deadline">Preferred deadline <span class="form-optional">(optional)</span></label>
+                        <input type="text" id="cf-deadline" class="form-input" placeholder="e.g. flexible, or by Aug 1">
+                    </div>
+                </div>
+
+                <button class="calc-request-btn" onclick="formGoToStep(2)">Continue</button>
+            </div>
+
+            <!-- Step 2: References -->
+            <div class="form-step" id="form-step-2">
+                <h3 class="form-step-title">References</h3>
+                <p class="form-step-hint">Links to mood boards, character sheets, or existing art help me match your vision faster. You can also just describe what you have — files can be sent after I confirm the commission.</p>
+
+                <label class="form-label" for="cf-refs">Reference links <span class="form-optional">(optional)</span></label>
+                <textarea id="cf-refs" class="form-textarea" rows="3" placeholder="Pinterest board, DeviantArt favourites, Twitter thread, etc. — one per line"></textarea>
+
+                <label class="form-label" for="cf-notes">Anything else I should know?</label>
+                <textarea id="cf-notes" class="form-textarea" rows="3" placeholder="Open floor — questions, special requests, scheduling notes."></textarea>
+
+                <div class="form-btn-row">
+                    <button class="calc-request-btn secondary" onclick="formGoToStep(1)">Back</button>
+                    <button class="calc-request-btn" onclick="formGoToStep(3)">Review</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Review -->
+            <div class="form-step" id="form-step-3">
+                <h3 class="form-step-title">Review your request</h3>
+                <p class="form-step-hint">This is an estimate based on the calculator. I'll confirm the final price once I've reviewed your brief.</p>
+
+                <div class="form-summary" id="form-summary"></div>
+
+                <label class="form-tos-row" for="cf-tos-agree">
+                    <input type="checkbox" id="cf-tos-agree" onchange="formUpdateSubmitState()">
+                    <span>I've read and agree to the <a href="#" onclick="openTosFromForm(event)">Terms of Service</a></span>
+                </label>
+
+                <div class="form-btn-row">
+                    <button class="calc-request-btn secondary" onclick="formGoToStep(2)">Back</button>
+                    <button class="calc-request-btn" id="cf-submit-btn" onclick="submitCommissionForm()" disabled>Send Request</button>
+                </div>
+            </div>
+
+            <!-- Confirmation -->
+            <div class="form-step" id="form-step-confirm">
+                <div class="form-confirm-icon">✓</div>
+                <h3 class="form-step-title">Request ready to send</h3>
+                <p class="form-step-hint">Your commission request has been prepared. Choose how you'd like to send it:</p>
+                <div class="form-send-options" id="form-send-options"></div>
+                <button class="calc-request-btn secondary" onclick="closeCommissionForm()">Close</button>
+            </div>
+        </div>
     </div>`;
 
     calcUpdatePrice();
@@ -395,14 +514,19 @@ function calcUpdatePrice() {
 }
 
 // ── Render result panel ───────────────────────────────────────────────────────
+let lastCalcResult = null;
+
 function renderCalcResult(total, lines, addons, base) {
     const totalEl     = document.getElementById('calc-total');
     const breakdownEl = document.getElementById('calc-breakdown');
+    const requestBtn  = document.getElementById('calc-request-btn');
     if (!totalEl || !breakdownEl) return;
 
     if (base === 0) {
         totalEl.textContent = '—';
         breakdownEl.innerHTML = '<p class="calc-result-empty">Select options above to see your estimate.</p>';
+        if (requestBtn) requestBtn.disabled = true;
+        lastCalcResult = null;
         return;
     }
 
@@ -421,6 +545,9 @@ function renderCalcResult(total, lines, addons, base) {
     html += '</div>';
     html += '<p class="calc-result-note">This is an estimate. Final price is confirmed after discussing your project in detail.</p>';
     breakdownEl.innerHTML = html;
+
+    if (requestBtn) requestBtn.disabled = false;
+    lastCalcResult = { total, lines, addons, base, type: state.type };
 }
 
 // ── Label helpers ─────────────────────────────────────────────────────────────
@@ -464,18 +591,39 @@ function initTosModal() {
     const btn   = document.getElementById('open-tos-modal-button');
     const modal = document.getElementById('tos-modal');
     if (!btn || !modal) return;
+
+    // .page ancestors use CSS transform for their slide-in animation, and a
+    // transformed ancestor becomes the containing block for position:fixed
+    // children — breaking true viewport-fixed centering. Move the modal to
+    // be a direct child of <body> so it escapes that ancestor entirely.
+    if (modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
+    }
+
     const closeBtn   = modal.querySelector('.close');
     const tosContent = document.getElementById('tos-content');
+
+    function openModal() {
+        modal.style.display = 'flex';
+        window.acquireModalLock();
+    }
+    function closeModal() {
+        modal.style.display = 'none';
+        window.releaseModalLock();
+    }
 
     btn.addEventListener('click', (e) => {
         e.preventDefault();
         fetch('tos.html')
             .then(r => r.text())
-            .then(html => { if (tosContent) tosContent.innerHTML = html; modal.style.display = 'block'; })
+            .then(html => { if (tosContent) tosContent.innerHTML = html; openModal(); })
             .catch(err => console.error('TOS load error:', err));
     });
-    closeBtn?.addEventListener('click', () => { modal.style.display = 'none'; });
-    window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+    closeBtn?.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.style.display === 'flex') closeModal();
+    });
 }
 
 // ── Nav hover image: switch between above/beside based on header visibility ───
@@ -549,3 +697,234 @@ function initCommissionSlider() {
     closeBtn?.addEventListener('click', closeModal);
     window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 }
+
+// ── Commission intake form ──────────────────────────────────────────────────────
+// Set this to your preferred contact channel. 'discord' shows a copy-to-clipboard
+// summary (since Discord has no mailto-style deep link), 'email' opens the user's
+// mail client with the summary pre-filled.
+const COMMISSION_CONTACT = {
+    email: 'RilyRobo@gmail.com',
+    discordHandle: 'RilyRobo'
+};
+
+function openCommissionForm() {
+    if (!lastCalcResult) return;
+    const modal = document.getElementById('commission-form-modal');
+    if (!modal) return;
+
+    // .page ancestors use CSS transform for their slide-in animation, and a
+    // transformed ancestor becomes the containing block for position:fixed
+    // children — breaking true viewport-fixed centering and scroll. Move the
+    // modal to be a direct child of <body> so it escapes that ancestor.
+    if (modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
+    }
+
+    modal.style.display = 'flex';
+    formGoToStep(1);
+    window.acquireModalLock();
+}
+
+function closeCommissionForm() {
+    const modal = document.getElementById('commission-form-modal');
+    if (!modal) return;
+    modal.style.display = 'none';
+    window.releaseModalLock();
+}
+
+function formGoToStep(step) {
+    document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('form-step-' + step)?.classList.add('active');
+
+    const isNumericStep = typeof step === 'number';
+
+    document.querySelectorAll('.form-progress-step').forEach(el => {
+        const n = parseInt(el.dataset.step);
+        el.classList.toggle('active', isNumericStep && n === step);
+        el.classList.toggle('done', isNumericStep && n < step);
+    });
+    const progressEl = document.querySelector('.form-progress');
+    if (progressEl) progressEl.style.display = isNumericStep ? 'flex' : 'none';
+
+    if (step === 3) {
+        buildFormSummary();
+        formUpdateSubmitState();
+    }
+
+    const content = document.querySelector('.form-modal-content');
+    if (content) content.scrollTop = 0;
+}
+
+// Keeps the Send Request button locked until the TOS checkbox is ticked.
+function formUpdateSubmitState() {
+    const checkbox  = document.getElementById('cf-tos-agree');
+    const submitBtn = document.getElementById('cf-submit-btn');
+    if (!checkbox || !submitBtn) return;
+    submitBtn.disabled = !checkbox.checked;
+    if (checkbox.checked) {
+        checkbox.closest('.form-tos-row')?.classList.remove('form-tos-row-error');
+    }
+}
+
+// Opens the TOS modal from inside the commission form without losing
+// the form's current progress — the form stays open underneath.
+function openTosFromForm(e) {
+    e.preventDefault();
+    const tosModal = document.getElementById('tos-modal');
+    const tosBtn   = document.getElementById('open-tos-modal-button');
+    if (tosModal && tosBtn) {
+        tosBtn.click();
+    }
+}
+
+function buildFormSummary() {
+    const summaryEl = document.getElementById('form-summary');
+    if (!summaryEl || !lastCalcResult) return;
+
+    const get = id => document.getElementById(id)?.value?.trim() || '';
+    const name     = get('cf-name')     || 'Not provided';
+    const contact  = get('cf-contact')  || 'Not provided';
+    const charname = get('cf-charname');
+    const desc     = get('cf-desc')     || 'Not provided';
+    const nonneg   = get('cf-nonneg');
+    const usageSel = document.getElementById('cf-usage');
+    const usage    = usageSel ? usageSel.options[usageSel.selectedIndex].text : '';
+    const deadline = get('cf-deadline');
+    const refs     = get('cf-refs');
+    const notes    = get('cf-notes');
+
+    const typeLabel = lastCalcResult.type === '2d' ? '2D Art' : '3D / Avatar';
+
+    let lines = `
+        <div class="form-summary-section">
+            <div class="form-summary-label">Commission type</div>
+            <div class="form-summary-value">${escapeHtmlForm(typeLabel)}</div>
+        </div>
+        <div class="form-summary-section">
+            <div class="form-summary-label">Configuration</div>
+            <div class="form-summary-breakdown">`;
+
+    lastCalcResult.lines.forEach(l => {
+        lines += `<div class="form-summary-row"><span>${escapeHtmlForm(l.label)}</span><span>$${l.amount.toFixed(0)}</span></div>`;
+    });
+    if (lastCalcResult.addons.length) {
+        lines += `<div class="form-summary-row subtotal"><span>Subtotal</span><span>$${lastCalcResult.base.toFixed(0)}</span></div>`;
+        lastCalcResult.addons.forEach(a => {
+            lines += `<div class="form-summary-row addon"><span>${escapeHtmlForm(a.label)}</span><span>+$${a.amount.toFixed(0)}</span></div>`;
+        });
+    }
+    lines += `<div class="form-summary-row total"><span>Estimated total</span><span>$${lastCalcResult.total.toFixed(0)}</span></div>`;
+    lines += `</div></div>`;
+
+    lines += `
+        <div class="form-summary-section">
+            <div class="form-summary-label">Brief</div>
+            <div class="form-summary-text"><strong>From:</strong> ${escapeHtmlForm(name)} (${escapeHtmlForm(contact)})</div>
+            ${charname ? `<div class="form-summary-text"><strong>Character:</strong> ${escapeHtmlForm(charname)}</div>` : ''}
+            <div class="form-summary-text"><strong>Concept:</strong> ${escapeHtmlForm(desc)}</div>
+            ${nonneg ? `<div class="form-summary-text"><strong>Non-negotiables:</strong> ${escapeHtmlForm(nonneg)}</div>` : ''}
+            <div class="form-summary-text"><strong>Usage:</strong> ${escapeHtmlForm(usage)}</div>
+            ${deadline ? `<div class="form-summary-text"><strong>Deadline:</strong> ${escapeHtmlForm(deadline)}</div>` : ''}
+            ${refs ? `<div class="form-summary-text"><strong>References:</strong> ${escapeHtmlForm(refs)}</div>` : ''}
+            ${notes ? `<div class="form-summary-text"><strong>Notes:</strong> ${escapeHtmlForm(notes)}</div>` : ''}
+        </div>`;
+
+    summaryEl.innerHTML = lines;
+}
+
+function buildPlainTextSummary() {
+    const get = id => document.getElementById(id)?.value?.trim() || '';
+    const name     = get('cf-name')     || 'Not provided';
+    const contact  = get('cf-contact')  || 'Not provided';
+    const charname = get('cf-charname');
+    const desc     = get('cf-desc')     || 'Not provided';
+    const nonneg   = get('cf-nonneg');
+    const usageSel = document.getElementById('cf-usage');
+    const usage    = usageSel ? usageSel.options[usageSel.selectedIndex].text : '';
+    const deadline = get('cf-deadline');
+    const refs     = get('cf-refs');
+    const notes    = get('cf-notes');
+
+    const typeLabel = lastCalcResult.type === '2d' ? '2D Art' : '3D / Avatar';
+
+    let text = `COMMISSION REQUEST\n\n`;
+    text += `Type: ${typeLabel}\n\n`;
+    text += `Configuration:\n`;
+    lastCalcResult.lines.forEach(l => { text += `  - ${l.label}: $${l.amount.toFixed(0)}\n`; });
+    if (lastCalcResult.addons.length) {
+        text += `  Subtotal: $${lastCalcResult.base.toFixed(0)}\n`;
+        lastCalcResult.addons.forEach(a => { text += `  - ${a.label}: +$${a.amount.toFixed(0)}\n`; });
+    }
+    text += `  Estimated total: $${lastCalcResult.total.toFixed(0)}\n\n`;
+    text += `From: ${name} (${contact})\n`;
+    if (charname) text += `Character: ${charname}\n`;
+    text += `Concept: ${desc}\n`;
+    if (nonneg)   text += `Non-negotiables: ${nonneg}\n`;
+    text += `Usage: ${usage}\n`;
+    if (deadline) text += `Deadline: ${deadline}\n`;
+    if (refs)     text += `References: ${refs}\n`;
+    if (notes)    text += `Notes: ${notes}\n`;
+    text += `\n(This is an estimate — final price confirmed after review.)`;
+
+    return text;
+}
+
+function submitCommissionForm() {
+    const tosCheckbox = document.getElementById('cf-tos-agree');
+    if (!tosCheckbox?.checked) {
+        tosCheckbox?.closest('.form-tos-row')?.classList.add('form-tos-row-error');
+        return;
+    }
+
+    formGoToStep('confirm');
+
+    const plainText = buildPlainTextSummary();
+    const optionsEl = document.getElementById('form-send-options');
+    if (!optionsEl) return;
+
+    const subject = encodeURIComponent('Commission Request — ' + (lastCalcResult.type === '2d' ? '2D Art' : '3D / Avatar'));
+    const mailtoBody = encodeURIComponent(plainText);
+    const mailtoUrl = `mailto:${COMMISSION_CONTACT.email}?subject=${subject}&body=${mailtoBody}`;
+
+    optionsEl.innerHTML = `
+        <a href="${mailtoUrl}" class="calc-request-btn form-send-btn" target="_blank" rel="noopener noreferrer">
+            Send via Email
+        </a>
+        <button class="calc-request-btn form-send-btn secondary" onclick="copyCommissionSummary(this)">
+            Copy to Clipboard <span class="form-copy-hint">(for Discord)</span>
+        </button>`;
+}
+
+function copyCommissionSummary(btn) {
+    const text = buildPlainTextSummary();
+    navigator.clipboard.writeText(text).then(() => {
+        if (btn) {
+            const original = btn.innerHTML;
+            btn.innerHTML = 'Copied!';
+            setTimeout(() => { btn.innerHTML = original; }, 1800);
+        }
+    }).catch(() => {
+        alert('Could not copy automatically — please select and copy the summary manually.');
+    });
+}
+
+function escapeHtmlForm(str) {
+    return String(str ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// Close modal on backdrop click or Escape key
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('commission-form-modal');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeCommissionForm();
+        });
+    }
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal && modal.style.display === 'flex') {
+            closeCommissionForm();
+        }
+    });
+});

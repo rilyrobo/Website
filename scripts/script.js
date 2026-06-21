@@ -137,6 +137,11 @@ function showPage(pageId) {
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     page.classList.add("active");
+                    // Scroll only after the new page has display:block and is
+                    // laid out — scrolling before this point can land at a
+                    // stale position because the target page's height isn't
+                    // final yet (it's still display:none or mid-transition).
+                    window.scrollTo(0, 0);
                 });
             });
         } else {
@@ -153,7 +158,6 @@ function showPage(pageId) {
 
     document.getElementById("nav-links")?.classList.remove("show");
     history.pushState(null, "", `#${pageId}`);
-    window.scrollTo(0, 0);
 }
 
 // ── External nav links ────────────────────────────────────────────────────────
