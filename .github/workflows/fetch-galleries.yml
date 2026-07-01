@@ -1,0 +1,132 @@
+name: Fetch Gallery Feeds
+
+# Runs every 6 hours and on every push to main so new artwork appears promptly
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  push:
+    branches: [main]
+  workflow_dispatch: # lets you trigger it manually from GitHub Actions tab
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # needed to commit the generated JSON back to the repo
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Fetch DeviantArt RSS feeds
+        run: |
+          mkdir -p data
+
+          fetch_da() {
+            local name="$1"
+            local url="$2"
+            echo "Fetching DeviantArt: $name"
+            # Curl with a real browser User-Agent — DA blocks bot UAs
+            curl -s -L \
+              -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36" \
+              -H "Accept: application/rss+xml, application/xml, text/xml" \
+              --max-time 30 \
+              "$url" \
+            | python3 -c "
+import sys, json, xml.etree.ElementTree as ET
+
+ns = {'media': 'http://search.yahoo.com/mrss/'}
+try:
+    root = ET.fromstring(sys.stdin.read())
+except ET.ParseError as e:
+    print(json.dumps({'error': str(e), 'items': []}))
+    sys.exit(0)
+
+items = []
+for item in root.findall('.//item'):
+    title = item.findtext('title', '').strip()
+    link  = item.findtext('link',  '').strip()
+
+    # Try media:content first, then enclosure
+    img = None
+    mc = item.find('media:content', ns)
+    if mc is not None:
+        img = mc.get('url')
+    if not img:
+        enc = item.find('enclosure')
+        if enc is not None:
+            img = enc.get('url')
+    if not img:
+        # Parse description for img src
+        desc = item.findtext('description', '')
+        import re
+        m = re.search(r'<img[^>]+src=\"([^\"]+)\"', desc)
+        if m:
+            img = m.group(1)
+
+    if title and link and img:
+        items.append({'title': title, 'link': link, 'image': img})
+
+print(json.dumps({'items': items}))
+" > "data/da-$name.json"
+            echo "  -> $(python3 -c "import json,sys; d=json.load(open('data/da-$name.json')); print(len(d.get('items',[])), 'items')")"
+          }
+
+          fetch_da "featured"         "https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/31357645/featured"
+          fetch_da "2d-art"           "https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/96210416/2d-art"
+          fetch_da "3d-art"           "https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/96210354/3d-art"
+          fetch_da "character-design" "https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/57218144/reference-images"
+
+      - name: Fetch ArtStation RSS feed
+        run: |
+          echo "Fetching ArtStation"
+          curl -s -L \
+            -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36" \
+            -H "Accept: application/rss+xml, application/xml, text/xml" \
+            --max-time 30 \
+            "https://rilyrobo.artstation.com/rss" \
+          | python3 -c "
+import sys, json, xml.etree.ElementTree as ET
+
+ns = {'media': 'http://search.yahoo.com/mrss/'}
+try:
+    root = ET.fromstring(sys.stdin.read())
+except ET.ParseError as e:
+    print(json.dumps({'error': str(e), 'items': []}))
+    sys.exit(0)
+
+items = []
+for item in root.findall('.//item'):
+    title = item.findtext('title', '').strip()
+    link  = item.findtext('link',  '').strip()
+
+    img = None
+    for tag in ['media:content', 'media:thumbnail']:
+        el = item.find(tag, ns)
+        if el is not None:
+            img = el.get('url')
+            if img: break
+    if not img:
+        enc = item.find('enclosure')
+        if enc is not None:
+            img = enc.get('url')
+
+    if title and link and img:
+        items.append({'title': title, 'link': link, 'image': img})
+
+print(json.dumps({'items': items}))
+" > data/artstation.json
+          echo "  -> $(python3 -c "import json; d=json.load(open('data/artstation.json')); print(len(d.get('items',[])), 'items')")"
+
+      - name: Commit updated gallery data
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/
+          # Only commit if something actually changed
+          if git diff --staged --quiet; then
+            echo "No changes to gallery data."
+          else
+            git commit -m "chore: update gallery feeds [skip ci]"
+            git push
+          fi
