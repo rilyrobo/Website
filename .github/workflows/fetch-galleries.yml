@@ -27,49 +27,12 @@ jobs:
             local url="$2"
             echo "Fetching DeviantArt: $name"
             # Curl with a real browser User-Agent — DA blocks bot UAs
-            cat > /tmp/parse_da.py <<'PY'
-            import sys, json, xml.etree.ElementTree as ET
-
-            ns = {'media': 'http://search.yahoo.com/mrss/'}
-            try:
-                root = ET.fromstring(sys.stdin.read())
-            except ET.ParseError as e:
-                print(json.dumps({'error': str(e), 'items': []}))
-                sys.exit(0)
-
-            items = []
-            for item in root.findall('.//item'):
-                title = item.findtext('title', '').strip()
-                link  = item.findtext('link',  '').strip()
-
-                # Try media:content first, then enclosure
-                img = None
-                mc = item.find('media:content', ns)
-                if mc is not None:
-                    img = mc.get('url')
-                if not img:
-                    enc = item.find('enclosure')
-                    if enc is not None:
-                        img = enc.get('url')
-                if not img:
-                    # Parse description for img src
-                    desc = item.findtext('description', '')
-                    import re
-                    m = re.search(r'<img[^>]+src="([^"]+)"', desc)
-                    if m:
-                        img = m.group(1)
-
-                if title and link and img:
-                    items.append({'title': title, 'link': link, 'image': img})
-
-            print(json.dumps({'items': items}))
-            PY
             curl -s -L \
               -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36" \
               -H "Accept: application/rss+xml, application/xml, text/xml" \
               --max-time 30 \
               "$url" \
-            | python3 /tmp/parse_da.py > "data/da-$name.json"
+            | python3 scripts/fetch_gallery_feed.py > "data/da-$name.json"
             echo "  -> $(python3 -c "import json,sys; d=json.load(open('data/da-$name.json')); print(len(d.get('items',[])), 'items')")"
           }
 
@@ -81,43 +44,12 @@ jobs:
       - name: Fetch ArtStation RSS feed
         run: |
           echo "Fetching ArtStation"
-          cat > /tmp/parse_artstation.py <<'PY'
-          import sys, json, xml.etree.ElementTree as ET
-
-          ns = {'media': 'http://search.yahoo.com/mrss/'}
-          try:
-              root = ET.fromstring(sys.stdin.read())
-          except ET.ParseError as e:
-              print(json.dumps({'error': str(e), 'items': []}))
-              sys.exit(0)
-
-          items = []
-          for item in root.findall('.//item'):
-              title = item.findtext('title', '').strip()
-              link  = item.findtext('link',  '').strip()
-
-              img = None
-              for tag in ['media:content', 'media:thumbnail']:
-                  el = item.find(tag, ns)
-                  if el is not None:
-                      img = el.get('url')
-                      if img: break
-              if not img:
-                  enc = item.find('enclosure')
-                  if enc is not None:
-                      img = enc.get('url')
-
-              if title and link and img:
-                  items.append({'title': title, 'link': link, 'image': img})
-
-          print(json.dumps({'items': items}))
-          PY
           curl -s -L \
             -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36" \
             -H "Accept: application/rss+xml, application/xml, text/xml" \
             --max-time 30 \
             "https://rilyrobo.artstation.com/rss" \
-          | python3 /tmp/parse_artstation.py > data/artstation.json
+          | python3 scripts/fetch_gallery_feed.py > data/artstation.json
           echo "  -> $(python3 -c "import json; d=json.load(open('data/artstation.json')); print(len(d.get('items',[])), 'items')")"
 
       - name: Commit updated gallery data
