@@ -32,7 +32,7 @@ jobs:
               -H "Accept: application/rss+xml, application/xml, text/xml" \
               --max-time 30 \
               "$url" \
-            | python3 -c "
+            | python3 - <<'PY' > "data/da-$name.json"
               import sys, json, xml.etree.ElementTree as ET
 
               ns = {'media': 'http://search.yahoo.com/mrss/'}
@@ -60,7 +60,7 @@ jobs:
                       # Parse description for img src
                       desc = item.findtext('description', '')
                       import re
-                      m = re.search(r'<img[^>]+src=\"([^\"]+)\"', desc)
+                      m = re.search(r'<img[^>]+src="([^"]+)"', desc)
                       if m:
                           img = m.group(1)
 
@@ -68,7 +68,7 @@ jobs:
                       items.append({'title': title, 'link': link, 'image': img})
 
               print(json.dumps({'items': items}))
-            " > "data/da-$name.json"
+            PY
             echo "  -> $(python3 -c "import json,sys; d=json.load(open('data/da-$name.json')); print(len(d.get('items',[])), 'items')")"
           }
 
@@ -85,7 +85,7 @@ jobs:
             -H "Accept: application/rss+xml, application/xml, text/xml" \
             --max-time 30 \
             "https://rilyrobo.artstation.com/rss" \
-          | python3 -c "
+          | python3 - <<'PY' > data/artstation.json
             import sys, json, xml.etree.ElementTree as ET
 
             ns = {'media': 'http://search.yahoo.com/mrss/'}
@@ -115,7 +115,7 @@ jobs:
                     items.append({'title': title, 'link': link, 'image': img})
 
             print(json.dumps({'items': items}))
-          " > data/artstation.json
+          PY
           echo "  -> $(python3 -c "import json; d=json.load(open('data/artstation.json')); print(len(d.get('items',[])), 'items')")"
 
       - name: Commit updated gallery data
