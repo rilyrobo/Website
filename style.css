@@ -376,6 +376,8 @@ header p {
   cursor: pointer;
   transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .gallery-card:hover {
@@ -392,6 +394,7 @@ header p {
   display: block;
   background: var(--bg-surface);
   transition: opacity 0.3s ease;
+  flex-shrink: 0;
 }
 
 /* Shimmer skeleton while loading */
@@ -400,19 +403,134 @@ header p {
   opacity: 0;
 }
 
+/* Footer row: title left, platform badges right */
+.gallery-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  min-width: 0;
+}
+
 .gallery-card h4 {
   color: var(--text-secondary);
-  margin-top: 8px;
-  font-size: 0.9rem;
+  margin: 0;
+  font-size: 0.85rem;
   font-family: 'Cinzel', serif;
   font-weight: 400;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 1;
+  text-align: left;
 }
+
+/* Source badges: DA, AS */
+.gallery-badges {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.gallery-badge {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: opacity var(--transition), transform var(--transition);
+}
+
+.gallery-badge:hover {
+  opacity: 0.8;
+  transform: translateY(-1px);
+}
+
+.badge-da {
+  background: rgba(4,160,69,0.25);
+  color: #4cca80;
+  border: 1px solid rgba(4,160,69,0.4);
+}
+
+.badge-as {
+  background: rgba(66,165,245,0.2);
+  color: #7ec8fa;
+  border: 1px solid rgba(66,165,245,0.35);
+}
+
+/* Card with content on both platforms: gold accent border */
+.gallery-both {
+  border-color: rgba(200,150,12,0.35);
+}
+
+.gallery-both:hover {
+  border-color: rgba(200,150,12,0.7);
+}
+
+/* Partial-fail notice above gallery grid */
+.gallery-partial-fail {
+  grid-column: 1/-1;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-style: italic;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+.gallery-partial-fail a { color: var(--accent-amber); }
 
 .gallery-deviantart { border-color: rgba(4,160,69,0.3); }
 .gallery-artstation  { border-color: rgba(66,165,245,0.3); }
+
+/* ── Merged gallery filter bar ───────────────────────────────────────────────── */
+.gallery-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.gallery-filter-btn {
+  padding: 5px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 20px;
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.gallery-filter-btn:hover {
+  border-color: var(--accent-gold);
+  color: var(--text-secondary);
+}
+
+.gallery-filter-btn.active {
+  border-color: var(--accent-gold);
+  background: rgba(200,150,12,0.12);
+  color: var(--accent-gold);
+}
+
+/* The "DA + AS" button uses coloured spans */
+.gfb-da { color: #4cca80; }
+.gfb-as { color: #7ec8fa; }
+.gallery-filter-btn.active .gfb-da,
+.gallery-filter-btn.active .gfb-as { filter: brightness(1.2); }
+
+/* Inner grid sits inside the container div; needs its own grid layout */
+.gallery-inner-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
 
 .gallery-loading {
   grid-column: 1/-1;
