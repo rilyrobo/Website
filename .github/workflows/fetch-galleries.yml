@@ -1,12 +1,25 @@
 name: Fetch Gallery Feeds
 
-# Runs every 6 hours and on every push to main so new artwork appears promptly
+# ── Trigger ──────────────────────────────────────────────────────────────────
+# DeviantArt now fetches via the official OAuth2 API (client_credentials
+# grant — app-level auth, safe to run unattended). This replaced the old RSS
+# scrape after confirming backend.deviantart.com/rss.xml is blocked at the
+# CloudFront/WAF edge regardless of IP reputation or request headers.
+#
+# ArtStation's RSS remains blocked by a Cloudflare JS challenge (confirmed
+# via cf_challenge_text_small in the response body) — curl cannot solve
+# this, so that step is kept for visibility but not relied upon. See the
+# "Fetch ArtStation" step below.
+#
+# Schedule re-enabled now that DA folder IDs have been verified to return
+# distinct, correct item counts (132/58/22/11 across featured/2d/3d/
+# character-design) — previously all four returned an identical count
+# because the legacy numeric RSS-era IDs weren't valid API folder UUIDs and
+# the API silently fell back to the full gallery instead of erroring.
 on:
   schedule:
     - cron: '0 */6 * * *'
-  push:
-    branches: [main]
-  workflow_dispatch: # lets you trigger it manually from GitHub Actions tab
+  workflow_dispatch:
 
 jobs:
   fetch:
@@ -14,50 +27,63 @@ jobs:
     permissions:
       contents: write   # needed to commit the generated JSON back to the repo
 
+    env:
+      DA_CLIENT_ID: ${{ secrets.DA_CLIENT_ID }}
+      DA_CLIENT_SECRET: ${{ secrets.DA_CLIENT_SECRET }}
+      # Real folder UUIDs, confirmed via:
+      #   python3 scripts/fetch_deviantart_api.py --username RilyRobo --list-folders
+      FOLDER_ID_FEATURED: "AF28499D-4BA6-CE99-C30B-FFA9D9E18DF6"
+      FOLDER_ID_2D_ART: "15D635F9-F26E-C751-6B7D-F29C006E46E6"
+      FOLDER_ID_3D_ART: "A4550B8A-4D55-60A5-AD83-B545A34C21A2"
+      FOLDER_ID_CHARACTER_DESIGN: "83A221E4-C7BF-E206-D0F6-544CA72DD37B"
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Fetch DeviantArt RSS feeds
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch DeviantArt galleries via OAuth2 API
         run: |
           mkdir -p data
+          python3 scripts/fetch_deviantart_api.py --username RilyRobo --folder-id "$FOLDER_ID_FEATURED"          --output data/da-featured.json
+          python3 scripts/fetch_deviantart_api.py --username RilyRobo --folder-id "$FOLDER_ID_2D_ART"            --output data/da-2d-art.json
+          python3 scripts/fetch_deviantart_api.py --username RilyRobo --folder-id "$FOLDER_ID_3D_ART"            --output data/da-3d-art.json
+          python3 scripts/fetch_deviantart_api.py --username RilyRobo --folder-id "$FOLDER_ID_CHARACTER_DESIGN"  --output data/da-character-design.json
+          # fetch_deviantart_api.py exits non-zero and leaves the existing
+          # file untouched on a 0-item result, rather than committing empty
+          # gallery data — same guard used by the local update script.
 
-          fetch_da() {
-            local name="$1"
-            local url="$2"
-            echo "Fetching DeviantArt: $name"
-            # Curl with a real browser User-Agent — DA blocks bot UAs
-            curl -s -L \
-              -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36" \
-              -H "Accept: application/rss+xml, application/xml, text/xml" \
-              --max-time 30 \
-              "$url" \
-            | python3 scripts/fetch_gallery_feed.py > "data/da-$name.json"
-            echo "  -> $(python3 -c "import json,sys; d=json.load(open('data/da-$name.json')); print(len(d.get('items',[])), 'items')")"
-          }
-
-          fetch_da "featured"         "https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/31357645/featured"
-          fetch_da "2d-art"           "https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/96210416/2d-art"
-          fetch_da "3d-art"           "https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/96210354/3d-art"
-          fetch_da "character-design" "https://backend.deviantart.com/rss.xml?q=gallery:RilyRobo/57218144/reference-images"
-
-      - name: Fetch ArtStation RSS feed
+      - name: Fetch ArtStation RSS feed (KNOWN BROKEN — Cloudflare challenge)
+        continue-on-error: true   # unresolved block; don't fail the whole job over it
         run: |
-          echo "Fetching ArtStation"
+          echo "⚠ ArtStation RSS is behind a Cloudflare JS challenge and will likely 403."
+          echo "⚠ This step is kept for visibility/testing only — do not rely on its output."
           curl -s -L \
             -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36" \
             -H "Accept: application/rss+xml, application/xml, text/xml" \
             --max-time 30 \
             "https://rilyrobo.artstation.com/rss" \
-          | python3 scripts/fetch_gallery_feed.py > data/artstation.json
-          echo "  -> $(python3 -c "import json; d=json.load(open('data/artstation.json')); print(len(d.get('items',[])), 'items')")"
+          | python3 scripts/fetch_gallery_feed.py > data/artstation.new.json
+
+          count=$(python3 -c "import json; d=json.load(open('data/artstation.new.json')); print(len(d.get('items',[])))" 2>/dev/null || echo 0)
+          echo "  -> $count items"
+
+          if [ "$count" -gt 0 ]; then
+            mv data/artstation.new.json data/artstation.json
+          else
+            echo "  0 items — leaving existing data/artstation.json untouched."
+            rm -f data/artstation.new.json
+          fi
 
       - name: Commit updated gallery data
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/
-          # Only commit if something actually changed
           if git diff --staged --quiet; then
             echo "No changes to gallery data."
           else
