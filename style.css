@@ -362,9 +362,23 @@ header p {
 
 /* ── Gallery Grid ──────────────────────────────────────────────────────────── */
 .gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 16px;
+}
+
+.gallery-grid.gallery-grid-home {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.gallery-grid > .gallery-inner-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  align-items: start;
 }
 
 .gallery-card {
