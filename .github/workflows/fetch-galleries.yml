@@ -1,21 +1,29 @@
 name: Fetch Gallery Feeds
 
-# ── Trigger ──────────────────────────────────────────────────────────────────
-# DeviantArt now fetches via the official OAuth2 API (client_credentials
-# grant — app-level auth, safe to run unattended). This replaced the old RSS
-# scrape after confirming backend.deviantart.com/rss.xml is blocked at the
-# CloudFront/WAF edge regardless of IP reputation or request headers.
+# ── DeviantArt ────────────────────────────────────────────────────────────
+# Fetches via the official OAuth2 API (client_credentials grant — app-level
+# auth, safe unattended). Replaced the old RSS scrape after confirming
+# backend.deviantart.com/rss.xml is blocked at the CloudFront/WAF edge
+# regardless of IP or headers. Reliable and fully automated.
 #
-# ArtStation's RSS remains blocked by a Cloudflare JS challenge (confirmed
-# via cf_challenge_text_small in the response body) — curl cannot solve
-# this, so that step is kept for visibility but not relied upon. See the
-# "Fetch ArtStation" step below.
+# ── ArtStation ───────────────────────────────────────────────────────────
+# No public API exists. RSS and the internal JSON endpoint are both behind
+# a Cloudflare Managed Challenge (confirmed: cf-mitigated: challenge header,
+# cType: 'managed'), which requires real JS execution to pass — plain curl
+# cannot clear it under any header combination. Fetches via a real
+# Playwright/Chromium browser instead.
 #
-# Schedule re-enabled now that DA folder IDs have been verified to return
-# distinct, correct item counts (132/58/22/11 across featured/2d/3d/
-# character-design) — previously all four returned an identical count
-# because the legacy numeric RSS-era IDs weren't valid API folder UUIDs and
-# the API silently fell back to the full gallery instead of erroring.
+# Running this from GitHub Actions (a datacenter IP) is LESS reliable than
+# running it from a residential connection — datacenter ASNs get harsher
+# Cloudflare scrutiny, the same root cause that blocked DA's RSS endpoint.
+# Accepted as a deliberate tradeoff for zero local dependency. To compensate:
+#   - A failed fetch NEVER overwrites existing gallery data.
+#   - A failed fetch opens (or keeps open) a tracking GitHub issue, so
+#     failures are visible instead of silent. It auto-closes once a
+#     scheduled run succeeds again.
+#   - scripts/add_artstation_item.py remains available as a zero-fragility
+#     manual fallback if automated fetching degrades over time (expected
+#     eventually, as Cloudflare's headless-browser detection evolves).
 on:
   schedule:
     - cron: '0 */6 * * *'
@@ -25,13 +33,12 @@ jobs:
   fetch:
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # needed to commit the generated JSON back to the repo
+      contents: write   # commit updated data/ back to the repo
+      issues: write      # open/close the ArtStation failure-tracking issue
 
     env:
       DA_CLIENT_ID: ${{ secrets.DA_CLIENT_ID }}
       DA_CLIENT_SECRET: ${{ secrets.DA_CLIENT_SECRET }}
-      # Real folder UUIDs, confirmed via:
-      #   python3 scripts/fetch_deviantart_api.py --username RilyRobo --list-folders
       FOLDER_ID_FEATURED: "AF28499D-4BA6-CE99-C30B-FFA9D9E18DF6"
       FOLDER_ID_2D_ART: "15D635F9-F26E-C751-6B7D-F29C006E46E6"
       FOLDER_ID_3D_ART: "A4550B8A-4D55-60A5-AD83-B545A34C21A2"
@@ -46,6 +53,7 @@ jobs:
         with:
           python-version: '3.12'
 
+      # ── DeviantArt ──────────────────────────────────────────────────────
       - name: Fetch DeviantArt galleries via OAuth2 API
         run: |
           mkdir -p data
@@ -53,32 +61,64 @@ jobs:
           python3 scripts/fetch_deviantart_api.py --username RilyRobo --folder-id "$FOLDER_ID_2D_ART"            --output data/da-2d-art.json
           python3 scripts/fetch_deviantart_api.py --username RilyRobo --folder-id "$FOLDER_ID_3D_ART"            --output data/da-3d-art.json
           python3 scripts/fetch_deviantart_api.py --username RilyRobo --folder-id "$FOLDER_ID_CHARACTER_DESIGN"  --output data/da-character-design.json
-          # fetch_deviantart_api.py exits non-zero and leaves the existing
-          # file untouched on a 0-item result, rather than committing empty
-          # gallery data — same guard used by the local update script.
 
-      - name: Fetch ArtStation RSS feed (KNOWN BROKEN — Cloudflare challenge)
-        continue-on-error: true   # unresolved block; don't fail the whole job over it
+      # ── ArtStation: Playwright ──────────────────────────────────────────
+      - name: Cache Playwright browser binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('scripts/requirements.txt') }}
+
+      - name: Install Playwright + Chromium
         run: |
-          echo "⚠ ArtStation RSS is behind a Cloudflare JS challenge and will likely 403."
-          echo "⚠ This step is kept for visibility/testing only — do not rely on its output."
-          curl -s -L \
-            -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36" \
-            -H "Accept: application/rss+xml, application/xml, text/xml" \
-            --max-time 30 \
-            "https://rilyrobo.artstation.com/rss" \
-          | python3 scripts/fetch_gallery_feed.py > data/artstation.new.json
+          pip install -r scripts/requirements.txt --break-system-packages
+          playwright install --with-deps chromium
 
-          count=$(python3 -c "import json; d=json.load(open('data/artstation.new.json')); print(len(d.get('items',[])))" 2>/dev/null || echo 0)
-          echo "  -> $count items"
+      - name: Fetch ArtStation via Playwright (best-effort)
+        id: artstation_fetch
+        continue-on-error: true   # a failure here is expected/recoverable, not a build-breaking error
+        run: python3 scripts/fetch_artstation_playwright.py
 
-          if [ "$count" -gt 0 ]; then
-            mv data/artstation.new.json data/artstation.json
-          else
-            echo "  0 items — leaving existing data/artstation.json untouched."
-            rm -f data/artstation.new.json
-          fi
+      - name: Track ArtStation fetch health
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const failed = '${{ steps.artstation_fetch.outcome }}' === 'failure';
+            const title = '⚠ ArtStation automated fetch is failing';
+            const { owner, repo } = context.repo;
 
+            const open = await github.rest.issues.listForRepo({
+              owner, repo, state: 'open', labels: 'artstation-fetch'
+            });
+            const existing = open.data.find(i => i.title === title);
+
+            if (failed && !existing) {
+              await github.rest.issues.create({
+                owner, repo, title,
+                labels: ['artstation-fetch'],
+                body: [
+                  'The automated ArtStation fetch (Playwright) failed on the latest scheduled run.',
+                  '',
+                  "This usually means Cloudflare's challenge escalated beyond what a headless browser can clear automatically from GitHub's datacenter IP range.",
+                  '',
+                  '**Existing gallery data was left untouched — nothing is broken on the live site.**',
+                  '',
+                  'To add new ArtStation pieces manually in the meantime:',
+                  '```',
+                  'python3 scripts/add_artstation_item.py',
+                  '```',
+                  '',
+                  'This issue closes automatically once a scheduled fetch succeeds again.'
+                ].join('\n')
+              });
+            } else if (!failed && existing) {
+              await github.rest.issues.update({
+                owner, repo, issue_number: existing.number, state: 'closed'
+              });
+            }
+
+      # ── Commit whatever succeeded ────────────────────────────────────────
       - name: Commit updated gallery data
         run: |
           git config user.name  "github-actions[bot]"
