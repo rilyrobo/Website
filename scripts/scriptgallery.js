@@ -1,8 +1,4 @@
 // ── Modal population + dismissal ─────────────────────────────────────────────
-// Centralized here so both the multi-source "View on" buttons and the
-// backdrop/Escape/close-button dismissal logic exist in exactly one place,
-// instead of being duplicated across attachModalListeners and
-// attachModalListenersToElement (as the single-link version used to be).
 function populateModal(card) {
     const modalImage = document.getElementById("modal-image");
     const modalLinks = document.getElementById("modal-links");
@@ -96,9 +92,21 @@ const galleryData = [
     { file: "da-character-design.json", title: "Character Design", icon: "images/icon/nav_icon_Gallery2.gif", description: "A collection of my character designs" },
 ];
 
+// Derives a gallery's tag-matching slug from its DA filename — e.g.
+// "da-3d-art.json" -> "3d-art". Keeps a single source of truth for the
+// slug instead of a second hardcoded field that could drift out of sync
+// with the filename. Must match the tag values used in artstation.json
+// (see KNOWN_TAGS/DEFAULT_TAGS in scripts/add_artstation_item.py and
+// scripts/fetch_artstation_playwright.py).
+function gallerySlug(filename) {
+    return filename.replace(/^da-/, "").replace(/\.json$/, "");
+}
+
 let asItemsCache = null;
 let asItemsPromise = null;
 
+// Fetches the full ArtStation dataset once (cached across all gallery
+// pages/tabs), independent of any per-gallery filtering.
 function getArtStationItems() {
     if (asItemsCache) return Promise.resolve(asItemsCache);
     if (asItemsPromise) return asItemsPromise;
@@ -106,6 +114,16 @@ function getArtStationItems() {
         .then(d => { asItemsCache = d.items || []; return asItemsCache; })
         .catch(() => { asItemsCache = []; return []; });
     return asItemsPromise;
+}
+
+// Filters the cached full list down to items tagged for a specific
+// gallery. This is the fix for ArtStation content bleeding into every
+// gallery page — previously getArtStationItems()'s full, unfiltered list
+// was merged into every gallery regardless of relevance.
+function getArtStationItemsForGallery(slug) {
+    return getArtStationItems().then(items =>
+        items.filter(i => Array.isArray(i.tags) && i.tags.includes(slug))
+    );
 }
 
 function fetchJSON(filename) {
@@ -118,7 +136,9 @@ function fetchJSON(filename) {
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
-    loadGalleryData(galleryData[0], ".gallery-grid-home", 5);
+    // Home preview now shows the true latest across BOTH platforms (within
+    // the Featured gallery), not DA-only as before.
+    loadHomeGallery(galleryData[0], ".gallery-grid-home", 5);
     loadMergedGallery(galleryData[0], ".gallery-grid-full");
     setupGalleries(galleryData);
 });
@@ -135,9 +155,6 @@ function parseDateSafe(str) {
     return Number.isNaN(t) ? null : t;
 }
 
-// Returns whichever of two date strings is chronologically earliest. Falls
-// back to whichever one exists if only one parsed successfully, and to null
-// if neither did — callers must handle null (means "unknown", not "oldest").
 function pickEarliestDate(dateA, dateB) {
     const tA = parseDateSafe(dateA);
     const tB = parseDateSafe(dateB);
@@ -145,15 +162,25 @@ function pickEarliestDate(dateA, dateB) {
     return dateA || dateB || null;
 }
 
+// Sorts newest-first, undated items last. Extracted as a standalone helper
+// (rather than inlined in mergeItems) so loadHomeGallery can reuse the
+// exact same ordering rule without duplicating the comparator.
+function sortByDateDesc(items) {
+    return items.sort((a, b) => {
+        const ta = parseDateSafe(a.date);
+        const tb = parseDateSafe(b.date);
+        if (ta === null && tb === null) return 0;
+        if (ta === null) return 1;
+        if (tb === null) return -1;
+        return tb - ta;
+    });
+}
+
 // ── Merge engine ──────────────────────────────────────────────────────────────
-// Dual-posted pieces use the EARLIEST known date across both platforms (the
-// date it was actually first shared, regardless of which platform it hit
-// first). The merged list is sorted chronologically (newest first) across
-// ALL items — replacing the old "both-platform pieces always first"
-// grouping, which was ordered by platform coverage rather than recency and
-// became actively misleading once real dates were available. Platform
-// coverage still drives the filter bar and the gold "both" border — it just
-// no longer dictates position.
+// Pure function: given a DA list and an ALREADY gallery-filtered AS list,
+// merges + sorts chronologically. Filtering by gallery tag happens in the
+// caller (loadMergedGallery / loadHomeGallery), keeping this function
+// generic and reusable regardless of which gallery is calling it.
 function mergeItems(daItems, asItems) {
     const asMap     = new Map(asItems.map(i => [normTitle(i.title), i]));
     const asMatched = new Set();
@@ -191,56 +218,49 @@ function mergeItems(daItems, asItems) {
         }
     });
 
-    // Newest first. Flip `tb - ta` to `ta - tb` for oldest-first instead.
-    // Items with no parseable date sort to the very end rather than being
-    // treated as "oldest" via a 0/epoch fallback.
-    merged.sort((a, b) => {
-        const ta = parseDateSafe(a.date);
-        const tb = parseDateSafe(b.date);
-        if (ta === null && tb === null) return 0;
-        if (ta === null) return 1;
-        if (tb === null) return -1;
-        return tb - ta;
-    });
-
-    return merged;
+    return sortByDateDesc(merged);
 }
 
-// ── Home preview (DA only, 5 items) ──────────────────────────────────────────
-function loadGalleryData(gallery, gridSelector, limit = null) {
+// ── Home preview: latest N across BOTH platforms, Featured gallery only ───────
+function loadHomeGallery(gallery, gridSelector, limit = 5) {
     const container = document.querySelector(gridSelector);
     if (!container) return;
     container.innerHTML = `<div class="gallery-loading">Loading artwork…</div>`;
 
-    fetchJSON(gallery.file)
-        .then(data => {
-            const items   = data.items || [];
-            const display = limit ? items.slice(0, limit) : items;
-            if (!display.length) {
-                container.innerHTML = noArtworkHtml();
-                return;
-            }
-            container.innerHTML = display.map(i => renderCard({
-                title: i.title, image: i.image,
-                daLink: i.link, asLink: null,
-                date: i.date || null, sources: "da",
-            })).join("");
-            attachModalListeners(gridSelector);
-        })
-        .catch(() => {
-            container.innerHTML = fallbackHtml("https://www.deviantart.com/rilyrobo", "DeviantArt");
-        });
+    const slug = gallerySlug(gallery.file);
+
+    Promise.allSettled([
+        fetchJSON(gallery.file),
+        getArtStationItemsForGallery(slug)
+    ]).then(([daResult, asResult]) => {
+        const daItems = daResult.status === "fulfilled" ? (daResult.value.items || []) : [];
+        const asItems = asResult.status === "fulfilled" ? asResult.value : [];
+
+        if (!daItems.length && !asItems.length) {
+            container.innerHTML = fallbackBothHtml();
+            return;
+        }
+
+        const merged  = mergeItems(daItems, asItems).slice(0, limit);
+        // Flat card list, no filter bar / inner-grid wrapper — matches the
+        // existing .gallery-grid-home CSS, which expects cards as direct
+        // children, and a 5-item preview doesn't need source filtering.
+        container.innerHTML = merged.map(renderCard).join("");
+        attachModalListeners(gridSelector);
+    });
 }
 
-// ── Merged gallery (DA + ArtStation) ─────────────────────────────────────────
+// ── Merged gallery (DA + ArtStation, filtered to this gallery's tag) ──────────
 function loadMergedGallery(gallery, gridSelector, limit = null) {
     const container = document.querySelector(gridSelector);
     if (!container) return;
     container.innerHTML = `<div class="gallery-loading">Loading artwork…</div>`;
 
+    const slug = gallerySlug(gallery.file);
+
     Promise.allSettled([
         fetchJSON(gallery.file),
-        getArtStationItems()
+        getArtStationItemsForGallery(slug)
     ]).then(([daResult, asResult]) => {
         const daItems = daResult.status === "fulfilled" ? (daResult.value.items || []) : [];
         const asItems = asResult.status === "fulfilled" ? asResult.value : [];
@@ -271,6 +291,9 @@ function renderMergedContainer(container, items) {
     const hasDA   = items.some(i => i.sources === "da");
     const hasAS   = items.some(i => i.sources === "as");
 
+    // Naturally disappears on galleries with no tagged AS content (e.g.
+    // Character Design, until/unless something is tagged for it) — hasAS
+    // stays false, so no empty "ArtStation only" filter button ever shows.
     let filterBar = "";
     if (hasBoth || (hasDA && hasAS)) {
         filterBar = `
@@ -305,9 +328,6 @@ function galleryFilter(btn, filter) {
 }
 
 // ── Card renderer ─────────────────────────────────────────────────────────────
-// Carries both platform links + the resolved date in data-* attributes so
-// the modal (populateModal, above) can build the correct set of "View on"
-// buttons and the date caption without needing a second data lookup.
 function renderCard(item) {
     const badges = [
         item.daLink ? `<a href="${escapeAttr(item.daLink)}" class="gallery-badge badge-da" target="_blank" rel="noopener noreferrer" title="View on DeviantArt" onclick="event.stopPropagation()">DA</a>` : "",
