@@ -1,29 +1,15 @@
 #!/usr/bin/env python3
 """
-fetch_artstation_playwright.py — Automated ArtStation fetch using a real
-browser engine, to clear Cloudflare's Managed Challenge on
-/users/rilyrobo/projects.json (confirmed via cf-mitigated: challenge header
-and cType: 'managed' in the challenge payload — plain curl/requests can
-never pass this, since it requires real JavaScript execution).
+fetch_artstation_playwright.py — Automated ArtStation fetch via Playwright,
+to clear Cloudflare's Managed Challenge on /users/rilyrobo/projects.json.
 
-Runs both locally (--headed for debugging) and in GitHub Actions (always
-headless there). Reliability is expected to be LOWER when run from GitHub
-Actions than from a residential connection — datacenter IP ranges get
-harsher Cloudflare scrutiny (same root cause that blocked the DeviantArt
-RSS endpoint earlier in this project), and CI runners are ephemeral, so a
-persistent clearance-cookie profile can't meaningfully carry over between
-scheduled runs the way it can locally.
-
-This is NOT guaranteed to keep working indefinitely — Cloudflare tightens
-headless-browser fingerprinting periodically. That's expected to happen
-eventually, not a bug to chase when it does. The calling workflow treats a
-failure here as routine and recoverable: it leaves existing data untouched
-and opens a tracking issue rather than failing loudly or corrupting data.
-Fallback: scripts/add_artstation_item.py (zero scraping, zero fragility).
-
-Usage:
-    python3 scripts/fetch_artstation_playwright.py
-    python3 scripts/fetch_artstation_playwright.py --headed   # local debug only
+v2 changes: captures each project's publish date. ArtStation's exact field
+name for this hasn't been confirmed yet (Cloudflare blocked every attempt
+to inspect the real response before this script existed) — so this checks
+several plausible key names and degrades to "" gracefully rather than
+crashing if none match. First successful run should be spot-checked:
+if every item comes back with an empty date, the key name guess was wrong
+and needs adjusting once the real response shape is visible.
 """
 import argparse
 import json
@@ -34,17 +20,23 @@ import time
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout
 
 DATA_FILE = "data/artstation.json"
-PROFILE_DIR = ".playwright-profile"   # only meaningfully persistent locally; harmless in CI
+PROFILE_DIR = ".playwright-profile"
 TARGET_URL = "https://www.artstation.com/users/rilyrobo/projects.json"
 CHALLENGE_TIMEOUT_MS = 25_000
 
 
+def _extract_date(entry: dict) -> str:
+    """
+    Tries several plausible field names since the real ArtStation response
+    shape hasn't been directly observed yet (Cloudflare blocked inspection).
+    Takes just the YYYY-MM-DD prefix of an ISO8601 string, sidestepping
+    timezone-parsing edge cases entirely — good enough for date-only sorting.
+    """
+    raw = entry.get("published_at") or entry.get("created_at") or entry.get("updated_at") or ""
+    return raw[:10] if len(raw) >= 10 else ""
+
+
 def fetch_via_browser(headed: bool) -> list | None:
-    """
-    Returns a list of {"title","link","image"} dicts on success, or None if
-    the challenge couldn't be cleared. Caller must NOT overwrite existing
-    data on None — that's the safety contract this whole project relies on.
-    """
     with sync_playwright() as p:
         context = p.chromium.launch_persistent_context(
             PROFILE_DIR,
@@ -66,9 +58,6 @@ def fetch_via_browser(headed: bool) -> list | None:
 
         content = page.content()
         if "cf_challenge_container" in content or "Just a moment" in content:
-            # Managed Challenges sometimes take a few seconds of JS execution
-            # before auto-resolving — give it one real chance rather than
-            # failing on first sight of challenge markup.
             try:
                 page.wait_for_selector("body", timeout=CHALLENGE_TIMEOUT_MS)
                 time.sleep(3)
@@ -77,8 +66,7 @@ def fetch_via_browser(headed: bool) -> list | None:
                 pass
 
         if "cf_challenge_container" in content or "Just a moment" in content:
-            print("✗ Challenge did not clear automatically — likely escalated to", file=sys.stderr)
-            print("  an interactive challenge, which headless Playwright cannot solve.", file=sys.stderr)
+            print("✗ Challenge did not clear automatically.", file=sys.stderr)
             context.close()
             return None
 
@@ -100,14 +88,17 @@ def fetch_via_browser(headed: bool) -> list | None:
             image = cover.get("image_url") or cover.get("thumb_url") or ""
 
             if title and link and image:
-                items.append({"title": title, "link": link, "image": image})
+                items.append({
+                    "title": title, "link": link, "image": image,
+                    "date": _extract_date(entry),
+                })
 
         return items
 
 
 def main():
     parser = argparse.ArgumentParser(description="Automated ArtStation fetch via Playwright.")
-    parser.add_argument("--headed", action="store_true", help="Show the browser window (local debugging only — has no effect/use in CI)")
+    parser.add_argument("--headed", action="store_true")
     args = parser.parse_args()
 
     print("Attempting automated ArtStation fetch (this may take 10-25s)...")
@@ -119,15 +110,20 @@ def main():
         sys.exit(1)
 
     if not items:
-        print(f"⚠ 0 items parsed from a successful response — NOT overwriting {DATA_FILE}.", file=sys.stderr)
-        print("  Response shape may have changed; inspect manually.", file=sys.stderr)
+        print(f"⚠ 0 items parsed — NOT overwriting {DATA_FILE}.", file=sys.stderr)
         sys.exit(1)
+
+    dated = sum(1 for i in items if i["date"])
+    if dated == 0:
+        print(f"⚠ Warning: none of {len(items)} items had a parseable date — "
+              f"the field-name guess in _extract_date() likely needs updating "
+              f"now that a real response has been seen.", file=sys.stderr)
 
     os.makedirs("data", exist_ok=True)
     with open(DATA_FILE, "w") as f:
         json.dump({"items": items}, f, indent=2)
 
-    print(f"✓ {len(items)} items → {DATA_FILE}")
+    print(f"✓ {len(items)} items ({dated} dated) → {DATA_FILE}")
 
 
 if __name__ == "__main__":

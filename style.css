@@ -1803,6 +1803,26 @@ body.modal-open {
   margin: 0 auto;
 }
 
+/* Multi-source "View on" button row inside the gallery modal — reuses the
+   existing .button / .deviantart-button / .artstation-button styles, so
+   these automatically match the brand-colored buttons already used
+   elsewhere on the site. */
+.modal-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.modal-date {
+  margin: 0.75rem 0 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-style: italic;
+  text-align: center;
+}
+
 /* Example media (commission showcase) gets an even larger viewing area —
    these are demo clips meant to be examined closely, not thumbnails. */
 #example-image-modal .modal-content {

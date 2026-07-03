@@ -1,31 +1,17 @@
 #!/usr/bin/env python3
 """
 add_artstation_item.py — Manually adds a single artwork entry to
-data/artstation.json.
+data/artstation.json. Permanent, zero-fragility fallback for when the
+Playwright-based automated fetch can't clear Cloudflare's challenge.
 
-Why this exists: ArtStation's RSS feed and internal JSON endpoints are both
-behind a Cloudflare Managed Challenge (confirmed via cf-mitigated: challenge
-header + JS-orchestrated challenge payload on both /rss and
-/users/rilyrobo/projects.json). This requires actual JavaScript execution
-in a real browser to pass — no curl/requests-based fetch can clear it, and
-workarounds (curl-impersonate, headless browser scraping) trade a one-time
-fix for an ongoing arms race against Cloudflare's fingerprinting updates,
-which is a worse long-term maintenance trade than a 30-second manual step
-per new artwork.
-
-Output schema matches the DeviantArt fetch scripts exactly, so
-scriptgallery.js's merge engine treats entries from this tool identically
-to API-fetched ones — no downstream changes needed.
-
-Usage:
-    python3 scripts/add_artstation_item.py
-    python3 scripts/add_artstation_item.py --list      # view current entries
-    python3 scripts/add_artstation_item.py --remove "Title text"
+v2: now prompts for upload date (used for chronological sorting alongside
+DeviantArt dates in the frontend merge engine).
 """
 import argparse
 import json
 import os
 import sys
+from datetime import date as date_cls
 
 DATA_FILE = "data/artstation.json"
 
@@ -54,6 +40,19 @@ def prompt_nonempty(label: str) -> str:
         print("  (required, try again)")
 
 
+def prompt_date() -> str:
+    today = date_cls.today().isoformat()
+    while True:
+        value = input(f"Date uploaded (YYYY-MM-DD) [default: {today}]: ").strip()
+        if not value:
+            return today
+        try:
+            date_cls.fromisoformat(value)
+            return value
+        except ValueError:
+            print("  Invalid format — use YYYY-MM-DD (e.g. 2026-03-14).")
+
+
 def add_item():
     data = load_data()
 
@@ -61,10 +60,8 @@ def add_item():
     title = prompt_nonempty("Title")
     link = prompt_nonempty("Link (artstation.com project URL)")
     image = prompt_nonempty("Image URL (direct link to the artwork image)")
+    upload_date = prompt_date()
 
-    # Prevent accidental duplicates — matched the same way the merge engine
-    # does (case-insensitive, alphanumeric-only) so a re-entry of the same
-    # piece doesn't create a phantom duplicate card in the gallery.
     norm = lambda s: "".join(c for c in s.lower() if c.isalnum())
     existing_titles = {norm(i["title"]) for i in data["items"]}
     if norm(title) in existing_titles:
@@ -73,7 +70,7 @@ def add_item():
             print("Cancelled.")
             return
 
-    data["items"].append({"title": title, "link": link, "image": image})
+    data["items"].append({"title": title, "link": link, "image": image, "date": upload_date})
     save_data(data)
     print(f"\n✓ Added. {DATA_FILE} now has {len(data['items'])} items.")
 
@@ -85,7 +82,8 @@ def list_items():
         return
     print(f"{len(data['items'])} items in {DATA_FILE}:\n")
     for i, item in enumerate(data["items"], 1):
-        print(f"  {i}. {item['title']}")
+        date_str = item.get("date") or "(no date)"
+        print(f"  {i}. [{date_str}] {item['title']}")
         print(f"     {item['link']}")
 
 
@@ -111,8 +109,8 @@ def remove_item(title_query: str):
 
 def main():
     parser = argparse.ArgumentParser(description="Manage manually-entered ArtStation gallery items.")
-    parser.add_argument("--list", action="store_true", help="List all current items")
-    parser.add_argument("--remove", metavar="TITLE", help="Remove an item by title (partial match)")
+    parser.add_argument("--list", action="store_true")
+    parser.add_argument("--remove", metavar="TITLE")
     args = parser.parse_args()
 
     if args.list:
