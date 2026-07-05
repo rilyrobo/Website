@@ -6,7 +6,9 @@
       "videoId": "yaDXBP_9nLM",
       "title": "Rily Robinson Animation Demo Reel 2020",
       "thumbnail": "https://i.ytimg.com/vi/yaDXBP_9nLM/hqdefault.jpg",
-      "tags": ["demo-reel"],
+      "tags": [
+        "demo-reel"
+      ],
       "featured": true,
       "slug": "rily-robinson-animation-demo-reel-2020"
     },
@@ -16,7 +18,9 @@
       "videoId": "uQXPa-OcfFQ",
       "title": "Toy Story 2 ReAnimated - Scene 319",
       "thumbnail": "https://i.ytimg.com/vi/uQXPa-OcfFQ/hqdefault.jpg",
-      "tags": ["animation"],
+      "tags": [
+        "animation"
+      ],
       "slug": "toy-story-2-reanimated-scene-319"
     },
     {
@@ -25,7 +29,9 @@
       "videoId": "9ufioUSRtWs",
       "title": "Demo Reel AGFVE Quarter 6",
       "thumbnail": "https://i.ytimg.com/vi/9ufioUSRtWs/hqdefault.jpg",
-      "tags": ["demo-reel"],
+      "tags": [
+        "demo-reel"
+      ],
       "slug": "demo-reel-agfve-quarter-6"
     },
     {
@@ -34,7 +40,9 @@
       "videoId": "HRU_q-m73IM",
       "title": "Demo Reel AGFVE Quarter 1",
       "thumbnail": "https://i.ytimg.com/vi/HRU_q-m73IM/hqdefault.jpg",
-      "tags": ["demo-reel"],
+      "tags": [
+        "demo-reel"
+      ],
       "slug": "demo-reel-agfve-quarter-1"
     },
     {
@@ -43,7 +51,9 @@
       "videoId": "OKIYQ-5k22I",
       "title": "Jester Reads : Darkness",
       "thumbnail": "https://i.ytimg.com/vi/OKIYQ-5k22I/hqdefault.jpg",
-      "tags": ["narration"],
+      "tags": [
+        "narration"
+      ],
       "slug": "jester-reads-darkness"
     }
   ]
