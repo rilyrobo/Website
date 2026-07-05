@@ -288,7 +288,6 @@ function renderVideoCard(video, { linkOnly }) {
                         data-slug="${escapeVideoAttr(video.slug)}"
                         aria-label="${linkOnly ? "Watch" : "Play"} video: ${escapeVideoAttr(video.title)}">
                     ${thumbHtml}
-                    <span class="video-play-icon">${PLAY_ICON_SVG(60, 42)}</span>
                 </${tag}>
             </div>
             <div class="video-card-footer">
