@@ -106,29 +106,27 @@ def resolve_source(source: dict) -> dict | None:
     title = data.get("title", "Untitled")
     resolved = {
         "url": url,
-        "platform": platform,
-        "title": title,
-        "thumbnail": data.get("thumbnail_url"),
-        "slug": slugify(title),
+        "title": data.get("title", "Untitled"),
+        "slug": slugify(data.get("title", "Untitled")),
     }
+    source = {"platform": platform, "url": url, "thumbnail": data.get("thumbnail_url")}
 
     if platform == "youtube":
         video_id = extract_youtube_id(url)
         if not video_id:
             print(f"⚠ Could not extract a video ID from {url} — skipping.", file=sys.stderr)
             return None
-        resolved["videoId"] = video_id
+        source["videoId"] = video_id
     else:
         embed_src = extract_embed_src(data.get("html", ""))
         if not embed_src:
             print(f"⚠ Could not extract an embed URL from {url}'s oEmbed response — skipping.", file=sys.stderr)
             return None
-        resolved["embedUrl"] = embed_src
+        source["embedUrl"] = embed_src
 
-    # Curator-chosen fields always win — oEmbed doesn't know your tag
-    # taxonomy or which video should be featured by default.
+    resolved["sources"] = [source]
     for field in ("tags", "featured", "date", "description"):
-        if field in source:
+        if field in source:  # NOTE: should read from the ORIGINAL `source` dict param (the video-sources.json entry), not the local `source` var above — rename one to avoid the collision
             resolved[field] = source[field]
 
     return resolved

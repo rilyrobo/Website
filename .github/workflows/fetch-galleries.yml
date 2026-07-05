@@ -43,6 +43,8 @@ jobs:
       FOLDER_ID_2D_ART: "15D635F9-F26E-C751-6B7D-F29C006E46E6"
       FOLDER_ID_3D_ART: "A4550B8A-4D55-60A5-AD83-B545A34C21A2"
       FOLDER_ID_CHARACTER_DESIGN: "83A221E4-C7BF-E206-D0F6-544CA72DD37B"
+      YOUTUBE_CHANNEL_ID: "UCNlAFfQIh6Eycmd2yntbK7Q"
+      RUMBLE_CHANNEL_URL: "https://rumble.com/user/rilyrobo"
 
     steps:
       - name: Checkout repo
@@ -61,6 +63,11 @@ jobs:
           python3 scripts/fetch_deviantart_api.py --username RilyRobo --folder-id "$FOLDER_ID_2D_ART"            --output data/da-2d-art.json
           python3 scripts/fetch_deviantart_api.py --username RilyRobo --folder-id "$FOLDER_ID_3D_ART"            --output data/da-3d-art.json
           python3 scripts/fetch_deviantart_api.py --username RilyRobo --folder-id "$FOLDER_ID_CHARACTER_DESIGN"  --output data/da-character-design.json
+
+      # ── YouTube: discover new channel uploads via RSS (no API key) ───────
+      - name: Discover new YouTube videos
+        continue-on-error: true
+        run: python3 scripts/fetch_channel_videos.py --youtube-channel-id "$YOUTUBE_CHANNEL_ID"
 
       # ── Videos: resolve metadata via oEmbed (no API key required) ────────
       - name: Resolve video metadata
@@ -83,6 +90,15 @@ jobs:
         id: artstation_fetch
         continue-on-error: true   # a failure here is expected/recoverable, not a build-breaking error
         run: python3 scripts/fetch_artstation_playwright.py
+
+      - name: Discover new Rumble videos (best-effort)
+        continue-on-error: true
+        run: |
+          if [ -n "$RUMBLE_CHANNEL_URL" ]; then
+            python3 scripts/fetch_rumble_channel.py --channel-url "$RUMBLE_CHANNEL_URL"
+          else
+            echo "RUMBLE_CHANNEL_URL not set — skipping Rumble discovery."
+          fi
 
       - name: Track ArtStation fetch health
         if: always()

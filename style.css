@@ -734,6 +734,32 @@ header p {
 .margin-top-20 { margin-top: 20px; }
 .center-text  { text-align: center; }
 
+.video-source-switcher {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 1rem 14px;
+}
+
+.video-source-btn {
+  padding: 5px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 20px;
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.video-source-btn:hover { border-color: var(--accent-gold); color: var(--text-secondary); }
+.video-source-btn.active {
+  border-color: var(--accent-gold);
+  background: rgba(200,150,12,0.12);
+  color: var(--accent-gold);
+}
+
 /* ── Comics ────────────────────────────────────────────────────────────────── */
 .comics-grid {
   display: grid;
