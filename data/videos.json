@@ -2,8 +2,15 @@
   "items": [
     {
       "title": "Rily Robinson Animation Demo Reel 2020",
+<<<<<<< HEAD
       "slug": "rily-robinson-animation-demo-reel-2020",
       "tags": ["demo-reel"],
+=======
+      "thumbnail": "https://i.ytimg.com/vi/yaDXBP_9nLM/hqdefault.jpg",
+      "tags": [
+        "demo-reel"
+      ],
+>>>>>>> bdc2f025b15a5ffebe7c25892ca4098b168bca72
       "featured": true,
       "sources": [
         { "platform": "youtube", "videoId": "yaDXBP_9nLM", "url": "https://www.youtube.com/watch?v=yaDXBP_9nLM", "thumbnail": "https://i.ytimg.com/vi/yaDXBP_9nLM/hqdefault.jpg" }
@@ -11,35 +18,67 @@
     },
     {
       "title": "Toy Story 2 ReAnimated - Scene 319",
+<<<<<<< HEAD
       "slug": "toy-story-2-reanimated-scene-319",
       "tags": ["animation"],
       "sources": [
         { "platform": "youtube", "videoId": "uQXPa-OcfFQ", "url": "https://www.youtube.com/watch?v=uQXPa-OcfFQ", "thumbnail": "https://i.ytimg.com/vi/uQXPa-OcfFQ/hqdefault.jpg" }
       ]
+=======
+      "thumbnail": "https://i.ytimg.com/vi/uQXPa-OcfFQ/hqdefault.jpg",
+      "tags": [
+        "animation"
+      ],
+      "slug": "toy-story-2-reanimated-scene-319"
+>>>>>>> bdc2f025b15a5ffebe7c25892ca4098b168bca72
     },
     {
       "title": "Demo Reel AGFVE Quarter 6",
+<<<<<<< HEAD
       "slug": "demo-reel-agfve-quarter-6",
       "tags": ["demo-reel"],
       "sources": [
         { "platform": "youtube", "videoId": "9ufioUSRtWs", "url": "https://www.youtube.com/watch?v=9ufioUSRtWs", "thumbnail": "https://i.ytimg.com/vi/9ufioUSRtWs/hqdefault.jpg" }
       ]
+=======
+      "thumbnail": "https://i.ytimg.com/vi/9ufioUSRtWs/hqdefault.jpg",
+      "tags": [
+        "demo-reel"
+      ],
+      "slug": "demo-reel-agfve-quarter-6"
+>>>>>>> bdc2f025b15a5ffebe7c25892ca4098b168bca72
     },
     {
       "title": "Demo Reel AGFVE Quarter 1",
+<<<<<<< HEAD
       "slug": "demo-reel-agfve-quarter-1",
       "tags": ["demo-reel"],
       "sources": [
         { "platform": "youtube", "videoId": "HRU_q-m73IM", "url": "https://www.youtube.com/watch?v=HRU_q-m73IM", "thumbnail": "https://i.ytimg.com/vi/HRU_q-m73IM/hqdefault.jpg" }
       ]
+=======
+      "thumbnail": "https://i.ytimg.com/vi/HRU_q-m73IM/hqdefault.jpg",
+      "tags": [
+        "demo-reel"
+      ],
+      "slug": "demo-reel-agfve-quarter-1"
+>>>>>>> bdc2f025b15a5ffebe7c25892ca4098b168bca72
     },
     {
       "title": "Jester Reads : Darkness",
+<<<<<<< HEAD
       "slug": "jester-reads-darkness",
       "tags": ["narration"],
       "sources": [
         { "platform": "youtube", "videoId": "OKIYQ-5k22I", "url": "https://www.youtube.com/watch?v=OKIYQ-5k22I", "thumbnail": "https://i.ytimg.com/vi/OKIYQ-5k22I/hqdefault.jpg" }
       ]
+=======
+      "thumbnail": "https://i.ytimg.com/vi/OKIYQ-5k22I/hqdefault.jpg",
+      "tags": [
+        "narration"
+      ],
+      "slug": "jester-reads-darkness"
+>>>>>>> bdc2f025b15a5ffebe7c25892ca4098b168bca72
     }
   ]
 }
