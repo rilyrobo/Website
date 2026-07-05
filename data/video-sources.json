@@ -1,0 +1,9 @@
+{
+  "sources": [
+    { "url": "https://www.youtube.com/watch?v=yaDXBP_9nLM", "tags": ["demo-reel"], "featured": true },
+    { "url": "https://www.youtube.com/watch?v=uQXPa-OcfFQ", "tags": ["animation"] },
+    { "url": "https://www.youtube.com/watch?v=9ufioUSRtWs", "tags": ["demo-reel"] },
+    { "url": "https://www.youtube.com/watch?v=HRU_q-m73IM", "tags": ["demo-reel"] },
+    { "url": "https://www.youtube.com/watch?v=OKIYQ-5k22I", "tags": ["narration"] }
+  ]
+}

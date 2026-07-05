@@ -98,15 +98,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function handleHashChange() {
-    const hash = window.location.hash.substring(1);
-
-    if (!hash) {
-        showPage("home");
-        history.replaceState(null, "", "#home");
-        return;
-    }
-
-    // Comic deep-link: #comic-Title-page-3
     const comicMatch = hash.match(/^(comic-[\w-]+?)(?:-page-(\d+))?$/);
     if (comicMatch) {
         const comicSlug  = comicMatch[1];
@@ -124,29 +115,43 @@ function handleHashChange() {
         return;
     }
 
+    // Video deep-link: #videos:play:some-video-slug — same hash-routing
+    // approach as the comic deep-link above, applied to the video theater.
+    const videoMatch = hash.match(/^videos:play:([\w-]+)$/);
+    if (videoMatch) {
+        showPage("videos");
+        window.playVideoBySlugWhenReady?.(videoMatch[1]);
+        return;
+    }
+
     showPage(hash);
 }
 
 // Smooth page transition using visibility + opacity instead of display flicker
 function showPage(pageId) {
+    // Stop any live third-party video embed before we navigate away —
+    // hiding its container does not stop it, only removing/replacing its
+    // <iframe> does. Must run before the page-swap below, not after.
+    window.stopVideoPlaybackIfLeavingVideosPage?.(pageId);
+
     const pages = document.querySelectorAll(".page");
     pages.forEach(page => {
         if (page.id === pageId) {
             page.style.display = "block";
-            // Defer so the display change is painted before the transition fires
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     page.classList.add("active");
-                    // Scroll only after the new page has display:block and is
-                    // laid out — scrolling before this point can land at a
-                    // stale position because the target page's height isn't
-                    // final yet (it's still display:none or mid-transition).
-                    window.scrollTo(0, 0);
+                    // Explicit "instant" (not the default/unspecified
+                    // behavior) so this scroll always supersedes any
+                    // in-flight smooth-scroll animation — e.g. a video
+                    // card's scrollIntoView — instead of the two
+                    // potentially racing and leaving the viewport stuck
+                    // somewhere in between.
+                    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
                 });
             });
         } else {
             page.classList.remove("active");
-            // Wait for transition before hiding
             page.addEventListener("transitionend", function hide() {
                 if (!page.classList.contains("active")) {
                     page.style.display = "none";

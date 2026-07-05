@@ -578,55 +578,157 @@ header p {
 
 .error-message a { color: var(--accent-amber); }
 
-/* ── Video Grid ────────────────────────────────────────────────────────────── */
+/* ── Video Theater (single player + selector grid) ───────────────────────── */
+.video-theater { margin-bottom: 2rem; }
+
+.video-player-mount {
+  max-width: 900px;
+  margin: 0 auto;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: rgba(0,0,0,0.5);
+}
+
+.video-hero-thumb { width: 100%; }
+
+.video-hero-heading {
+  text-align: center;
+  color: var(--accent-gold);
+  font-family: 'Cinzel', serif;
+  padding: 14px 1rem;
+  margin: 0;
+}
+
+/* ── Grid (selectors only — cards never become players themselves) ───────── */
 .video-grid-home,
-.video-grid-full {
+.video-grid-full { display: block; }
+
+.video-inner-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
 }
 
 .video-card {
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 12px;
+  overflow: hidden;
   background: var(--bg-card);
-  text-align: center;
-  transition: transform var(--transition), box-shadow var(--transition);
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
 }
 
 .video-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow);
+  border-color: var(--border-strong);
 }
 
-.video-card iframe {
+/* Signals which video is currently loaded in the theater above. */
+.video-card.active {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 1px var(--accent-gold) inset;
+}
+.video-card.active .video-card-footer h4 { color: var(--accent-gold); }
+
+.video-thumb-wrap {
+  position: relative;
   width: 100%;
-  aspect-ratio: 16/9;
-  height: auto;
-  border-radius: 6px;
-  border: none;
+  background: #0d0505;
+  overflow: hidden;
 }
 
-.video-card h4 {
-  color: var(--text-secondary);
-  margin-top: 10px;
-  font-size: 0.9rem;
+.video-thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--bg-surface), var(--bg-deep));
+}
+
+.video-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+.video-card:hover .video-thumb-img { transform: scale(1.05); }
+
+/* Play trigger doubles as either a <button> (in-page selection) or an <a>
+   (home-page navigation) — reset link defaults so both look identical. */
+.video-play-trigger {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.video-play-icon {
+  display: flex;
+  transition: transform var(--transition);
+  filter: drop-shadow(0 2px 10px rgba(0,0,0,0.6));
+}
+/* Visible at all times (not hover-only) so touch devices see it too;
+   hover/focus just adds emphasis. */
+.video-play-trigger:hover .video-play-icon,
+.video-play-trigger:focus-visible .video-play-icon {
+  transform: scale(1.12);
+}
+.video-play-trigger:focus-visible {
+  outline: 3px solid var(--accent-gold);
+  outline-offset: -3px;
+}
+
+.video-embed-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+.video-card-footer { padding: 10px 14px 14px; }
+
+.video-card-footer h4 {
+  margin: 0 0 6px;
   font-family: 'Cinzel', serif;
   font-weight: 400;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.intro-video {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-  background: rgba(0,0,0,0.5);
-  text-align: center;
-  margin-bottom: 2rem;
+.video-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.video-badge {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(139,0,0,0.25);
+  color: #e08a8a;
+  border: 1px solid rgba(139,0,0,0.4);
 }
 
-.intro-video-iframe { width: 100%; aspect-ratio: 16/9; height: auto; border: none; border-radius: 6px; }
-.intro-video-heading { color: var(--accent-gold); font-family: 'Cinzel', serif; margin-top: 10px; }
+.video-badge-platform {
+  background: rgba(66,165,245,0.18);
+  color: #7ec8fa;
+  border-color: rgba(66,165,245,0.35);
+}
+
+@media (max-width: 767px) {
+  .video-inner-grid { grid-template-columns: 1fr; }
+}
 
 .view-videos-button-container { margin-top: 1.5rem; text-align: center; }
 .margin-top-20 { margin-top: 20px; }
@@ -1919,6 +2021,18 @@ footer {
 /* list in TOS */
 .list { text-align: left; }
 .list li { margin-bottom: 0.5rem; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 
 /* ── Responsive ──────────────────────────────────────────────────────────────── */
 @media (max-width: 767px) {

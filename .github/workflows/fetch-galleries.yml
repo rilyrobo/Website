@@ -62,6 +62,11 @@ jobs:
           python3 scripts/fetch_deviantart_api.py --username RilyRobo --folder-id "$FOLDER_ID_3D_ART"            --output data/da-3d-art.json
           python3 scripts/fetch_deviantart_api.py --username RilyRobo --folder-id "$FOLDER_ID_CHARACTER_DESIGN"  --output data/da-character-design.json
 
+      # ── Videos: resolve metadata via oEmbed (no API key required) ────────
+      - name: Resolve video metadata
+        continue-on-error: true   # see fetch_video_metadata.py's safety contract — a failure here never blocks the pipeline
+        run: python3 scripts/fetch_video_metadata.py
+        
       # ── ArtStation: Playwright ──────────────────────────────────────────
       - name: Cache Playwright browser binary
         uses: actions/cache@v4

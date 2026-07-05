@@ -225,15 +225,17 @@
 
             <!-- Videos Page -->
             <div id="videos" class="page">
-                <h2  class="center-text">Videos</h2>
-                <p  class="center-text">Watch my tutorials, speed paintings, and more.</p>
-                <div class="intro-video">
-                    <iframe src="https://www.youtube.com/embed/yaDXBP_9nLM?controls=0" frameborder="0" allowfullscreen class="intro-video-iframe" title="Introductory Video"></iframe>
-                    <h3 class="intro-video-heading">Introductory Video</h3>
+                <h2 class="center-text">Videos</h2>
+                <p class="center-text">Watch my demo reels, animations, and readings.</p>
+
+                <!-- The single "now playing" area. Every card below selects into this
+                    mount rather than becoming a player itself. -->
+                <div class="video-theater">
+                    <div id="video-player-mount" class="video-player-mount"></div>
+                    <p id="video-now-playing-announce" class="sr-only" aria-live="polite"></p>
                 </div>
-                <div class="video-grid-full">
-                    <!-- Artwork thumbnails will be inserted dynamically -->
-                </div>
+
+                <div class="video-grid-full"></div>
             </div>
             
             <!-- Games Page -->
