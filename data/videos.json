@@ -1,155 +1,85 @@
 {
   "items": [
     {
-      "title": "RilyRobo Live Stream",
-      "slug": "rilyrobo-live-stream",
-      "tags": [],
-      "sources": [
-        {
-          "platform": "youtube",
-          "url": "https://www.youtube.com/watch?v=GAV4JMHUvmw",
-          "thumbnail": "https://i4.ytimg.com/vi/GAV4JMHUvmw/hqdefault.jpg",
-          "videoId": "GAV4JMHUvmw"
-        }
-      ],
-      "date": "2024-09-15"
-    },
-    {
-      "title": "Toy Story 2 ReAnimated - Scene 319",
-      "slug": "toy-story-2-reanimated-scene-319",
-      "tags": [
-        "animation"
-      ],
-      "sources": [
-        {
-          "platform": "youtube",
-          "url": "https://www.youtube.com/watch?v=uQXPa-OcfFQ",
-          "thumbnail": "https://i2.ytimg.com/vi/uQXPa-OcfFQ/hqdefault.jpg",
-          "videoId": "uQXPa-OcfFQ"
-        }
-      ],
-      "date": "2021-09-17"
-    },
-    {
+      "url": "https://www.youtube.com/watch?v=yaDXBP_9nLM",
       "title": "Rily Robinson Animation Demo Reel 2020",
       "slug": "rily-robinson-animation-demo-reel-2020",
-      "tags": [
-        "demo-reel"
-      ],
       "sources": [
         {
           "platform": "youtube",
           "url": "https://www.youtube.com/watch?v=yaDXBP_9nLM",
-          "thumbnail": "https://i2.ytimg.com/vi/yaDXBP_9nLM/hqdefault.jpg",
+          "thumbnail": "https://i.ytimg.com/vi/yaDXBP_9nLM/hqdefault.jpg",
           "videoId": "yaDXBP_9nLM"
         }
       ],
-      "date": "2020-09-23",
-      "featured": true
-    },
-    {
-      "title": "Demo Reel AGFVE Quarter 6",
-      "slug": "demo-reel-agfve-quarter-6",
       "tags": [
         "demo-reel"
       ],
+      "featured": true
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=uQXPa-OcfFQ",
+      "title": "Toy Story 2 ReAnimated - Scene 319",
+      "slug": "toy-story-2-reanimated-scene-319",
+      "sources": [
+        {
+          "platform": "youtube",
+          "url": "https://www.youtube.com/watch?v=uQXPa-OcfFQ",
+          "thumbnail": "https://i.ytimg.com/vi/uQXPa-OcfFQ/hqdefault.jpg",
+          "videoId": "uQXPa-OcfFQ"
+        }
+      ],
+      "tags": [
+        "animation"
+      ]
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=9ufioUSRtWs",
+      "title": "Demo Reel AGFVE Quarter 6",
+      "slug": "demo-reel-agfve-quarter-6",
       "sources": [
         {
           "platform": "youtube",
           "url": "https://www.youtube.com/watch?v=9ufioUSRtWs",
-          "thumbnail": "https://i2.ytimg.com/vi/9ufioUSRtWs/hqdefault.jpg",
+          "thumbnail": "https://i.ytimg.com/vi/9ufioUSRtWs/hqdefault.jpg",
           "videoId": "9ufioUSRtWs"
         }
       ],
-      "date": "2019-05-20"
-    },
-    {
-      "title": "Traditional Animation Cato",
-      "slug": "traditional-animation-cato",
-      "tags": [],
-      "sources": [
-        {
-          "platform": "youtube",
-          "url": "https://www.youtube.com/watch?v=NVVFOn-eY7I",
-          "thumbnail": "https://i3.ytimg.com/vi/NVVFOn-eY7I/hqdefault.jpg",
-          "videoId": "NVVFOn-eY7I"
-        }
-      ],
-      "date": "2018-03-01"
-    },
-    {
-      "title": "Traditional Animation",
-      "slug": "traditional-animation",
-      "tags": [],
-      "sources": [
-        {
-          "platform": "youtube",
-          "url": "https://www.youtube.com/watch?v=4ggfOh5mfbg",
-          "thumbnail": "https://i1.ytimg.com/vi/4ggfOh5mfbg/hqdefault.jpg",
-          "videoId": "4ggfOh5mfbg"
-        }
-      ],
-      "date": "2018-01-24"
-    },
-    {
-      "title": "Demo Reel AGFVE Quarter 1",
-      "slug": "demo-reel-agfve-quarter-1",
       "tags": [
         "demo-reel"
-      ],
+      ]
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=HRU_q-m73IM",
+      "title": "Demo Reel AGFVE Quarter 1",
+      "slug": "demo-reel-agfve-quarter-1",
       "sources": [
         {
           "platform": "youtube",
           "url": "https://www.youtube.com/watch?v=HRU_q-m73IM",
-          "thumbnail": "https://i1.ytimg.com/vi/HRU_q-m73IM/hqdefault.jpg",
+          "thumbnail": "https://i.ytimg.com/vi/HRU_q-m73IM/hqdefault.jpg",
           "videoId": "HRU_q-m73IM"
         }
       ],
-      "date": "2017-12-19"
+      "tags": [
+        "demo-reel"
+      ]
     },
     {
-      "title": "Security check meme",
-      "slug": "security-check-meme",
-      "tags": [],
-      "sources": [
-        {
-          "platform": "youtube",
-          "url": "https://www.youtube.com/watch?v=i9tZYLOYhiU",
-          "thumbnail": "https://i2.ytimg.com/vi/i9tZYLOYhiU/hqdefault.jpg",
-          "videoId": "i9tZYLOYhiU"
-        }
-      ],
-      "date": "2017-09-13"
-    },
-    {
-      "title": "Space Chicken Meme",
-      "slug": "space-chicken-meme",
-      "tags": [],
-      "sources": [
-        {
-          "platform": "youtube",
-          "url": "https://www.youtube.com/watch?v=i9uTaJsTKXI",
-          "thumbnail": "https://i2.ytimg.com/vi/i9uTaJsTKXI/hqdefault.jpg",
-          "videoId": "i9uTaJsTKXI"
-        }
-      ],
-      "date": "2017-09-13"
-    },
-    {
+      "url": "https://www.youtube.com/watch?v=OKIYQ-5k22I",
       "title": "Jester Reads : Darkness",
       "slug": "jester-reads-darkness",
-      "tags": [
-        "narration"
-      ],
       "sources": [
         {
           "platform": "youtube",
           "url": "https://www.youtube.com/watch?v=OKIYQ-5k22I",
-          "thumbnail": "https://i4.ytimg.com/vi/OKIYQ-5k22I/hqdefault.jpg",
+          "thumbnail": "https://i.ytimg.com/vi/OKIYQ-5k22I/hqdefault.jpg",
           "videoId": "OKIYQ-5k22I"
         }
       ],
-      "date": "2015-08-27"
+      "tags": [
+        "narration"
+      ]
     }
   ]
 }
