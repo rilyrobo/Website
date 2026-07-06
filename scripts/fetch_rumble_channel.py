@@ -42,7 +42,13 @@ CHALLENGE_TIMEOUT_MS = 25_000
 
 # Rumble video pages always match this shape — the one part of their
 # markup that's routing, not styling, and so the most stable thing to key off.
-VIDEO_HREF_PATTERN = re.compile(r"^/v[a-z0-9]+-", re.IGNORECASE)
+# Rumble's own video-grid links are absolute (https://rumble.com/v...),
+# while unrelated sidebar/recommendation widgets use root-relative hrefs
+# (/v...) — confirmed by inspecting an actual dumped page. Matching on
+# "/v<id>-" anywhere in the string (not anchored to the start) catches
+# both forms, since the routing segment itself is what's stable, not
+# whether Rumble happens to render it as absolute or relative that day.
+VIDEO_HREF_PATTERN = re.compile(r"/v[a-z0-9]+-", re.IGNORECASE)
 
 
 def extract_videos_from_page(page, base_url: str, debug: bool) -> list:
@@ -53,8 +59,7 @@ def extract_videos_from_page(page, base_url: str, debug: bool) -> list:
     for a in anchors:
         href = a.get_attribute("href") or ""
         path = href.split("?")[0]
-        path = path.replace(base_url, "") if path.startswith(base_url) else path
-        if not VIDEO_HREF_PATTERN.match(path):
+        if not VIDEO_HREF_PATTERN.search(path):
             continue
 
         full_url = urljoin(base_url, href)
