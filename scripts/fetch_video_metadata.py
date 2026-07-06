@@ -153,9 +153,19 @@ def main():
     existing_doc = load_json(OUTPUT_FILE, {"items": []})
     existing_by_url = {item["url"]: item for item in existing_doc.get("items", []) if item.get("url")}
 
-    # De-dupe slugs across the whole resolved set — two videos with similar
-    # titles would otherwise collide and break deep-linking.
-    seen_slugs: dict[str, int] = {}
+    if not sources_doc.get("sources"):
+        # Not a failure: video-sources.json is an OVERRIDES file now that
+        # channel-level auto-discovery (fetch_channel_videos.py /
+        # fetch_rumble_channel.py) is the primary source of videos. An
+        # empty overrides file is a normal, expected state — "nothing to
+        # resolve" is not the same as "resolution failed," and treating
+        # them identically made every CI run report a false failure for a
+        # file that's legitimately allowed to be empty for long stretches.
+        print(f"ℹ {SOURCES_FILE} has no manual sources configured — nothing to resolve. "
+              f"This is expected if you're relying on channel auto-discovery; add entries "
+              f"here only for one-off videos or manual tag/featured overrides.")
+        return
+
     resolved_items = []
     failures = 0
 
@@ -163,23 +173,19 @@ def main():
         url = source.get("url", "").strip()
         already_resolved = existing_by_url.get(url)
 
-        if source.get("manual"):
-            # Manually-entered videos (added via add_video_source.py --manual
-            # when oEmbed was blocked or the platform isn't supported) have
-            # no oEmbed data to refresh from — never touch them here.
-            if already_resolved:
-                resolved_items.append(already_resolved)
-            else:
-                print(f"⚠ Source marked manual but has no resolved entry in {OUTPUT_FILE}: {url}. "
-                    f"Run: python3 scripts/add_video_source.py --manual", file=sys.stderr)
-                failures += 1
-            continue
-
         if already_resolved and not args.refresh:
             resolved_items.append(already_resolved)
             continue
 
         resolved = resolve_source(source)
+        if resolved is None:
+            failures += 1
+            if already_resolved:
+                print(f"  Keeping previous data for {url}.", file=sys.stderr)
+                resolved_items.append(already_resolved)
+            continue
+
+        resolved_items.append(resolved)
 
     for item in resolved_items:
         base = item.get("slug", "video")
@@ -189,7 +195,8 @@ def main():
         seen_slugs[base] = count + 1
 
     if not resolved_items:
-        print(f"⚠ 0 videos resolved — NOT overwriting {OUTPUT_FILE}.", file=sys.stderr)
+        print(f"⚠ 0 of {len(sources_doc['sources'])} configured sources resolved successfully — "
+              f"NOT overwriting {OUTPUT_FILE}.", file=sys.stderr)
         sys.exit(1)
 
     os.makedirs("data", exist_ok=True)
@@ -197,7 +204,6 @@ def main():
         json.dump({"items": resolved_items}, f, indent=2)
 
     print(f"✓ {len(resolved_items)} videos → {OUTPUT_FILE} ({failures} failed lookups this run)")
-
 
 if __name__ == "__main__":
     main()
