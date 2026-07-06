@@ -4,27 +4,27 @@ fetch_video_metadata.py — Resolves data/video-sources.json (a hand-maintained
 list of video URLs + curator-chosen tags/featured/date) into data/videos.json
 (the fully-resolved file the frontend actually fetches).
 
-Uses each platform's public oEmbed endpoint to auto-fill title/thumbnail/embed
-markup — no API key or quota required for either YouTube or Rumble.
+Uses each platform's public oEmbed endpoint to auto-fill title/thumbnail/
+embed markup — no API key or quota required for either YouTube or Rumble.
+
+video-sources.json's role: with channel-level auto-discovery now the
+primary source of videos (fetch_channel_videos.py, fetch_rumble_channel.py),
+this file's job is MANUAL OVERRIDES ONLY — one-off videos not on either
+channel, or forcing tags/featured/date on an auto-discovered video. An
+EMPTY sources list here is a normal, expected, healthy state — not a
+failure. (This is precisely the bug just fixed below: the script used to
+treat "nothing to resolve" identically to "everything failed to resolve.")
 
 Known limitation: oEmbed does not return an upload date for either platform,
-so the SEO "date" field must still be filled in by hand in video-sources.json
-when known. VideoObject structured data is a nice-to-have, not this script's
-primary job, so this gap is an accepted tradeoff rather than a blocker.
+so the SEO "date" field must still be filled in by hand when known.
 
 Safety contract (matches fetch_deviantart_api.py / fetch_artstation_playwright.py):
-A source URL that fails to resolve (network error, deleted video, oEmbed 404,
-or a blocked datacenter IP — see the ArtStation/DeviantArt precedent in this
-repo) is SKIPPED with a warning. Its previous entry in videos.json, if any,
-is left untouched rather than removed. Nothing is ever deleted just because
-one run had a transient failure.
+A source URL that fails to resolve is SKIPPED with a warning. Its previous
+entry in videos.json, if any, is left untouched rather than removed.
 
 Usage:
     python3 scripts/fetch_video_metadata.py
     python3 scripts/fetch_video_metadata.py --refresh
-        # Re-fetch metadata even for sources that already resolved
-        # successfully in a previous run (normally skipped to avoid
-        # hammering oEmbed endpoints on every CI run for no reason).
 """
 import argparse
 import json
@@ -64,8 +64,7 @@ def extract_youtube_id(url: str) -> str | None:
 def extract_embed_src(oembed_html: str) -> str | None:
     """Pulls the iframe src out of an oEmbed 'html' field. This is how we get
     Rumble's actual working embed URL without reverse-engineering their
-    undocumented ID/URL scheme ourselves — if Rumble changes their embed
-    format tomorrow, this still works as long as their oEmbed response does."""
+    undocumented ID/URL scheme ourselves."""
     match = re.search(r'src="([^"]+)"', oembed_html or "")
     return match.group(1) if match else None
 
@@ -103,30 +102,33 @@ def resolve_source(source: dict) -> dict | None:
         print(f"⚠ oEmbed returned non-JSON for {url} — leaving any existing entry untouched.", file=sys.stderr)
         return None
 
-    title = data.get("title", "Untitled")
     resolved = {
         "url": url,
         "title": data.get("title", "Untitled"),
         "slug": slugify(data.get("title", "Untitled")),
     }
-    source = {"platform": platform, "url": url, "thumbnail": data.get("thumbnail_url")}
+    source_meta = {"platform": platform, "url": url, "thumbnail": data.get("thumbnail_url")}
 
     if platform == "youtube":
         video_id = extract_youtube_id(url)
         if not video_id:
             print(f"⚠ Could not extract a video ID from {url} — skipping.", file=sys.stderr)
             return None
-        source["videoId"] = video_id
+        source_meta["videoId"] = video_id
     else:
         embed_src = extract_embed_src(data.get("html", ""))
         if not embed_src:
             print(f"⚠ Could not extract an embed URL from {url}'s oEmbed response — skipping.", file=sys.stderr)
             return None
-        source["embedUrl"] = embed_src
+        source_meta["embedUrl"] = embed_src
 
-    resolved["sources"] = [source]
+    resolved["sources"] = [source_meta]
+
+    # Curator-chosen fields (from the video-sources.json entry itself, NOT
+    # the oEmbed response) always win — oEmbed has no concept of your tag
+    # taxonomy or which video should be featured.
     for field in ("tags", "featured", "date", "description"):
-        if field in source:  # NOTE: should read from the ORIGINAL `source` dict param (the video-sources.json entry), not the local `source` var above — rename one to avoid the collision
+        if field in source:
             resolved[field] = source[field]
 
     return resolved
@@ -154,18 +156,15 @@ def main():
     existing_by_url = {item["url"]: item for item in existing_doc.get("items", []) if item.get("url")}
 
     if not sources_doc.get("sources"):
-        # Not a failure: video-sources.json is an OVERRIDES file now that
-        # channel-level auto-discovery (fetch_channel_videos.py /
-        # fetch_rumble_channel.py) is the primary source of videos. An
-        # empty overrides file is a normal, expected state — "nothing to
-        # resolve" is not the same as "resolution failed," and treating
-        # them identically made every CI run report a false failure for a
-        # file that's legitimately allowed to be empty for long stretches.
+        # THE FIX: an empty overrides file is normal now that channel
+        # auto-discovery is the primary path — this must exit 0, not be
+        # treated as "everything failed to resolve."
         print(f"ℹ {SOURCES_FILE} has no manual sources configured — nothing to resolve. "
               f"This is expected if you're relying on channel auto-discovery; add entries "
               f"here only for one-off videos or manual tag/featured overrides.")
         return
 
+    seen_slugs: dict[str, int] = {}
     resolved_items = []
     failures = 0
 
@@ -204,6 +203,7 @@ def main():
         json.dump({"items": resolved_items}, f, indent=2)
 
     print(f"✓ {len(resolved_items)} videos → {OUTPUT_FILE} ({failures} failed lookups this run)")
+
 
 if __name__ == "__main__":
     main()
