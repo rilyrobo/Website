@@ -301,7 +301,8 @@ header p {
 }
 
 .latest-artworks-heading,
-.latest-videos-heading {
+.latest-videos-heading,
+.latest-activity-heading {   /* ← added */
   font-family: 'Cinzel', serif;
   text-align: left;
   margin-bottom: 1rem;
@@ -1060,6 +1061,99 @@ header p {
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 16px;
   text-align: center;
+}
+
+/* ── Social Page: Latest Activity Feed & X Embed ─────────────────────────── */
+.social-activity-section,
+.social-twitter-section {
+  margin: 3rem auto;
+  max-width: 1200px;
+}
+
+.activity-feed-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+/* Normalize the borrowed .gallery-card image height to match .video-card's
+   16:9 rhythm, scoped to this grid only — doesn't touch the Gallery/Home
+   pages' existing 180px look. */
+.activity-feed-grid .gallery-card.activity-card-art img {
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.activity-type-badge {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: rgba(200,150,12,0.18);
+  color: var(--accent-gold);
+  border: 1px solid rgba(200,150,12,0.35);
+}
+
+/* Activity cards reuse .gallery-card / .video-card for behavior + base
+   styling, but need a couple of resets since .video-card is now an <a>
+   instead of the <div> it's used as everywhere else. */
+.activity-card-video {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.activity-play-icon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 2px 10px rgba(0,0,0,0.6));
+  transition: transform var(--transition);
+}
+.activity-card-video:hover .activity-play-icon,
+.activity-card-video:focus-visible .activity-play-icon {
+  transform: scale(1.1);
+}
+
+.activity-card-art:focus-visible {
+  outline: 3px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+.activity-card-video:focus-visible {
+  outline: 3px solid var(--accent-gold);
+  outline-offset: -3px;
+}
+
+/* X/Twitter embed + fallback */
+.twitter-embed-container {
+  max-width: 550px;
+  margin: 0 auto;
+  min-height: 200px; /* reserves space so the timeout-fallback swap doesn't cause a layout jump */
+}
+
+.twitter-fallback {
+  text-align: center;
+  padding: 2rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+}
+
+.twitter-fallback-text {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 767px) {
+  .activity-feed-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
 }
 
 /* ── Commissions & Pricing ─────────────────────────────────────────────────── */

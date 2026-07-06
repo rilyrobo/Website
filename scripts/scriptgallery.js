@@ -221,6 +221,24 @@ function mergeItems(daItems, asItems) {
     return sortByDateDesc(merged);
 }
 
+// ── Cross-page reuse: same merged dataset as the Home page's "Latest
+// Artworks" strip, exposed so other pages (Social's "Latest Activity"
+// feed) don't need to duplicate the fetch+merge logic themselves. ─────────
+function getFeaturedMergedArtItems(limit = null) {
+    const featured = galleryData[0]; // "Featured" is always index 0 by definition above
+    const slug = gallerySlug(featured.file);
+
+    return Promise.allSettled([
+        fetchJSON(featured.file),
+        getArtStationItemsForGallery(slug)
+    ]).then(([daResult, asResult]) => {
+        const daItems = daResult.status === "fulfilled" ? (daResult.value.items || []) : [];
+        const asItems = asResult.status === "fulfilled" ? asResult.value : [];
+        const merged  = mergeItems(daItems, asItems);
+        return limit ? merged.slice(0, limit) : merged;
+    });
+}
+
 // ── Home preview: latest N across BOTH platforms, Featured gallery only ───────
 function loadHomeGallery(gallery, gridSelector, limit = 5) {
     const container = document.querySelector(gridSelector);

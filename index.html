@@ -53,17 +53,17 @@
                     <div class="dropdown-content dropdown-content-stores">
                         <div class="dropdown-item">
                             <a href="#merch-shop" onclick="showPage('merch-shop')">Merch Shop</a>
-                            <div class="nav-hover-image-dropdown" style="background: url('https://img.icons8.com/?size=100&id=4tClae3w0QTm&format=png&color=FFFFFF') center/cover no-repeat;"></div>
+                            <div class="nav-hover-image-dropdown" style="background: url('image/icon/teespring.png') center/cover no-repeat;"></div>
                         </div>
                         <div class="dropdown-item">
                             <a href="#gumroad-shop" onclick="showPage('gumroad-shop')">Gumroad Shop</a>
-                            <div class="nav-hover-image-dropdown" style="background: url('https://img.icons8.com/?size=100&id=UhoUR89JYXbb&format=png&color=FFFFFF') center/cover no-repeat;"></div>
+                            <div class="nav-hover-image-dropdown" style="background: url('image/icon/gumroad.png') center/cover no-repeat;"></div>
                         </div>
                         <div class="dropdown-item">
                             <a href="https://rilyrobo.booth.pm/" target="_blank" rel="noopener noreferrer">
                             <img src="https://asset.booth.pm/assets/booth_logo-cd38e1da31e93676b081bd8f0aca2805f758f514c8e95dc3f1a8aac5e58dffec.svg" alt="Booth Store">
                             </a>
-                            <div class="nav-hover-image-dropdown" style="background: url('https://img.icons8.com/?size=100&id=85777&format=png&color=FFFFFF') center/cover no-repeat;"></div>
+                            <div class="nav-hover-image-dropdown" style="background: url('image/icon/link.png') center/cover no-repeat;"></div>
                         </div>
                         <div class="dropdown-item">
                             <a href="#jinxxy-shop" onclick="showPage('jinxxy-shop')">
@@ -138,17 +138,17 @@
                 <div class="dropdown-content dropdown-content-stores">
                     <div class="dropdown-item">
                         <a href="#merch-shop" onclick="showPage('merch-shop')">Merch Shop</a>
-                        <div class="nav-hover-image-dropdown" style="background: url('https://img.icons8.com/?size=100&id=4tClae3w0QTm&format=png&color=FFFFFF') center/cover no-repeat;"></div>
+                        <div class="nav-hover-image-dropdown" style="background: url('images/icon/teespring.png') center/cover no-repeat;"></div>
                     </div>
                     <div class="dropdown-item">
                         <a href="#gumroad-shop" onclick="showPage('gumroad-shop')">Gumroad Shop</a>
-                        <div class="nav-hover-image-dropdown" style="background: url('https://img.icons8.com/?size=100&id=UhoUR89JYXbb&format=png&color=FFFFFF') center/cover no-repeat;"></div>
+                        <div class="nav-hover-image-dropdown" style="background: url('images/icon/gumroad.png') center/cover no-repeat;"></div>
                     </div>
                     <div class="dropdown-item">
                         <a href="https://rilyrobo.booth.pm/" target="_blank" rel="noopener noreferrer">
                         <img src="https://asset.booth.pm/assets/booth_logo-cd38e1da31e93676b081bd8f0aca2805f758f514c8e95dc3f1a8aac5e58dffec.svg" alt="Booth Store">
                         </a>
-                        <div class="nav-hover-image-dropdown" style="background: url('https://img.icons8.com/?size=100&id=85777&format=png&color=FFFFFF') center/cover no-repeat;"></div>
+                        <div class="nav-hover-image-dropdown" style="background: url('images/icon/link.png') center/cover no-repeat;"></div>
                     </div>
                         <div class="dropdown-item">
                             <a href="#jinxxy-shop" onclick="showPage('jinxxy-shop')">
@@ -450,8 +450,26 @@
 
             <!-- Social Media Page -->
             <div id="social" class="page">
-                <h2  class="center-text">Social Media</h2>
+                <h2 class="center-text">Social Media</h2>
                 <div class="social-media social-media-grid"></div>
+
+                <div class="social-activity-section">
+                    <h3 class="latest-activity-heading">Latest Activity</h3>
+                    <div class="activity-feed-grid">
+                        <!-- Populated dynamically by scripts/scriptsocial.js -->
+                    </div>
+                </div>
+
+                <div class="social-twitter-section">
+                    <h3 class="latest-activity-heading">Latest from X</h3>
+                    <div id="twitter-timeline-embed" class="twitter-embed-container">
+                        <a class="twitter-timeline"
+                        data-height="600"
+                        data-theme="dark"
+                        href="https://twitter.com/RilyRobo?ref_src=twsrc%5Etfw">
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <!-- Merchandise Store Page -->
@@ -459,13 +477,13 @@
                 <h2  class="center-text">Merchandise Shop</h2>
                 <div class="teespring-store">
                     <a href="#merch-shop" onclick="showPage('merch-shop')" style="display: block; text-align: center;">
-                    <img src="https://img.icons8.com/?size=100&id=4tClae3w0QTm&format=png&color=FFFFFF" alt="Merchendise Store">
+                    <img src="images/icon/teespring.png" alt="Merchendise Store">
                     </a>
                 </div>  
                 <h2  class="center-text">Gumroad Shop</h2>
                 <div class="gumroad-store">
                     <a href="#gumroad-shop" onclick="showPage('gumroad-shop')" style="display: block; text-align: center;">
-                    <img src="https://img.icons8.com/?size=100&id=UhoUR89JYXbb&format=png&color=FFFFFF" alt="Gumroad Store">
+                    <img src="images/icon/gumroad" alt="Gumroad Store">
                     </a>
                 </div>  
                 <h2  class="center-text">Booth Shop Link</h2>
@@ -574,6 +592,7 @@
         <script src="scripts/scriptgallery.js"></script>
         <script src="scripts/scriptcommission.js"></script>
         <script src="scripts/scriptvideo.js"></script>
+        <script src="scripts/scriptsocial.js"></script>
 
         <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
         <script>

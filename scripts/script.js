@@ -2,25 +2,31 @@
 const discordID = "277498825403531264";
 
 const platforms = [
-    { name: "Twitter",      url: `https://twitter.com/${username}`,             icon: "https://img.icons8.com/?size=100&id=phOKFKYpe00C&format=png&color=ffffff", color: "#1A91DA" },
-    { name: "Instagram",    url: `https://instagram.com/${username}`,           icon: "https://img.icons8.com/?size=100&id=32309&format=png&color=ffffff",        color: "#C13584" },
-    { name: "YouTube",      url: `https://www.youtube.com/@${username}`,        icon: "https://img.icons8.com/?size=100&id=37326&format=png&color=ffffff",        color: "#CC0000" },
-    { name: "DeviantArt",   url: `https://www.deviantart.com/${username}`,      icon: "https://img.icons8.com/?size=100&id=38504&format=png&color=ffffff",        color: "#04A045" },
-    { name: "Artstation",   url: `https://www.artstation.com/${username}`,      icon: "https://img.icons8.com/?size=100&id=pB77uEobJRjy&format=png&color=ffffff", color: "#42A5F5" },
-    { name: "Newgrounds",   url: `https://${username}.newgrounds.com`,          icon: "https://img.icons8.com/?size=100&id=15771&format=png&color=ffffff",        color: "#E6B800" },
-    { name: "Twitch",       url: `https://www.twitch.tv/${username}`,           icon: "https://img.icons8.com/?size=100&id=18104&format=png&color=ffffff",        color: "#772CE8" },
-    { name: "Picarto",      url: `https://picarto.tv/${username}`,              icon: "https://img.icons8.com/?size=100&id=6byL4WgkpyPg&format=png&color=ffffff", color: "#00CC00" },
-    { name: "Patreon",      url: `https://www.patreon.com/c/${username}`,       icon: "https://img.icons8.com/?size=100&id=tIshI0hyXw3f&format=png&color=ffffff", color: "#E36254" },
-    { name: "Subscribestar",url: `https://www.subscribestar.com/${username}`,   icon: "https://img.icons8.com/?size=100&id=7856&format=png&color=ffffff",         color: "#E6B800" },
-    { name: "Ko-fi",        url: `https://www.ko-fi.com/${username}`,           icon: "https://img.icons8.com/?size=100&id=8342&format=png&color=ffffff",         color: "#E6C200" },
+    { name: "Twitter",      url: `https://twitter.com/${username}`,             icon: "images/icon/twitter.png",          color: "#1A91DA" },
+    { name: "Instagram",    url: `https://instagram.com/${username}`,           icon: "images/icon/instagram.png",        color: "#C13584" },
+    { name: "YouTube",      url: `https://www.youtube.com/@${username}`,        icon: "images/icon/youtube.png",          color: "#CC0000" },
+    { name: "DeviantArt",   url: `https://www.deviantart.com/${username}`,      icon: "images/icon/deviantart.png",       color: "#04A045" },
+    { name: "Artstation",   url: `https://www.artstation.com/${username}`,      icon: "images/icon/artstation.png",       color: "#42A5F5" },
+    { name: "Newgrounds",   url: `https://${username}.newgrounds.com`,          icon: "images/icon/newgrounds.png",       color: "#E6B800" },
+    { name: "Twitch",       url: `https://www.twitch.tv/${username}`,           icon: "images/icon/twitch.png",           color: "#772CE8" },
+    { name: "Picarto",      url: `https://picarto.tv/${username}`,              icon: "images/icon/picarto.png",          color: "#00CC00" },
+    { name: "Kick",         url: `https://kick.com/${username}`,                icon: "images/icon/kick.png",             color: "#00CC00" },
+    { name: "Patreon",      url: `https://www.patreon.com/c/${username}`,       icon: "images/icon/patreon.png",          color: "#E36254" },
+    { name: "Subscribestar",url: `https://www.subscribestar.com/${username}`,   icon: "images/icon/subscribestar.png",    color: "#E6B800" },
+    { name: "Ko-fi",        url: `https://www.ko-fi.com/${username}`,           icon: "images/icon/ko-fi.png",            color: "#E6C200" },
 ];
 
 const contacts = [
-    { name: "Twitter", url: `https://twitter.com/${username}`,             icon: "https://img.icons8.com/?size=100&id=phOKFKYpe00C&format=png&color=ffffff", color: "#1A91DA" },
-    { name: "Ko-fi",   url: `https://www.ko-fi.com/${username}`,           icon: "https://img.icons8.com/?size=100&id=8342&format=png&color=ffffff",         color: "#E6C200" },
-    { name: "Email",   url: `mailto:${username}@gmail.com`,                icon: "https://img.icons8.com/?size=100&id=60688&format=png&color=ffffff",        color: "#ffffff" },
-    { name: "Discord", url: `https://discordapp.com/users/${discordID}`,   icon: "https://img.icons8.com/?size=100&id=30888&format=png&color=ffffff",        color: "#7289da" },
+    { name: "Twitter", url: `https://twitter.com/${username}`,             icon: "images/icon/twitter.png",       color: "#1A91DA" },
+    { name: "Ko-fi",   url: `https://www.ko-fi.com/${username}`,           icon: "images/icon/ko-fi.png",         color: "#E6C200" },
+    { name: "Email",   url: `mailto:${username}@gmail.com`,                icon: "images/icon/email.png",         color: "#ffffff" },
+    { name: "Discord", url: `https://discordapp.com/users/${discordID}`,   icon: "images/icon/discord.png",       color: "#7289da" },
 ];
+
+// Exposed so other page-specific scripts (e.g. scriptsocial.js) can reuse
+// this data instead of hardcoding a second copy of the same URLs/colors.
+window.platforms = platforms;
+window.contacts = contacts;
 
 // ── Social icon helpers ──────────────────────────────────────────────────────
 
@@ -122,6 +128,13 @@ function handleHashChange() {
         showPage("videos");
         window.playVideoBySlugWhenReady?.(videoMatch[1]);
         return;
+    }
+
+    // Lazily boot the Social page's dynamic content (activity feed + X
+    // embed) the first time it's actually visited — keeps that network/JS
+    // cost off every other page instead of running it on initial load.
+    if (location.hash === "#social") {
+        window.initSocialPageOnce?.();
     }
 
     showPage(hash);
