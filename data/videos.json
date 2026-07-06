@@ -1,45 +1,7 @@
 {
   "items": [
     {
-<<<<<<< HEAD
-      "title": "RilyRobo Live Stream",
-      "slug": "rilyrobo-live-stream",
-      "tags": [],
-      "sources": [
-        {
-          "platform": "youtube",
-          "url": "https://www.youtube.com/watch?v=GAV4JMHUvmw",
-          "thumbnail": "https://i4.ytimg.com/vi/GAV4JMHUvmw/hqdefault.jpg",
-          "videoId": "GAV4JMHUvmw"
-        }
-      ],
-      "date": "2024-09-15"
-    },
-    {
-      "title": "Toy Story 2 ReAnimated - Scene 319",
-      "slug": "toy-story-2-reanimated-scene-319",
-      "tags": [
-        "animation"
-      ],
-      "sources": [
-        {
-          "platform": "youtube",
-          "url": "https://www.youtube.com/watch?v=uQXPa-OcfFQ",
-          "thumbnail": "https://i2.ytimg.com/vi/uQXPa-OcfFQ/hqdefault.jpg",
-          "videoId": "uQXPa-OcfFQ"
-        },
-        {
-          "platform": "rumble",
-          "url": "https://rumble.com/vtv9o3-toy-story-2-reanimated-scene-319.html?e9s=src_v1_ucp_a",
-          "thumbnail": "https://1a-1791.com/video/s8/1/Z/-/x/_/Z-x_c.OvCc-small-Toy-Story-2-ReAnimated-Scen.jpg"
-        }
-      ],
-      "date": "2021-09-17"
-    },
-    {
-=======
       "url": "https://www.youtube.com/watch?v=yaDXBP_9nLM",
->>>>>>> 965c4e5ca31bc2278eb4d103b7003be0f79f6d20
       "title": "Rily Robinson Animation Demo Reel 2020",
       "slug": "rily-robinson-animation-demo-reel-2020",
       "sources": [
@@ -51,7 +13,7 @@
         },
         {
           "platform": "rumble",
-          "url": "https://rumble.com/v19tbhk-rily-robinson-animation-demo-reel-2020.html?e9s=src_v1_ucp_a",
+          "url": "https://rumble.com/v19tbhk-rily-robinson-animation-demo-reel-2020.html?e9s=src_v1_upp_a",
           "thumbnail": "https://1a-1791.com/video/s8/1/O/X/I/L/OXILe.OvCc-small-Rily-Robinson-Animation-Dem.jpg"
         }
       ],
@@ -70,6 +32,11 @@
           "url": "https://www.youtube.com/watch?v=uQXPa-OcfFQ",
           "thumbnail": "https://i.ytimg.com/vi/uQXPa-OcfFQ/hqdefault.jpg",
           "videoId": "uQXPa-OcfFQ"
+        },
+        {
+          "platform": "rumble",
+          "url": "https://rumble.com/vtv9o3-toy-story-2-reanimated-scene-319.html?e9s=src_v1_upp_a",
+          "thumbnail": "https://1a-1791.com/video/s8/1/Z/-/x/_/Z-x_c.OvCc-small-Toy-Story-2-ReAnimated-Scen.jpg"
         }
       ],
       "tags": [
