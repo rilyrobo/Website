@@ -24,6 +24,10 @@ name: Fetch Gallery Feeds
 #   - scripts/add_artstation_item.py remains available as a zero-fragility
 #     manual fallback if automated fetching degrades over time (expected
 #     eventually, as Cloudflare's headless-browser detection evolves).
+concurrency:
+  group: fetch-galleries
+  cancel-in-progress: false
+
 on:
   schedule:
     - cron: '0 */6 * * *'
@@ -147,7 +151,25 @@ jobs:
           git add data/
           if git diff --staged --quiet; then
             echo "No changes to gallery data."
-          else
-            git commit -m "chore: update gallery feeds [skip ci]"
+            exit 0
+          fi
+          git commit -m "chore: update gallery feeds [skip ci]"
+
+          # This job's checkout is a snapshot from whenever the job started.
+          # If anything else landed on main since then (a manual local push,
+          # or another workflow run), our push becomes non-fast-forward and
+          # git correctly refuses it rather than silently discarding that
+          # history. Rebase our single data-only commit on top of whatever
+          # is actually current before pushing, instead of failing outright.
+          git fetch origin main
+          git rebase origin/main
+
+          # One retry: if a second collision lands in the split second
+          # between our rebase and our push, rebase again and try once more
+          # rather than failing the whole workflow over a timing coincidence.
+          if ! git push; then
+            echo "Push rejected — retrying once after re-rebasing onto the latest main..."
+            git fetch origin main
+            git rebase origin/main
             git push
           fi

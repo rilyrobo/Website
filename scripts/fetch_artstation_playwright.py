@@ -29,7 +29,7 @@ from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeo
 DATA_FILE = "data/artstation.json"
 PROFILE_DIR = ".playwright-profile"
 TARGET_URL = "https://www.artstation.com/users/rilyrobo/projects.json"
-CHALLENGE_TIMEOUT_MS = 25_000
+CHALLENGE_TIMEOUT_MS = 35_000
 
 # ── Configuration, not magic values ──────────────────────────────────────────
 # All current ArtStation content is 3D work, so new items default to these
