@@ -241,6 +241,10 @@ function selectVideo(video, { autoplay = false, scrollTo = false } = {}) {
 }
 
 function highlightActiveCard(slug) {
+    // Scoped to .video-grid-full only — "active" means "currently loaded
+    // in the theater," which only exists on the Videos page. Scoping this
+    // is what makes it structurally impossible for a home-page card to
+    // ever show this state.
     const fullGrid = document.querySelector(".video-grid-full");
     fullGrid?.querySelectorAll(".video-card").forEach(card => {
         card.classList.toggle("active", card.dataset.slug === slug);
@@ -256,13 +260,13 @@ function announceNowPlaying(title) {
     announceTimer = setTimeout(() => { el.textContent = `Now playing: ${title}`; }, 50);
 }
 
+// ── Render a comic image ── (n/a — kept name pattern consistent with rest of file)
+
 // ── Grid cards ──────────────────────────────────────────────────────────────
 function renderVideoCard(video, { linkOnly }) {
     const source = pickPreferredSource(video);
     const thumb = resolveThumbnail(video, source);
 
-    // A badge for EVERY platform this video exists on — visitors should
-    // know it's on both before they click, not just the preferred one.
     const platformBadges = (video.sources || [])
         .map(s => getPlatformConfig(s)?.label)
         .filter(Boolean)
@@ -319,12 +323,29 @@ function renderVideoGrid(gridSelector, items, { filterable, linkOnly }) {
     bindVideoGridInteractions(container, items);
 }
 
+// THE FIX for Bug 1: intercept BOTH trigger types under one selector, and
+// branch on tagName. <a> triggers (home page) are handled directly here —
+// showPage() + selectVideo() called immediately — rather than depending on
+// the native hashchange -> script.js router round-trip. This removes a
+// cross-file dependency from the single most common click on the site.
+// The real href stays on the element as a genuine no-JS fallback: if this
+// listener somehow fails to attach, the link still degrades to native hash
+// navigation, provided the router recognizes the hash shape.
 function bindVideoGridInteractions(container, items) {
     container.addEventListener("click", (e) => {
-        const trigger = e.target.closest("button.video-select-trigger");
+        const trigger = e.target.closest(".video-select-trigger");
         if (!trigger) return;
+
         const video = items.find(v => v.slug === trigger.dataset.slug);
         if (!video) return;
+
+        if (trigger.tagName === "A") {
+            e.preventDefault();
+            showPage("videos");
+            selectVideo(video, { autoplay: true, scrollTo: true });
+            return;
+        }
+
         const mount = document.getElementById("video-player-mount");
         selectVideo(video, { autoplay: true, scrollTo: !isInUpperViewport(mount) });
     });
@@ -349,6 +370,24 @@ function videoFilter(btn, tag) {
            card.style.display = (tag === "all" || tags.includes(tag)) ? "" : "none";
        });
 }
+
+// THE FIX for Bug 2: stops a live embed from continuing to play after
+// leaving the Videos page. display:none on a hidden .page has no effect
+// on a running <iframe>'s playback — the embedded document has no
+// awareness that its host page was hidden. Removing/replacing the iframe
+// is the only reliable way to stop it. Called by showPage() in script.js
+// on every navigation.
+function stopVideoPlaybackIfLeavingVideosPage(nextPageId) {
+    if (nextPageId === "videos") return; // staying on/entering Videos — nothing to tear down
+
+    const mount = document.getElementById("video-player-mount");
+    const liveIframe = mount?.querySelector("iframe.video-embed-iframe");
+    if (!liveIframe) return; // only a thumbnail facade is showing — nothing is actually playing
+
+    const current = videoItemsCache?.find(v => v.slug === currentVideoSlug);
+    if (current) renderPlayerFacade(current);
+}
+window.stopVideoPlaybackIfLeavingVideosPage = stopVideoPlaybackIfLeavingVideosPage;
 
 // ── SEO: structured data ──────────────────────────────────────────────────────
 function injectVideoStructuredData(items) {
