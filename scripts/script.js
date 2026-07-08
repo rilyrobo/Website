@@ -72,6 +72,39 @@ function buildBadgeLink(item) {
     return link;
 }
 
+// ── Prevent double navigation on internal hash links ─────────────────────
+// Every internal nav/page link on this site is an <a href="#pageId"
+// onclick="showPage('pageId')">. The onclick already handles routing, but
+// because these are real anchors with a real href, the browser ALSO runs
+// its own default navigation afterward: it updates location.hash, fires a
+// native "hashchange" (re-entering handleHashChange() and calling
+// showPage() a SECOND time), and — critically — scrolls the viewport to
+// whatever element shares that id. That native scroll and our own
+// window.scrollTo(0,0) inside showPage() race each other, and whichever
+// wins varies by browser/timing. That race is why "scroll to top on page
+// change" only worked sometimes.
+//
+// Intercepting the click during the CAPTURE phase (before the link's own
+// onclick fires) and calling preventDefault() removes the native
+// navigation entirely, leaving our own JS router as the only thing that
+// ever moves the page. Any link with an inline onclick is, by definition,
+// already handled by that router — so this rule needs no per-link
+// pattern list and stays correct automatically as new onclick="showPage(...)"
+// links get added later (comic dropdown, gallery dropdown, etc. included,
+// since they're generated with the same pattern).
+//
+// Modifier-clicks (ctrl/cmd/shift) and middle-clicks are left alone, since
+// those are the user asking to open the link in a new tab/window — that
+// still needs the real href, which is exactly why it stays on the markup.
+document.addEventListener("click", (e) => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+    const link = e.target.closest('a[href^="#"]');
+    if (link && link.hasAttribute("onclick")) {
+        e.preventDefault();
+    }
+}, true);
+
 document.addEventListener("DOMContentLoaded", () => {
     // Contacts (social-contact containers)
     document.querySelectorAll(".social-contact").forEach(container => {
@@ -148,20 +181,26 @@ function showPage(pageId) {
     window.stopVideoPlaybackIfLeavingVideosPage?.(pageId);
     window.syncLivePlaybackForPage?.(pageId);
 
+    // Scroll immediately and synchronously on every navigation, independent
+    // of the CSS fade/slide transition below. With the native-navigation
+    // race removed above, this single call is now the only thing that ever
+    // moves the viewport — no more waiting on animation frames, and no more
+    // competing with a browser-native "jump to #fragment" scroll.
+    window.scrollTo(0, 0);
+
     const pages = document.querySelectorAll(".page");
     pages.forEach(page => {
         if (page.id === pageId) {
             page.style.display = "block";
+            // Double rAF forces the browser to paint the pre-transition
+            // state (display:block, opacity:0) before adding .active —
+            // which is what actually triggers the CSS transition. Toggling
+            // display and the transitioning class in the same frame can
+            // cause browsers to skip the transition entirely. This no
+            // longer needs to carry the scroll call — that happens above.
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     page.classList.add("active");
-                    // Explicit "instant" (not the default/unspecified
-                    // behavior) so this scroll always supersedes any
-                    // in-flight smooth-scroll animation — e.g. a video
-                    // card's scrollIntoView — instead of the two
-                    // potentially racing and leaving the viewport stuck
-                    // somewhere in between.
-                    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
                 });
             });
         } else {
