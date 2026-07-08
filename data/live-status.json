@@ -1,0 +1,18 @@
+{
+  "twitch": {
+    "live": false,
+    "checkedAt": "2026-07-08T21:33:27Z"
+  },
+  "youtube": {
+    "live": false,
+    "checkedAt": "2026-07-08T21:33:27Z"
+  },
+  "picarto": {
+    "live": false,
+    "checkedAt": "2026-07-08T21:33:27Z"
+  },
+  "kick": {
+    "live": false,
+    "checkedAt": "2026-07-08T21:33:28Z"
+  }
+}
