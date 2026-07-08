@@ -156,6 +156,17 @@
                 <p>
                     Explore a unique collection of art, from <strong>drawings</strong> and <strong>3D renders</strong> to <strong>comics</strong> and <strong>writings</strong>. Let creativity take you on a journey.
                 </p>
+                
+                <!-- Live Stream Section (hidden until confirmed live — see scripts/scriptlive.js) -->
+                <div class="live-stream-section" style="display:none;">
+                    <h3 class="latest-artworks-heading">
+                        <span class="live-pulse-dot" aria-hidden="true"></span>Watch Me Live
+                    </h3>
+                    <div id="live-player-mount" class="video-thumb-wrap" style="aspect-ratio:16/9;"></div>
+                    <div class="live-source-switcher video-source-switcher" role="group" aria-label="Choose live streaming platform"></div>
+                    <p class="live-last-checked"></p>
+                </div>
+
                 <div class="button-container">
                     <a href="#gallery" onclick="showPage('gallery')" class="button view-gallery-button">View Gallery</a>
                     <a href="#commissions" onclick="showPage('commissions')" class="button get-commission-button">Get a Commission</a>
@@ -576,6 +587,7 @@
         <script src="scripts/scriptgallery.js"></script>
         <script src="scripts/scriptcommission.js"></script>
         <script src="scripts/scriptvideo.js"></script>
+        <script src="scripts/scriptlive.js"></script>
         <script src="scripts/scriptsocial.js"></script>
 
         <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>

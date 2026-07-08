@@ -146,6 +146,7 @@ function showPage(pageId) {
     // hiding its container does not stop it, only removing/replacing its
     // <iframe> does. Must run before the page-swap below, not after.
     window.stopVideoPlaybackIfLeavingVideosPage?.(pageId);
+    window.syncLivePlaybackForPage?.(pageId);
 
     const pages = document.querySelectorAll(".page");
     pages.forEach(page => {

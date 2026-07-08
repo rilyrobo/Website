@@ -1,0 +1,69 @@
+name: Check Live Status
+
+# Polls Twitch, YouTube, Picarto, and Kick for whether RilyRobo is currently
+# streaming, and commits the result to data/live-status.json. The frontend
+# (scripts/scriptlive.js) reads this file to decide whether to show the
+# "Watch Me Live" section on the home page at all.
+#
+# Separate schedule/concurrency group from fetch-galleries.yml — different
+# cadence (this needs to run much more often), different data file, no
+# reason for the two to block each other.
+#
+# NOTE: GitHub's scheduled workflows are best-effort, not real-time — actual
+# runs can lag several minutes behind the cron schedule under load. The live
+# section can take up to ~10-15 minutes to appear after a stream actually
+# starts. That's a platform limitation, not a bug here.
+
+concurrency:
+  group: live-status
+  cancel-in-progress: false
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    env:
+      TWITCH_CLIENT_ID: ${{ secrets.TWITCH_CLIENT_ID }}
+      TWITCH_CLIENT_SECRET: ${{ secrets.TWITCH_CLIENT_SECRET }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Check live status across platforms
+        run: |
+          mkdir -p data
+          python3 scripts/fetch_live_status.py
+
+      - name: Commit updated live status
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/live-status.json
+          if git diff --staged --quiet; then
+            echo "No change in live status."
+            exit 0
+          fi
+          git commit -m "chore: update live status [skip ci]"
+
+          git fetch origin main
+          git rebase origin/main
+
+          if ! git push; then
+            echo "Push rejected — retrying once after re-rebasing onto the latest main..."
+            git fetch origin main
+            git rebase origin/main
+            git push
+          fi
