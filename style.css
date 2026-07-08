@@ -110,9 +110,14 @@ header p {
 
 .nav-item {
   position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.nav-item:hover {
+  z-index: 50;              /* NEW — lifts this item's whole paint unit above sibling nav-items */
 }
 
 .nav-item a {
