@@ -13,6 +13,22 @@ name: Check Live Status
 # runs can lag several minutes behind the cron schedule under load. The live
 # section can take up to ~10-15 minutes to appear after a stream actually
 # starts. That's a platform limitation, not a bug here.
+#
+# NOTE on KICK_USERNAME: unverified — could not be confirmed via web search
+# (Kick's channel pages aren't reliably indexed) or a direct fetch (blocked
+# by Cloudflare bot detection, same category of block as ArtStation/Rumble
+# elsewhere in this repo). Set the KICK_USERNAME repo variable below
+# (Settings > Secrets and variables > Actions > Variables tab) once
+# confirmed, rather than editing scripts/fetch_live_status.py directly. It
+# must ALSO be updated in scripts/scriptlive.js's LIVE_CONFIG.kick.username
+# — that file is static client-side JS with no build step, so it has no way
+# to read this variable at runtime and has to be kept in sync by hand.
+#
+# To test a newly-set KICK_USERNAME (or any other change here) without
+# risking a bad commit: run this workflow manually via "Run workflow" above
+# with the "dry_run" input checked. Every platform check still runs and
+# still prints LIVE/offline (or a clear error) to the job log, but
+# data/live-status.json is never written and nothing is committed.
 
 concurrency:
   group: live-status
@@ -22,6 +38,11 @@ on:
   schedule:
     - cron: '*/10 * * * *'
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run — check platforms and print results, but write nothing and commit nothing'
+        type: boolean
+        default: false
 
 jobs:
   check:
@@ -32,6 +53,13 @@ jobs:
     env:
       TWITCH_CLIENT_ID: ${{ secrets.TWITCH_CLIENT_ID }}
       TWITCH_CLIENT_SECRET: ${{ secrets.TWITCH_CLIENT_SECRET }}
+      # Falls back to fetch_live_status.py's built-in default ("RilyRobo")
+      # if the repo variable isn't set — see the NOTE above.
+      KICK_USERNAME: ${{ vars.KICK_USERNAME }}
+      # Only meaningful on a manual "Run workflow" trigger — the scheduled
+      # trigger has no `inputs` context, so this safely evaluates to empty/
+      # falsy there and the job behaves exactly as it always has.
+      DRY_RUN: ${{ github.event.inputs.dry_run }}
 
     steps:
       - name: Checkout repo
@@ -48,6 +76,13 @@ jobs:
           python3 scripts/fetch_live_status.py
 
       - name: Commit updated live status
+        # Skipped entirely on a dry run — fetch_live_status.py already
+        # didn't write data/live-status.json in that case, so `git add`
+        # here would just no-op anyway, but skipping the step outright
+        # makes the dry run visible as "skipped" (not "no changes") in the
+        # Actions UI, which is the clearer signal when you're specifically
+        # checking whether a test run behaved as expected.
+        if: ${{ github.event.inputs.dry_run != 'true' }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

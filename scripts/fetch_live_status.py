@@ -28,7 +28,28 @@ OUTPUT_FILE = "data/live-status.json"
 TWITCH_USERNAME = "RilyRobo"
 YOUTUBE_CHANNEL_ID = "UCNlAFfQIh6Eycmd2yntbK7Q"
 PICARTO_USERNAME = "RilyRobo"
-KICK_USERNAME = "RilyRobo"  # ⚠ confirm this matches Rily's actual Kick handle
+
+# ⚠ UNVERIFIED — could not be confirmed via web search (Kick profile pages
+# aren't reliably indexed) or direct fetch (Cloudflare bot detection blocks
+# it, same as ArtStation/Rumble elsewhere in this repo). Configurable via
+# the KICK_USERNAME repo variable (Settings > Secrets and variables >
+# Actions > Variables) so correcting it later needs no code change — see
+# check-live-status.yml. Falls back to this literal if the variable is
+# unset. MUST be kept in sync by hand with scripts/scriptlive.js's
+# LIVE_CONFIG.kick.username — that file is static client JS with no build
+# step, so it can't read this env var directly.
+KICK_USERNAME = os.environ.get("KICK_USERNAME") or "RilyRobo"
+
+# When set (1/true/yes), runs every platform check and prints the result
+# exactly as it would be written, but never touches OUTPUT_FILE and (per
+# check-live-status.yml) never commits. Exists specifically so a newly
+# guessed/updated KICK_USERNAME or RUMBLE_CHANNEL_URL can be verified
+# safely — a wrong guess just prints an error instead of landing in git
+# history or silently overwriting a previously-good live-status.json.
+#   Local:  DRY_RUN=1 python3 scripts/fetch_live_status.py
+#   CI:     run the "Check Live Status" workflow manually (workflow_dispatch)
+#           with the "dry_run" input checked.
+DRY_RUN = os.environ.get("DRY_RUN", "").strip().lower() in ("1", "true", "yes")
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
 
@@ -119,12 +140,33 @@ def check_picarto_live(username: str) -> bool:
 # ── Kick (unofficial JSON endpoint — may hit Cloudflare bot-detection,
 #    same risk category as ArtStation) ────────────────────────────────────────
 def check_kick_live(username: str) -> bool:
+    """
+    NOTE: KICK_USERNAME is unverified (see the module-level comment above).
+    A wrong handle and a genuine "not currently streaming" state render
+    identically on the frontend (both show as "offline"), which would hide
+    a misconfigured username indefinitely. To prevent that, a 404 here is
+    raised as its own distinct, clearly-labeled error rather than folded
+    into the generic "check failed, keeping previous value" path in
+    main() — so a bad handle surfaces unambiguously in the scheduled
+    workflow's logs instead of silently masquerading as "just not live"
+    forever.
+    """
     req = urllib.request.Request(
         f"https://kick.com/api/v2/channels/{username}",
         headers={"User-Agent": UA},
     )
-    with urllib.request.urlopen(req, timeout=15) as resp:
-        data = json.loads(resp.read().decode())
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read().decode())
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            raise RuntimeError(
+                f"Kick returned 404 for username '{username}' — this almost certainly "
+                f"means KICK_USERNAME is wrong, not a transient failure. Confirm the "
+                f"actual handle at https://kick.com/ and update the KICK_USERNAME repo "
+                f"variable (Settings > Secrets and variables > Actions > Variables)."
+            ) from e
+        raise
     return data.get("livestream") is not None
 
 
@@ -160,6 +202,11 @@ def main():
     if not any_success and not existing:
         print("✗ No platform checks succeeded and no previous data exists — not writing an empty file.", file=sys.stderr)
         sys.exit(1)
+
+    if DRY_RUN:
+        print(f"\n🧪 DRY_RUN set — NOT writing {OUTPUT_FILE}. Would have written:")
+        print(json.dumps(result, indent=2))
+        return
 
     save(result)
     print(f"✓ Wrote {OUTPUT_FILE}")

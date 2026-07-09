@@ -5,8 +5,7 @@
 // Twitch, YouTube, Picarto, and Kick server-side (their live-status APIs
 // require credentials that can never be safely exposed in browser JS).
 //
-// Rumble is intentionally excluded — it has no public live-status API, so
-// "is Rily live on Rumble" can't be determined at all.
+// Rumble is intentionally excluded — it has no public live-status API.
 //
 // Because this depends on a scheduled job (not truly real-time), status can
 // lag the actual stream start by several minutes — GitHub's own docs note
@@ -22,7 +21,20 @@ const LIVE_CONFIG = {
     twitch:  { username: "RilyRobo" },
     youtube: { channelId: "UCNlAFfQIh6Eycmd2yntbK7Q" },
     picarto: { username: "RilyRobo" },
-    kick:    { username: "RilyRobo" },   // ⚠ confirm this matches Rily's actual Kick handle
+    // ⚠ UNVERIFIED — could not be confirmed via web search (Kick channel
+    // pages aren't reliably indexed) or a direct fetch (blocked by
+    // Cloudflare bot detection, same category of block as ArtStation/
+    // Rumble elsewhere in this repo).
+    //
+    // This is the CLIENT-SIDE half of this value — it builds the embed
+    // iframe src if Kick is live. The SERVER-SIDE half (which actually
+    // checks whether Kick is live) is KICK_USERNAME in
+    // scripts/fetch_live_status.py, configured there via the
+    // KICK_USERNAME repo variable so it can be corrected without a code
+    // change. This file has no build step and can't read that variable,
+    // so the two values must be kept in sync BY HAND — if you correct one,
+    // correct the other in the same edit.
+    kick:    { username: "RilyRobo" },
 };
 
 const LIVE_PLATFORMS = {

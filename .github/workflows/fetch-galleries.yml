@@ -24,6 +24,17 @@ name: Fetch Gallery Feeds
 #   - scripts/add_artstation_item.py remains available as a zero-fragility
 #     manual fallback if automated fetching degrades over time (expected
 #     eventually, as Cloudflare's headless-browser detection evolves).
+#
+# ── Rumble ──────────────────────────────────────────────────────────────
+# RUMBLE_CHANNEL_URL below is set via a repo variable (Settings > Secrets
+# and variables > Actions > Variables tab) rather than hardcoded, so it can
+# be corrected without a code change. The fallback literal
+# ("https://rumble.com/user/rilyrobo") is UNVERIFIED — could not be
+# confirmed via web search (not indexed) or a direct fetch (blocked by the
+# same Cloudflare bot detection documented above for ArtStation). Rumble
+# supports both /user/<name> and /c/<name> URL patterns depending on
+# account type — confirm which one is correct for this channel, not just
+# whether the username itself is right.
 concurrency:
   group: fetch-galleries
   cancel-in-progress: false
@@ -48,7 +59,9 @@ jobs:
       FOLDER_ID_3D_ART: "A4550B8A-4D55-60A5-AD83-B545A34C21A2"
       FOLDER_ID_CHARACTER_DESIGN: "83A221E4-C7BF-E206-D0F6-544CA72DD37B"
       YOUTUBE_CHANNEL_ID: "UCNlAFfQIh6Eycmd2yntbK7Q"
-      RUMBLE_CHANNEL_URL: "https://rumble.com/user/rilyrobo"
+      # See the "Rumble" note above — override via the RUMBLE_CHANNEL_URL
+      # repo variable once confirmed; this fallback is unverified.
+      RUMBLE_CHANNEL_URL: ${{ vars.RUMBLE_CHANNEL_URL || 'https://rumble.com/user/rilyrobo' }}
 
     steps:
       - name: Checkout repo
