@@ -35,6 +35,16 @@ name: Fetch Gallery Feeds
 # supports both /user/<name> and /c/<name> URL patterns depending on
 # account type — confirm which one is correct for this channel, not just
 # whether the username itself is right.
+#
+# "Backfill missing Rumble embed URLs" below is DELIBERATELY a separate,
+# always-run step rather than folded into the Rumble discovery step below.
+# Rumble's oEmbed endpoint (used for embed-URL resolution) is a plain JSON
+# API with no Cloudflare challenge — it doesn't share Rumble channel
+# discovery's fragility, so it shouldn't share its failure mode either.
+# This lets already-broken entries (a Rumble source with a watch-page URL
+# but no embedUrl — see scripts/backfill_rumble_embeds.py) self-heal on
+# every run, even one where the Playwright-based discovery step below
+# fails to clear Cloudflare entirely.
 concurrency:
   group: fetch-galleries
   cancel-in-progress: false
@@ -90,7 +100,14 @@ jobs:
       - name: Resolve video metadata
         continue-on-error: true   # see fetch_video_metadata.py's safety contract — a failure here never blocks the pipeline
         run: python3 scripts/fetch_video_metadata.py
-        
+
+      # ── Videos: backfill any Rumble sources still missing an embedUrl ────
+      # Deliberately independent of Rumble channel discovery below — see
+      # the "Rumble" note above for why this is a separate step.
+      - name: Backfill missing Rumble embed URLs
+        continue-on-error: true   # same safety contract as every other step here — a resolution failure never blocks the pipeline
+        run: python3 scripts/backfill_rumble_embeds.py
+
       # ── ArtStation: Playwright ──────────────────────────────────────────
       - name: Cache Playwright browser binary
         uses: actions/cache@v4

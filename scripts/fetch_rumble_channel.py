@@ -22,6 +22,12 @@ and adjust extract_videos_from_page() to match what's actually there.
 Safety contract (matches every other fetch script in this repo): a failed
 run (challenge not cleared, 0 videos parsed) never overwrites videos.json.
 
+NOTE: the watch-page URL scraped here is never directly embeddable (see
+backfill_rumble_embeds.py) — this script resolves each newly-merged
+Rumble source's real embedUrl via oEmbed before saving, so a freshly
+discovered video can play in-page immediately rather than only linking
+out until some later run happens to fix it.
+
 Usage:
     python3 scripts/fetch_rumble_channel.py --channel-url https://rumble.com/c/YourChannel
 """
@@ -34,6 +40,7 @@ from urllib.parse import urljoin
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout
 
 from video_merge_utils import merge_discovered, dedupe_slugs, load_json, save_json, OUTPUT_FILE, OVERRIDES_FILE
+from backfill_rumble_embeds import backfill as backfill_rumble_embeds
 
 # Shared with fetch_artstation_playwright.py — same browser fingerprint/
 # cookies work fine for both sites, no reason to maintain two profiles.
@@ -160,6 +167,16 @@ def main():
 
     merged = merge_discovered(discovered, existing_doc.get("items", []), overrides_doc)
     dedupe_slugs(merged)
+
+    # Newly-merged Rumble sources above only ever carry the watch-page URL,
+    # never the embeddable one — resolve it now via oEmbed so a freshly
+    # discovered video can play in-page immediately. Best-effort: a failed
+    # resolution here doesn't block saving the rest of this run's results,
+    # it just leaves that one source to retry on the next run (see
+    # backfill_rumble_embeds.py's safety contract).
+    resolved_count = backfill_rumble_embeds(merged)
+    if resolved_count:
+        print(f"  ↳ Resolved {resolved_count} Rumble embed URL(s) for newly-discovered videos.")
 
     save_json(OUTPUT_FILE, {"items": merged})
     print(f"\n✓ {len(discovered)} Rumble videos found, {len(merged)} total → {OUTPUT_FILE}")

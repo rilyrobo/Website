@@ -23,7 +23,19 @@ const VIDEO_PLATFORMS = {
     },
     rumble: {
         label: "Rumble",
-        buildEmbedSrc: (src) => src.embedUrl || src.url || null,
+        // IMPORTANT: only src.embedUrl is ever embeddable — Rumble's own
+        // watch-page URL (src.url) sets X-Frame-Options/CSP that blocks
+        // framing entirely, so it must NEVER be used as an iframe src.
+        // Falling back to it here previously produced a silently blank
+        // player instead of the "Watch on Rumble" fallback link below.
+        // embedUrl is populated by fetch_video_metadata.py's oEmbed
+        // resolution (manual video-sources.json entries) and, for
+        // auto-discovered videos, scripts/backfill_rumble_embeds.py.
+        // Until it's resolved, returning null here correctly routes to
+        // the existing "Couldn't load this video's player" fallback in
+        // renderPlayerEmbed() instead of trying (and failing) to embed
+        // the raw page.
+        buildEmbedSrc: (src) => src.embedUrl || null,
         allow: "autoplay; fullscreen",
     },
 };
