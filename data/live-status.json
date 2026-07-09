@@ -1,18 +1,22 @@
 {
   "twitch": {
     "live": false,
-    "checkedAt": "2026-07-09T22:00:24Z"
+    "checkedAt": "2026-07-09T23:33:46Z"
   },
   "youtube": {
     "live": false,
-    "checkedAt": "2026-07-09T22:00:24Z"
+    "checkedAt": "2026-07-09T23:33:46Z"
   },
   "picarto": {
     "live": false,
-    "checkedAt": "2026-07-09T22:00:25Z"
+    "checkedAt": "2026-07-09T23:33:47Z"
   },
   "kick": {
     "live": false,
-    "checkedAt": "2026-07-09T22:00:25Z"
+    "checkedAt": "2026-07-09T23:33:47Z"
+  },
+  "rumble": {
+    "live": false,
+    "checkedAt": null
   }
 }
