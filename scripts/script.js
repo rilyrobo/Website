@@ -137,6 +137,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function handleHashChange() {
+    // FIX: `hash` was previously undefined — must derive it from
+    // location.hash, stripping the leading '#' since showPage() and the
+    // regexes below both expect a bare page id (e.g. "social", not "#social").
+    const hash = location.hash.slice(1);
+
     const comicMatch = hash.match(/^(comic-[\w-]+?)(?:-page-(\d+))?$/);
     if (comicMatch) {
         const comicSlug  = comicMatch[1];
@@ -154,8 +159,6 @@ function handleHashChange() {
         return;
     }
 
-    // Video deep-link: #videos:play:some-video-slug — same hash-routing
-    // approach as the comic deep-link above, applied to the video theater.
     const videoMatch = hash.match(/^videos:play:([\w-]+)$/);
     if (videoMatch) {
         showPage("videos");
@@ -163,14 +166,12 @@ function handleHashChange() {
         return;
     }
 
-    // Lazily boot the Social page's dynamic content (activity feed + X
-    // embed) the first time it's actually visited — keeps that network/JS
-    // cost off every other page instead of running it on initial load.
-    if (location.hash === "#social") {
-        window.initSocialPageOnce?.();
-    }
-
-    showPage(hash);
+    // NOTE: the initSocialPageOnce() call that used to live here has moved
+    // into showPage() below — hashchange doesn't fire for pushState-driven
+    // in-app navigation (see click-interception listener further down),
+    // so gating the Social boot on this event meant it only ever worked
+    // for a hard page-load landing directly on #social.
+    showPage(hash || "home");
 }
 
 // Smooth page transition using visibility + opacity instead of display flicker
@@ -181,23 +182,24 @@ function showPage(pageId) {
     window.stopVideoPlaybackIfLeavingVideosPage?.(pageId);
     window.syncLivePlaybackForPage?.(pageId);
 
-    // Scroll immediately and synchronously on every navigation, independent
-    // of the CSS fade/slide transition below. With the native-navigation
-    // race removed above, this single call is now the only thing that ever
-    // moves the viewport — no more waiting on animation frames, and no more
-    // competing with a browser-native "jump to #fragment" scroll.
+    // FIX: lazy-boot the Social page's dynamic content (activity feed + X
+    // embed) here instead of in handleHashChange — this is the one place
+    // guaranteed to run on every real navigation, whether triggered by a
+    // nav-bar click (pushState, no hashchange event), browser back/forward,
+    // or a fresh page load landing directly on #social. initSocialPageOnce()
+    // is idempotent (guards on socialPageInitialized), so it's safe even if
+    // handleHashChange also reaches #social on first load.
+    if (pageId === "social") {
+        window.initSocialPageOnce?.();
+    }
+
+    // Scroll immediately and synchronously on every navigation...
     window.scrollTo(0, 0);
 
     const pages = document.querySelectorAll(".page");
     pages.forEach(page => {
         if (page.id === pageId) {
             page.style.display = "block";
-            // Double rAF forces the browser to paint the pre-transition
-            // state (display:block, opacity:0) before adding .active —
-            // which is what actually triggers the CSS transition. Toggling
-            // display and the transitioning class in the same frame can
-            // cause browsers to skip the transition entirely. This no
-            // longer needs to carry the scroll call — that happens above.
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     page.classList.add("active");
