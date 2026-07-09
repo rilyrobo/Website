@@ -2,16 +2,12 @@
 // Shows a "Watch Me Live" section ONLY when at least one platform is
 // confirmed live, per data/live-status.json — kept fresh by a scheduled
 // GitHub Actions job (.github/workflows/check-live-status.yml) that checks
-// Twitch, YouTube, Picarto, and Kick server-side (their live-status APIs
-// require credentials that can never be safely exposed in browser JS).
-//
-// Rumble is intentionally excluded — it has no public live-status API.
+// Twitch, YouTube, Picarto, Kick, and Rumble server-side.
 //
 // Because this depends on a scheduled job (not truly real-time), status can
-// lag the actual stream start by several minutes — GitHub's own docs note
-// scheduled workflow runs are best-effort and can be delayed under load.
-// The "status checked N minutes ago" line makes that lag visible rather
-// than implying real-time accuracy.
+// lag the actual stream start by several minutes. The "status checked N
+// minutes ago" line makes that lag visible rather than implying real-time
+// accuracy.
 
 const LIVE_STATUS_FILE = "data/live-status.json";
 const DEFAULT_LIVE_PLATFORM = "twitch";
@@ -21,25 +17,20 @@ const LIVE_CONFIG = {
     twitch:  { username: "RilyRobo" },
     youtube: { channelId: "UCNlAFfQIh6Eycmd2yntbK7Q" },
     picarto: { username: "RilyRobo" },
-    // ⚠ UNVERIFIED — could not be confirmed via web search (Kick channel
-    // pages aren't reliably indexed) or a direct fetch (blocked by
-    // Cloudflare bot detection, same category of block as ArtStation/
-    // Rumble elsewhere in this repo).
-    //
-    // This is the CLIENT-SIDE half of this value — it builds the embed
-    // iframe src if Kick is live. The SERVER-SIDE half (which actually
-    // checks whether Kick is live) is KICK_USERNAME in
-    // scripts/fetch_live_status.py, configured there via the
-    // KICK_USERNAME repo variable so it can be corrected without a code
-    // change. This file has no build step and can't read that variable,
-    // so the two values must be kept in sync BY HAND — if you correct one,
-    // correct the other in the same edit.
-    kick:    { username: "RilyRobo" },
+    kick:    { username: "RilyRobo" },              // ⚠ confirm Kick handle
+    rumble:  { channelUrl: "https://rumble.com/user/rilyrobo" }, // ⚠ unverified, same as fetch-galleries.yml's note
 };
 
+// Each entry's buildSrc(statusEntry) returns an iframe URL, or null if this
+// stream can't be embedded right now — the switcher then shows a "Watch on
+// [platform]" link instead. Every other platform's URL is a fixed formula;
+// only Rumble's is dynamic, discovered per-check by check_rumble_live.py
+// and stored in live-status.json's rumble.embedUrl (see that script for why
+// Rumble has no static "embed whatever's live" URL to build from).
 const LIVE_PLATFORMS = {
     twitch: {
         label: "Twitch",
+        channelUrl: `https://twitch.tv/${LIVE_CONFIG.twitch.username}`,
         buildSrc: () => {
             // Twitch requires `parent` to match the serving hostname —
             // computed live so a future custom domain keeps working
@@ -52,17 +43,26 @@ const LIVE_PLATFORMS = {
     },
     youtube: {
         label: "YouTube",
+        channelUrl: `https://www.youtube.com/channel/${LIVE_CONFIG.youtube.channelId}/live`,
         buildSrc: () => `https://www.youtube.com/embed/live_stream?channel=${encodeURIComponent(LIVE_CONFIG.youtube.channelId)}`,
         allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
     },
     picarto: {
         label: "Picarto",
+        channelUrl: `https://picarto.tv/${LIVE_CONFIG.picarto.username}`,
         buildSrc: () => `https://player.picarto.tv/${encodeURIComponent(LIVE_CONFIG.picarto.username)}?muted=true`,
         allow: "autoplay; fullscreen",
     },
     kick: {
         label: "Kick",
+        channelUrl: `https://kick.com/${LIVE_CONFIG.kick.username}`,
         buildSrc: () => `https://player.kick.com/${encodeURIComponent(LIVE_CONFIG.kick.username)}?muted=true`,
+        allow: "autoplay; fullscreen",
+    },
+    rumble: {
+        label: "Rumble",
+        channelUrl: LIVE_CONFIG.rumble.channelUrl,
+        buildSrc: (statusEntry) => statusEntry?.embedUrl || null,
         allow: "autoplay; fullscreen",
     },
 };
@@ -135,8 +135,22 @@ function loadLivePlatform(platformKey) {
     highlightActiveLiveButton(platformKey);
     mount.innerHTML = "";
 
+    const statusEntry = liveStatusCache?.[platformKey] || {};
+    const src = cfg.buildSrc(statusEntry);
+
+    if (!src) {
+        mount.innerHTML = `
+            <div class="live-fallback-card">
+                <p>${escapeLiveHtml(cfg.label)} is live, but an in-page player couldn't be loaded right now.</p>
+                <a href="${escapeLiveAttr(cfg.channelUrl)}" target="_blank" rel="noopener noreferrer" class="button view-videos-button">
+                    Watch on ${escapeLiveHtml(cfg.label)} →
+                </a>
+            </div>`;
+        return;
+    }
+
     const iframe = document.createElement("iframe");
-    iframe.src = cfg.buildSrc();
+    iframe.src = src;
     iframe.title = `${cfg.label} live stream`;
     iframe.setAttribute("frameborder", "0");
     if (cfg.allow) iframe.setAttribute("allow", cfg.allow);
@@ -166,8 +180,7 @@ function renderLastChecked(section, status, platformKey) {
 }
 
 // Called from script.js's showPage() — tears the embed down when navigating
-// away from Home, restores it when returning (same pattern as the video
-// theater's stopVideoPlaybackIfLeavingVideosPage).
+// away from Home, restores it when returning.
 window.syncLivePlaybackForPage = function (nextPageId) {
     const mount = document.getElementById("live-player-mount");
     if (!mount) return;
@@ -181,4 +194,7 @@ window.syncLivePlaybackForPage = function (nextPageId) {
 // ── Utilities ─────────────────────────────────────────────────────────────────
 function escapeLiveHtml(str) {
     return String(str ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+function escapeLiveAttr(str) {
+    return String(str ?? "").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }

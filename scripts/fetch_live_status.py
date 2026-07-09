@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """
 fetch_live_status.py — Checks whether RilyRobo is currently live on
-Twitch, YouTube, and Picarto (Kick best-effort), and writes the result to
-data/live-status.json for the frontend (scripts/scriptlive.js) to read.
-
-Rumble is intentionally NOT checked — it has no public live-status API.
+Twitch, YouTube, Picarto, and Rumble (Kick best-effort), and writes the
+result to data/live-status.json for the frontend (scripts/scriptlive.js)
+to read.
 
 Safety contract (matches every other fetch script in this repo): if a
 platform's check fails for any reason (network error, API change, bot
@@ -23,33 +22,18 @@ import urllib.parse
 import urllib.error
 from datetime import datetime, timezone
 
+from check_rumble_live import check_rumble_live
+
 OUTPUT_FILE = "data/live-status.json"
 
 TWITCH_USERNAME = "RilyRobo"
 YOUTUBE_CHANNEL_ID = "UCNlAFfQIh6Eycmd2yntbK7Q"
 PICARTO_USERNAME = "RilyRobo"
+KICK_USERNAME = "RilyRobo"  # ⚠ confirm this matches Rily's actual Kick handle
 
-# ⚠ UNVERIFIED — could not be confirmed via web search (Kick profile pages
-# aren't reliably indexed) or direct fetch (Cloudflare bot detection blocks
-# it, same as ArtStation/Rumble elsewhere in this repo). Configurable via
-# the KICK_USERNAME repo variable (Settings > Secrets and variables >
-# Actions > Variables) so correcting it later needs no code change — see
-# check-live-status.yml. Falls back to this literal if the variable is
-# unset. MUST be kept in sync by hand with scripts/scriptlive.js's
-# LIVE_CONFIG.kick.username — that file is static client JS with no build
-# step, so it can't read this env var directly.
-KICK_USERNAME = os.environ.get("KICK_USERNAME") or "RilyRobo"
-
-# When set (1/true/yes), runs every platform check and prints the result
-# exactly as it would be written, but never touches OUTPUT_FILE and (per
-# check-live-status.yml) never commits. Exists specifically so a newly
-# guessed/updated KICK_USERNAME or RUMBLE_CHANNEL_URL can be verified
-# safely — a wrong guess just prints an error instead of landing in git
-# history or silently overwriting a previously-good live-status.json.
-#   Local:  DRY_RUN=1 python3 scripts/fetch_live_status.py
-#   CI:     run the "Check Live Status" workflow manually (workflow_dispatch)
-#           with the "dry_run" input checked.
-DRY_RUN = os.environ.get("DRY_RUN", "").strip().lower() in ("1", "true", "yes")
+# Same unverified fallback already used in fetch-galleries.yml — override
+# via the RUMBLE_CHANNEL_URL repo variable/env var once confirmed.
+RUMBLE_CHANNEL_URL = os.environ.get("RUMBLE_CHANNEL_URL") or "https://rumble.com/user/rilyrobo"
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
 
@@ -101,7 +85,7 @@ def get_twitch_token(client_id: str, client_secret: str) -> str:
         return json.loads(resp.read().decode())["access_token"]
 
 
-def check_twitch_live(client_id: str, client_secret: str, username: str) -> bool:
+def check_twitch(client_id: str, client_secret: str, username: str) -> dict:
     token = get_twitch_token(client_id, client_secret)
     params = urllib.parse.urlencode({"user_login": username})
     req = urllib.request.Request(f"https://api.twitch.tv/helix/streams?{params}", method="GET")
@@ -109,12 +93,12 @@ def check_twitch_live(client_id: str, client_secret: str, username: str) -> bool
     req.add_header("Client-Id", client_id)
     with urllib.request.urlopen(req, timeout=15) as resp:
         data = json.loads(resp.read().decode())
-    return len(data.get("data", [])) > 0
+    return {"live": len(data.get("data", [])) > 0}
 
 
 # ── YouTube (no API key/quota — checks the channel's /live page for a
 #    live marker embedded in YouTube's inline page data) ─────────────────────
-def check_youtube_live(channel_id: str) -> bool:
+def check_youtube(channel_id: str) -> dict:
     url = f"https://www.youtube.com/channel/{channel_id}/live"
     req = urllib.request.Request(url, headers={"User-Agent": UA})
     with urllib.request.urlopen(req, timeout=15) as resp:
@@ -123,51 +107,39 @@ def check_youtube_live(channel_id: str) -> bool:
     # ArtStation Playwright fetch. If YouTube changes their markup, this
     # degrades to "assume not live" (caught by the try/except in main()),
     # not a crash.
-    return '"isLive":true' in html
+    return {"live": '"isLive":true' in html}
 
 
 # ── Picarto (public, unauthenticated API) ────────────────────────────────────
-def check_picarto_live(username: str) -> bool:
+def check_picarto(username: str) -> dict:
     req = urllib.request.Request(
         f"https://api.picarto.tv/api/v1/channel/name/{username}",
         headers={"User-Agent": UA},
     )
     with urllib.request.urlopen(req, timeout=15) as resp:
         data = json.loads(resp.read().decode())
-    return bool(data.get("online"))
+    return {"live": bool(data.get("online"))}
 
 
 # ── Kick (unofficial JSON endpoint — may hit Cloudflare bot-detection,
 #    same risk category as ArtStation) ────────────────────────────────────────
-def check_kick_live(username: str) -> bool:
-    """
-    NOTE: KICK_USERNAME is unverified (see the module-level comment above).
-    A wrong handle and a genuine "not currently streaming" state render
-    identically on the frontend (both show as "offline"), which would hide
-    a misconfigured username indefinitely. To prevent that, a 404 here is
-    raised as its own distinct, clearly-labeled error rather than folded
-    into the generic "check failed, keeping previous value" path in
-    main() — so a bad handle surfaces unambiguously in the scheduled
-    workflow's logs instead of silently masquerading as "just not live"
-    forever.
-    """
+def check_kick(username: str) -> dict:
     req = urllib.request.Request(
         f"https://kick.com/api/v2/channels/{username}",
         headers={"User-Agent": UA},
     )
-    try:
-        with urllib.request.urlopen(req, timeout=15) as resp:
-            data = json.loads(resp.read().decode())
-    except urllib.error.HTTPError as e:
-        if e.code == 404:
-            raise RuntimeError(
-                f"Kick returned 404 for username '{username}' — this almost certainly "
-                f"means KICK_USERNAME is wrong, not a transient failure. Confirm the "
-                f"actual handle at https://kick.com/ and update the KICK_USERNAME repo "
-                f"variable (Settings > Secrets and variables > Actions > Variables)."
-            ) from e
-        raise
-    return data.get("livestream") is not None
+    with urllib.request.urlopen(req, timeout=15) as resp:
+        data = json.loads(resp.read().decode())
+    return {"live": data.get("livestream") is not None}
+
+
+# ── Rumble (Playwright — see check_rumble_live.py for the full rationale) ────
+def check_rumble(channel_url: str) -> dict:
+    live, embed_url = check_rumble_live(channel_url)
+    entry = {"live": live}
+    if live and embed_url:
+        entry["embedUrl"] = embed_url
+    return entry
 
 
 def main():
@@ -178,21 +150,24 @@ def main():
     client_id = os.environ.get("TWITCH_CLIENT_ID")
     client_secret = os.environ.get("TWITCH_CLIENT_SECRET")
     if client_id and client_secret:
-        checks.append(("twitch", lambda: check_twitch_live(client_id, client_secret, TWITCH_USERNAME)))
+        checks.append(("twitch", lambda: check_twitch(client_id, client_secret, TWITCH_USERNAME)))
     else:
         print("⚠ TWITCH_CLIENT_ID/TWITCH_CLIENT_SECRET not set — skipping Twitch check.", file=sys.stderr)
 
-    checks.append(("youtube", lambda: check_youtube_live(YOUTUBE_CHANNEL_ID)))
-    checks.append(("picarto", lambda: check_picarto_live(PICARTO_USERNAME)))
-    checks.append(("kick", lambda: check_kick_live(KICK_USERNAME)))
+    checks.append(("youtube", lambda: check_youtube(YOUTUBE_CHANNEL_ID)))
+    checks.append(("picarto", lambda: check_picarto(PICARTO_USERNAME)))
+    checks.append(("kick", lambda: check_kick(KICK_USERNAME)))
+    checks.append(("rumble", lambda: check_rumble(RUMBLE_CHANNEL_URL)))
 
     any_success = False
     for platform, check_fn in checks:
         try:
-            live = check_fn()
-            result[platform] = {"live": live, "checkedAt": now_iso()}
+            entry = check_fn()
+            entry["checkedAt"] = now_iso()
+            result[platform] = entry
             any_success = True
-            print(f"  {platform}: {'LIVE' if live else 'offline'}")
+            print(f"  {platform}: {'LIVE' if entry['live'] else 'offline'}"
+                  f"{' (embed found)' if entry.get('embedUrl') else ''}")
         except Exception as e:
             prev = existing.get(platform, {"live": False, "checkedAt": None})
             result[platform] = prev
@@ -202,11 +177,6 @@ def main():
     if not any_success and not existing:
         print("✗ No platform checks succeeded and no previous data exists — not writing an empty file.", file=sys.stderr)
         sys.exit(1)
-
-    if DRY_RUN:
-        print(f"\n🧪 DRY_RUN set — NOT writing {OUTPUT_FILE}. Would have written:")
-        print(json.dumps(result, indent=2))
-        return
 
     save(result)
     print(f"✓ Wrote {OUTPUT_FILE}")
