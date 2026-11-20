@@ -1461,12 +1461,21 @@ body.nav-open #kofi-widget-overlay {
 .calc-stepper-label {
   font-size: 0.95rem;
   color: var(--text-secondary);
+  padding-right: 12px;
+}
+
+.calc-stepper-label em {
+  font-style: normal;
+  font-size: 0.82em;
+  color: var(--text-muted);
+  margin-left: 4px;
 }
 
 .calc-stepper {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;
 }
 
 .calc-step-btn {

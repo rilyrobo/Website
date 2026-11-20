@@ -12,7 +12,11 @@ const prices = {
         midpoly:  { low: 225, high: 300 },
         highpoly: { low: 300, high: 500 },
         clothPerItem: { low: 30, high: 100 },
-        propPerItem:  { low: 50, high: 100 },
+        staticProp: 30,
+        dynamicProp: 50,
+        kitbashChar: 75,
+        kitbashProp: 75,
+        visemePer: 10,
         togglePer: 10, exprPer: 10, dynbonesPer: 10, quest: 50
     },
     bg: { splash: 20, vague: 40, mid: 60, full: 150 },
@@ -26,7 +30,7 @@ const state = {
     type: '2d',
     style: 'sketch', coverage: 'portrait', chars: 1, bg: 0,
     mesh: 'lowpoly', tex: 30, rig: 0,
-    cloth: 0, props: 0, toggles: 0, exprs: 0, dynbones: 0, quest: false,
+    cloth: 0, staticProps: 0, dynamicProps: 0, visemes: 0, toggles: 0, exprs: 0, dynbones: 0, quest: false,
     nsfw: false, rush: false, commercial: false
 };
 
@@ -177,11 +181,27 @@ function buildCalculator() {
                 </div>
             </div>
             <div class="calc-stepper-row">
-                <span class="calc-stepper-label">Props</span>
+                <span class="calc-stepper-label">Static props <em>$${p3.staticProp} each</em></span>
                 <div class="calc-stepper">
-                    <button class="calc-step-btn" id="props-minus" onclick="calcStep('props',-1)" disabled>−</button>
-                    <span class="calc-step-val" id="props-val">0</span>
-                    <button class="calc-step-btn" onclick="calcStep('props',1)">+</button>
+                    <button class="calc-step-btn" id="staticProps-minus" onclick="calcStep('staticProps',-1)" disabled>−</button>
+                    <span class="calc-step-val" id="staticProps-val">0</span>
+                    <button class="calc-step-btn" onclick="calcStep('staticProps',1)">+</button>
+                </div>
+            </div>
+            <div class="calc-stepper-row">
+                <span class="calc-stepper-label">Dynamic props <em>$${p3.dynamicProp} each</em></span>
+                <div class="calc-stepper">
+                    <button class="calc-step-btn" id="dynamicProps-minus" onclick="calcStep('dynamicProps',-1)" disabled>−</button>
+                    <span class="calc-step-val" id="dynamicProps-val">0</span>
+                    <button class="calc-step-btn" onclick="calcStep('dynamicProps',1)">+</button>
+                </div>
+            </div>
+            <div class="calc-stepper-row">
+                <span class="calc-stepper-label">Facial / speech visemes <em>$${p3.visemePer} per viseme</em></span>
+                <div class="calc-stepper">
+                    <button class="calc-step-btn" id="visemes-minus" onclick="calcStep('visemes',-1)" disabled>−</button>
+                    <span class="calc-step-val" id="visemes-val">0</span>
+                    <button class="calc-step-btn" onclick="calcStep('visemes',1)">+</button>
                 </div>
             </div>
         </div>
@@ -390,8 +410,10 @@ function calcSelectChip(el, groupId, stateKey) {
 // ── Steppers ──────────────────────────────────────────────────────────────────
 const stepperConfig = {
     chars:    { min: 1,  max: 20, stateKey: 'chars'    },
-    cloth:    { min: 0,  max: 20, stateKey: 'cloth'    },
-    props:    { min: 0,  max: 20, stateKey: 'props'    },
+    cloth:        { min: 0,  max: 20, stateKey: 'cloth'        },
+    staticProps:  { min: 0,  max: 20, stateKey: 'staticProps'  },
+    dynamicProps: { min: 0,  max: 20, stateKey: 'dynamicProps' },
+    visemes:      { min: 0,  max: 40, stateKey: 'visemes'      },
     toggles:  { min: 0,  max: 30, stateKey: 'toggles'  },
     exprs:    { min: 0,  max: 30, stateKey: 'exprs'    },
     dynbones: { min: 0,  max: 20, stateKey: 'dynbones' }
@@ -492,10 +514,20 @@ function calcUpdatePrice() {
             base += c;
             lines.push({ label: `${state.cloth} clothing item${state.cloth > 1 ? 's' : ''}`, amount: c });
         }
-        if (state.props > 0) {
-            const p = state.props * Math.round((prices["3d"].propPerItem.low + prices["3d"].propPerItem.high) / 2);
+        if (state.staticProps > 0) {
+            const p = state.staticProps * prices["3d"].staticProp;
             base += p;
-            lines.push({ label: `${state.props} prop${state.props > 1 ? 's' : ''}`, amount: p });
+            lines.push({ label: `${state.staticProps} static prop${state.staticProps > 1 ? 's' : ''}`, amount: p });
+        }
+        if (state.dynamicProps > 0) {
+            const p = state.dynamicProps * prices["3d"].dynamicProp;
+            base += p;
+            lines.push({ label: `${state.dynamicProps} dynamic prop${state.dynamicProps > 1 ? 's' : ''}`, amount: p });
+        }
+        if (state.visemes > 0) {
+            const v = state.visemes * prices["3d"].visemePer;
+            base += v;
+            lines.push({ label: `${state.visemes} viseme${state.visemes > 1 ? 's' : ''}`, amount: v });
         }
         if (state.toggles > 0) {
             const t = state.toggles * prices["3d"].togglePer;
@@ -607,12 +639,11 @@ function setPriceLabels() {
     set('3d-lowpoly',  range(p3.lowpoly));
     set('3d-midpoly',  range(p3.midpoly));
     set('3d-highpoly', range(p3.highpoly));
-    // No separate static, dynamic, kitbash, or viseme prices in `prices`.
-    set('3d-staticprop',   QUOTE);
-    set('3d-dynamicprop',  QUOTE);
-    set('3d-kitbashchar',  QUOTE);
-    set('3d-kitbashprop',  QUOTE);
-    set('3d-viseme',       QUOTE);
+    set('3d-staticprop',   money(p3.staticProp));
+    set('3d-dynamicprop',  money(p3.dynamicProp));
+    set('3d-kitbashchar',  money(p3.kitbashChar));
+    set('3d-kitbashprop',  money(p3.kitbashProp));
+    set('3d-viseme',       `${money(p3.visemePer)} per viseme`);
 
     set('avatar-fromScratch',      QUOTE);
     set('avatar-kitbashing',       QUOTE);
