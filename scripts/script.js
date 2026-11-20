@@ -371,7 +371,7 @@ document.addEventListener("keydown", (e) => {
 function loadAboutContent() {
     const el = document.getElementById("about-content");
     if (!el) return;
-    fetch("aboutme.html")
+    fetch("aboutme.html?v=20261120")
         .then(r => { if (!r.ok) throw new Error(r.statusText); return r.text(); })
         .then(html => { el.innerHTML = html; })
         .catch(() => { el.innerHTML = "<p>Failed to load content. Please try again later.</p>"; });

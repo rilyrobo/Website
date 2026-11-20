@@ -5,7 +5,7 @@
 // YouTube and Rumble becomes ONE card with two sources, mirroring how the
 // art galleries already merge DeviantArt + ArtStation pieces of one piece.
 
-const VIDEO_DATA_FILE = "data/videos.json";
+const VIDEO_DATA_FILE = "data/videos.json?v=20261120";
 const VIDEO_HOME_LIMIT = 3;
 
 const VIDEO_TAG_LABELS = {
