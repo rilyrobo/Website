@@ -51,9 +51,9 @@ function setupComics(comicsList) {
 
 // ── Dynamic comic pages ──────────────────────────────────────────────────────
 function createComicPages(comicsList) {
-    const mainContainer = document.querySelector("main");
+    const mainContainer = document.getElementById("site-content");
     if (!mainContainer) {
-        console.error("Could not find <main> container element.");
+        console.error("Could not find #site-content container element.");
         return;
     }
 

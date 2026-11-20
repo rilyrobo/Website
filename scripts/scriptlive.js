@@ -9,7 +9,7 @@
 // minutes ago" line makes that lag visible rather than implying real-time
 // accuracy.
 
-const LIVE_STATUS_FILE = "data/live-status.json";
+const LIVE_STATUS_FILE = "data/live-status.json?v=20261120";
 const DEFAULT_LIVE_PLATFORM = "twitch";
 
 // ── Config — the only place usernames/IDs should ever be edited ─────────────

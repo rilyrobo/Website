@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const myGames = [
         {
             title: "Unnamed Game Project",
+            displayTitle: "Untitled project (WIP)",
             image: "images/game/game_projectt.jpg",
             description: "2013 A horror game project that was never completed. The game was to be a 2D gamemaker 8 engine horror, adventure game with a focus on story and atmosphere. The player would explore a world overtaken by monsters and fleshy masses with pills to swap between the apocolyptic world and a modern world with the ability to by pass threats and puzzles by changing worlds.",
             links: [
@@ -50,6 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             title: "NDA",
+            face: "nda",
             image: "images/placeholder.jpg",
             description: "2022-2024 A work in progress game project that is currently in development. More information will be available.",
             links: [
@@ -61,17 +63,35 @@ document.addEventListener("DOMContentLoaded", () => {
     populateGamesGrid(contributedGames, document.getElementById("contributed-games-grid"));
 });
 
+function escapeGame(str) {
+    return String(str ?? "")
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
 function populateGamesGrid(games, gridElement) {
     games.forEach((game) => {
         const gameCard = document.createElement("div");
         gameCard.className = "game-card";
 
-        const linksHTML = game.links.map(link => `<a href="${link.url}" target="_blank" class="button">${link.name}</a>`).join(" ");
+        const linksHTML = game.links.map(link =>
+            `<a href="${escapeGame(link.url)}" target="_blank" rel="noopener noreferrer" class="button">${escapeGame(link.name)}</a>`
+        ).join(" ");
+
+        const media = game.face === "nda"
+            ? `<div class="game-nda-face" role="img" aria-label="Under NDA">
+                    <img src="apple-touch-icon.png" alt="">
+                    <p class="game-nda-label">Under NDA</p>
+               </div>`
+            : `<img src="${escapeGame(game.image)}" alt="${escapeGame(game.title)}" class="game-image">`;
+
+        const heading = game.displayTitle || game.title;
+        const titleClass = game.displayTitle ? "game-title game-title-wip" : "";
 
         gameCard.innerHTML = `
-            <img src="${game.image}" alt="${game.title}" class="game-image">
-            <h3>${game.title}</h3>
-            <p>${game.description}</p>
+            ${media}
+            <h3 class="${titleClass}">${escapeGame(heading)}</h3>
+            <p>${escapeGame(game.description)}</p>
             ${linksHTML}
         `;
 

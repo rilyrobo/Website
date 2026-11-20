@@ -30,6 +30,17 @@ window.contacts = contacts;
 
 // ── Social icon helpers ──────────────────────────────────────────────────────
 
+// Header keeps four links. The full list stays on the Social page and in the footer.
+const HEADER_SOCIAL = ["Twitter", "Discord", "YouTube", "Ko-fi"];
+
+function socialLabel(item) {
+    return item.name === "Twitter" ? "X" : item.name;
+}
+
+function findSocial(name) {
+    return contacts.find(item => item.name === name) || platforms.find(item => item.name === name);
+}
+
 function buildIconLink(item) {
     const link = document.createElement("a");
     link.href = item.url;
@@ -39,13 +50,13 @@ function buildIconLink(item) {
 
     const img = document.createElement("img");
     img.src   = item.icon;
-    img.alt   = item.name;
+    img.alt   = socialLabel(item);
     img.classList.add("social-icon");
     link.appendChild(img);
     return link;
 }
 
-function buildBadgeLink(item) {
+function buildBadgeLink(item, { themed = false } = {}) {
     const link = document.createElement("a");
     link.href = item.url;
     link.target = "_blank";
@@ -54,12 +65,20 @@ function buildBadgeLink(item) {
 
     const imgStart = document.createElement("img");
     imgStart.src = item.icon;
-    imgStart.alt = item.name;
+    imgStart.alt = "";
     imgStart.classList.add("social-icon");
 
-    const imgEnd = imgStart.cloneNode(true);
+    const label = socialLabel(item);
+    link.innerHTML = `<strong>${label}</strong>`;
 
-    link.innerHTML = `<strong>${item.name}</strong>`;
+    if (themed) {
+        link.classList.add("social-chip");
+        link.setAttribute("aria-label", label);
+        link.insertBefore(imgStart, link.firstChild);
+        return link;
+    }
+
+    const imgEnd = imgStart.cloneNode(true);
     Object.assign(link.style, {
         display: "flex", alignItems: "center", justifyContent: "space-between",
         marginBottom: "10px", textDecoration: "none", color: "#ffffff",
@@ -120,14 +139,16 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Platforms (social-media containers)
+    // Platforms (social-media containers). The header row is a short set;
+    // every other container keeps the full list.
     document.querySelectorAll(".social-media").forEach(container => {
-        platforms.forEach(platform => {
-            container.appendChild(
-                container.classList.contains("social-media-icon")
-                    ? buildIconLink(platform)
-                    : buildBadgeLink(platform)
-            );
+        const list = container.classList.contains("social-media-header")
+            ? HEADER_SOCIAL.map(findSocial).filter(Boolean)
+            : platforms;
+        const iconMode = container.classList.contains("social-media-icon");
+        const themed = container.classList.contains("social-media-grid");
+        list.forEach(item => {
+            container.appendChild(iconMode ? buildIconLink(item) : buildBadgeLink(item, { themed }));
         });
     });
 });
@@ -350,7 +371,7 @@ document.addEventListener("keydown", (e) => {
 function loadAboutContent() {
     const el = document.getElementById("about-content");
     if (!el) return;
-    fetch("aboutme.html")
+    fetch("aboutme.html?v=20261120")
         .then(r => { if (!r.ok) throw new Error(r.statusText); return r.text(); })
         .then(html => { el.innerHTML = html; })
         .catch(() => { el.innerHTML = "<p>Failed to load content. Please try again later.</p>"; });

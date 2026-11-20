@@ -18,7 +18,7 @@
         <meta name="twitter:description" content="3D artist and technical animator. VRChat avatars, props, and 2D art. Commissions open.">
         <meta name="twitter:image" content="https://rilyrobo.github.io/Website/images/vrchat/vrchat_example-1.webp">
         <title>Art by RilyRobo</title>
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="style.css?v=20261120">
         <link rel="icon" href="favicon.ico" sizes="any">
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
     </head>
@@ -26,9 +26,14 @@
     <body>
 
         <header>
-            <h1>Art by RilyRobo</h1>
-            <p>3D artist &amp; technical animator — VRChat avatars, props and 2D art. Commissions open.</p>
-            <div class="social-media social-media-icon"></div>
+            <div class="brand">
+                <img class="brand-mark" src="apple-touch-icon.png" alt="" width="84" height="84">
+                <div class="brand-copy">
+                    <h1>Art by RilyRobo</h1>
+                    <p class="tagline">3D artist &amp; technical animator — VRChat avatars, props and 2D art. <span class="tagline-open">Commissions&nbsp;open.</span></p>
+                </div>
+            </div>
+            <div class="social-media social-media-icon social-media-header"></div>
         </header>
 
         
@@ -153,14 +158,27 @@
             </div>
         </nav>
 
-        <main>
+        <main id="site-content">
             <!-- Home Page -->
             <div id="home" class="page active home-page">
-                <h2 class="welcome-heading">Welcome to My Creative World</h2>
-                <p>
-                    Explore a unique collection of art, from <strong>drawings</strong> and <strong>3D renders</strong> to <strong>comics</strong> and <strong>VRChat avatars</strong>. Let creativity take you on a journey.
-                </p>
-                
+                <section class="hero" aria-label="Featured character">
+                    <figure class="hero-figure">
+                        <img src="images/3d/3d_example-2.webp" alt="3D render of a red and black jester character with a cracked mask" width="1080" height="1080">
+                    </figure>
+                    <div class="hero-copy">
+                        <p class="status-badge">Commissions open</p>
+                        <h2>Characters, props, and VRChat avatars</h2>
+                        <ul class="hero-prices" aria-label="Starting prices">
+                            <li>2D from <strong id="hero-from-2d">$8</strong></li>
+                            <li>VRChat avatars from <strong id="hero-from-vr">$250</strong></li>
+                        </ul>
+                        <div class="button-container">
+                            <a href="#commissions" onclick="showPage('commissions')" class="button get-commission-button">Get a Commission</a>
+                            <a href="#gallery" onclick="showPage('gallery')" class="button button-ghost">View Gallery</a>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- Live Stream Section (hidden until confirmed live — see scripts/scriptlive.js) -->
                 <div class="live-stream-section" style="display:none;">
                     <h3 class="latest-artworks-heading">
@@ -171,11 +189,6 @@
                     <p class="live-last-checked"></p>
                 </div>
 
-                <div class="button-container">
-                    <a href="#gallery" onclick="showPage('gallery')" class="button view-gallery-button">View Gallery</a>
-                    <a href="#commissions" onclick="showPage('commissions')" class="button get-commission-button">Get a Commission</a>
-                </div>
-                
                 <!-- Latest Artworks Section -->
                 <div class="latest-gallery">
                     <h3 class="latest-artworks-heading">Latest Artworks</h3>
@@ -202,7 +215,7 @@
             <!-- Gallery Page -->
             <div id="gallery" class="page">
                 <h2 class="center-text">Gallery</h2>
-                <p class="center-text">Discover my artwork: drawings, 3D renders, and comics</p>
+                <p class="center-text">Featured is a short set of finished character, jester, and 3D work. Everything else is under Archive / older work.</p>
                 <div class="gallery-grid gallery-grid-full">
                     <!-- Artwork thumbnails will be inserted dynamically -->
                 </div>
@@ -251,12 +264,94 @@
             
             <!-- Commissions Page -->
             <div id="commissions" class="page">
-                <h2  class="center-text">Commissions and Pricing</h2>
-                <p  class="center-text">Interested in personalized artwork? Explore my 2D and 3D commission options below (All prices in USD):</p>
+                <h2 class="center-text">Commissions</h2>
+                <p class="center-text">All prices in USD.</p>
 
-                <div class="button-container">
-                    <button type="button" id="open-tos-modal-button" class="button view-gallery-button">View Terms of Service</button>
+                <div class="commission-leads" aria-label="Commission examples">
+                    <figure>
+                        <img src="images/2d/2d_example-2.webp" alt="Four 2D character illustrations: a ringmaster with a mechanical lion, a mushroom reader, a hooded figure with a glowing squid, and a desert rifleman" width="1024" height="1024">
+                        <figcaption>2D</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="images/3d/3d_example-2.webp" alt="3D render of a red and black jester character with a cracked mask" width="1080" height="1080">
+                        <figcaption>3D</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="images/vrchat/vrchat_example-1.webp" alt="VRChat avatar of a red mechanical jester with a cracked mask and glowing green eyes" width="800" height="600">
+                        <figcaption>VRChat</figcaption>
+                    </figure>
                 </div>
+
+                <h2 class="center-text">Recent Commissions</h2>
+                <div class="commissions-slider">
+                    <!-- Clips are added by scripts/scriptcommission.js -->
+                </div>
+
+                <ul class="commission-from" id="price-from-summary" aria-label="Starting prices">
+                    <li>2D from <strong id="from-2d">$8</strong></li>
+                    <li>3D props from <strong id="from-3d-prop">$30</strong></li>
+                    <li>3D models from <strong id="from-3d">$150</strong></li>
+                    <li>VRChat avatars from <strong id="from-vrchat">$250</strong></li>
+                </ul>
+
+                <p class="commission-status center-text">Status: Commissions open</p>
+                <p class="commission-dm center-text">or just DM me on <a href="https://discordapp.com/users/277498825403531264" target="_blank" rel="noopener noreferrer">Discord</a> / <a href="https://twitter.com/RilyRobo" target="_blank" rel="noopener noreferrer">X</a></p>
+                <div class="button-container">
+                    <button type="button" class="button get-commission-button" onclick="openCommissionForm(false)">Request a commission</button>
+                </div>
+
+                <h2 class="center-text">Commission Price Calculator</h2>
+                <p class="center-text price-note">The request form opens without an estimate. Use the calculator only if you want a number attached to the brief.</p>
+                <div id="commission-calculator"></div>
+
+                <section class="commission-info" aria-label="How commissions work">
+                    <h3 class="center-text">Process</h3>
+                    <ol class="process-steps">
+                        <li><strong>1. Request</strong> Send a brief, with or without the calculator.</li>
+                        <li><strong>2. Sketch</strong> Work starts after the payment schedule in the Terms of Service.</li>
+                        <li><strong>3. Revisions</strong> Three rounds are included in the sketching phase.</li>
+                        <li><strong>4. Delivery</strong> Digital delivery after the final payment.</li>
+                    </ol>
+
+                    <h3 class="center-text">Turnaround</h3>
+                    <p class="center-text">Usually 1–2 weeks; larger pieces may take longer — I'll keep you updated.</p>
+
+                    <h3 class="center-text">Payment</h3>
+                    <p class="center-text">PayPal (USD, invoiced). Orders of $100 or less are paid up front. Orders above $100 are half up front and half when the initial sketch is approved. Details are in the Terms of Service.</p>
+
+                    <h3 class="center-text">What I'll draw</h3>
+                    <div class="draw-bounds">
+                        <p><strong>Will draw:</strong> blood &amp; gore, costumes, poses, light BDSM / rope.</p>
+                        <p><strong>Won't draw:</strong> extreme NSFW / extreme fetishes — if you have to ask, it's probably a no.</p>
+                        <p class="price-note">NSFW that is accepted is +20% of the base cost. No extreme fetishes.</p>
+                    </div>
+
+                    <h3 class="center-text">FAQ</h3>
+                    <div class="faq">
+                        <details>
+                            <summary>Are commissions open?</summary>
+                            <p>Yes. Use the request form on this page, or DM me on Discord or X.</p>
+                        </details>
+                        <details>
+                            <summary>How many revisions are included?</summary>
+                            <p>Three complete revisions in the sketching phase. Reasonable minor edits after completion, such as an eye-colour change, are included. Extra edits beyond those rounds are $10 each.</p>
+                        </details>
+                        <details>
+                            <summary>How do I pay?</summary>
+                            <p>PayPal, invoiced, in USD. Orders of $100 or less are paid up front. Orders above $100 are half up front and half on approval of the initial sketch. Currency conversion and payment-provider fees are the customer's responsibility.</p>
+                        </details>
+                        <details>
+                            <summary>How long does a commission take?</summary>
+                            <p>Usually 1–2 weeks; larger pieces may take longer — I'll keep you updated. You can ask for a refund if there has been no progress for two months, or if the work is not finished within four months. The Terms of Service lists the exceptions.</p>
+                        </details>
+                        <details>
+                            <summary>What won't you draw?</summary>
+                            <p>Extreme NSFW and extreme fetishes — if you have to ask, it's probably a no. I will draw blood and gore, costumes, poses, and light BDSM / rope. Accepted NSFW is +20% of the base cost.</p>
+                        </details>
+                    </div>
+                </section>
+
+                <h2 class="center-text">Full price list</h2>
 
                 <!-- 2D Commissions Section -->
                 <div id="2d-commissions">
@@ -434,16 +529,9 @@
                 </div>
 
 
-                <!-- Commissions Slider -->
-                <h2  class="center-text">Recent Commissions</h2>
-                <div class="commissions-slider">
-                    <!-- Images will be dynamically added here by JavaScript -->
+                <div class="button-container">
+                    <button type="button" id="open-tos-modal-button" class="button view-gallery-button">View Terms of Service</button>
                 </div>
-
-
-                <!-- Commission Price Calculator -->
-                <h2 class="center-text">Commission Price Calculator</h2>
-                <div id="commission-calculator"></div>
                 <h2 class="center-text">Contact Me</h2>
                 <div class="social-contact social-contact-icon"></div>
             </div>
@@ -469,6 +557,7 @@
                          Tweets by @RilyRobo
                         </a>
                     </div>
+                    <p class="twitter-direct-link">Timeline not showing? <a href="https://twitter.com/RilyRobo" target="_blank" rel="noopener noreferrer">View @RilyRobo on X</a></p>
                 </div>
                 
                 <div class="social-media social-media-grid"></div>
@@ -477,7 +566,6 @@
             <!-- Shops -->
             <div id="all-shop" class="page">
                 <h2 class="center-text">Shops</h2>
-                <p class="center-text">The Spring merch store is closed. Prints and downloads are on <a href="https://rilyrobo.booth.pm/" target="_blank" rel="noopener noreferrer">Booth</a>, <a href="#gumroad-shop" onclick="showPage('gumroad-shop')">Gumroad</a>, and <a href="#jinxxy-shop" onclick="showPage('jinxxy-shop')">Jinxxy</a>.</p>
                 <h2 class="center-text">Gumroad Shop</h2>
                 <div class="gumroad-store">
                     <a href="#gumroad-shop" onclick="showPage('gumroad-shop')" style="display: block; text-align: center;">
@@ -496,6 +584,7 @@
                     <img src="images/icon/logo_jinxxy.jpg" alt="Jinxxy Store" width="100" height="50">
                     </a>
                 </div>
+                <p class="center-text shop-closed-note">The Spring merch store is closed. Prints and downloads are on <a href="https://rilyrobo.booth.pm/" target="_blank" rel="noopener noreferrer">Booth</a>, <a href="#gumroad-shop" onclick="showPage('gumroad-shop')">Gumroad</a>, and <a href="#jinxxy-shop" onclick="showPage('jinxxy-shop')">Jinxxy</a>.</p>
             </div>
 
             <!-- Old merch URL: the Spring store returns HTTP 410 -->
@@ -568,28 +657,19 @@
 
         <footer>
             <div class="footer-content">
-                <p>&copy; <span id="footer-year">2026</span> Art by RilyRobo. All rights reserved.</p>
+                <a class="button kofi-footer-button" href="https://www.ko-fi.com/RilyRobo" target="_blank" rel="noopener noreferrer">Donate on Ko-fi</a>
                 <div class="social-media social-media-icon"></div>
+                <p>&copy; <span id="footer-year">2026</span> Art by RilyRobo. All rights reserved.</p>
             </div>
         </footer>
 
-        <script src="scripts/script.js"></script>
-        <script src="scripts/scriptcomic.js"></script>
-        <script src="scripts/scriptgame.js"></script>
-        <script src="scripts/scriptgallery.js"></script>
-        <script src="scripts/scriptcommission.js"></script>
-        <script src="scripts/scriptvideo.js"></script>
-        <script src="scripts/scriptlive.js"></script>
-        <script src="scripts/scriptsocial.js"></script>
-
-        <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
-        <script>
-            kofiWidgetOverlay.draw('rilyrobo', {
-                'type': 'floating-chat',
-                'floating-chat.donateButton.text': 'Donate',
-                'floating-chat.donateButton.background-color': '#660000',
-                'floating-chat.donateButton.text-color': '#fff'
-            });
-        </script>
+        <script src="scripts/script.js?v=20261120"></script>
+        <script src="scripts/scriptcomic.js?v=20261120"></script>
+        <script src="scripts/scriptgame.js?v=20261120"></script>
+        <script src="scripts/scriptgallery.js?v=20261120"></script>
+        <script src="scripts/scriptcommission.js?v=20261120"></script>
+        <script src="scripts/scriptvideo.js?v=20261120"></script>
+        <script src="scripts/scriptlive.js?v=20261120"></script>
+        <script src="scripts/scriptsocial.js?v=20261120"></script>
     </body>
 </html>
