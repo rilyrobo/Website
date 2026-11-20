@@ -106,6 +106,9 @@ document.addEventListener("click", (e) => {
 }, true);
 
 document.addEventListener("DOMContentLoaded", () => {
+    const yearEl = document.getElementById("footer-year");
+    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
     // Contacts (social-contact containers)
     document.querySelectorAll(".social-contact").forEach(container => {
         contacts.forEach(contact => {
@@ -192,6 +195,11 @@ function showPage(pageId) {
     if (pageId === "social") {
         window.initSocialPageOnce?.();
     }
+    if (pageId === "commissions") {
+        window.initCommissionMedia?.();
+    }
+    window.ensureGalleryLoaded?.(pageId);
+    ensureShopIframe(pageId);
 
     // Scroll immediately and synchronously on every navigation...
     window.scrollTo(0, 0);
@@ -216,7 +224,7 @@ function showPage(pageId) {
         }
     });
 
-    document.getElementById("nav-links")?.classList.remove("show");
+    setMobileNavOpen(false);
     history.pushState(null, "", `#${pageId}`);
 }
 
@@ -242,20 +250,101 @@ document.addEventListener("DOMContentLoaded", () => {
 // avoids the two versions silently overwriting each other and reintroducing
 // fixed bugs depending on which script tag loads last.
 
-// ── Iframes ───────────────────────────────────────────────────────────────────
-document.addEventListener("DOMContentLoaded", () => {
-    const te = document.getElementById("teespring-iframe");
-    const gu = document.getElementById("gumroad-iframe");
-    const ji = document.getElementById("jinxxy-iframe");
-    if (te) te.src = "https://my-store-c7ca26-2.creator-spring.com";
-    if (gu) gu.src = "https://gumroad.com/rilyrobo";
-    if (ji) ji.src = "https://jinxxy.com/rilyrobo";
-});
+// ── Shop iframes ──────────────────────────────────────────────────────────────
+// Loaded only when that shop's route opens, so home (and every other page)
+// does not pull in third-party store documents.
+const SHOP_IFRAMES = {
+    "gumroad-shop": ["gumroad-iframe", "https://gumroad.com/rilyrobo"],
+    "jinxxy-shop": ["jinxxy-iframe", "https://jinxxy.com/rilyrobo"],
+};
+
+function ensureShopIframe(pageId) {
+    const cfg = SHOP_IFRAMES[pageId];
+    if (!cfg) return;
+    const el = document.getElementById(cfg[0]);
+    if (el && !el.getAttribute("src")) el.src = cfg[1];
+}
 
 // ── Mobile nav ────────────────────────────────────────────────────────────────
-function toggleMobileNav() {
-    document.getElementById("nav-links")?.classList.toggle("show");
+function setMobileNavOpen(open) {
+    const links = document.getElementById("nav-links");
+    const btn = document.getElementById("hamburger-btn");
+    if (links) links.classList.toggle("show", open);
+    document.body.classList.toggle("nav-open", open);
+    if (btn) {
+        btn.setAttribute("aria-expanded", open ? "true" : "false");
+        btn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    }
 }
+
+function toggleMobileNav() {
+    const open = !document.getElementById("nav-links")?.classList.contains("show");
+    setMobileNavOpen(open);
+}
+
+// ── Modal focus trap + Escape ─────────────────────────────────────────────────
+// One listener for every dialog (gallery, examples, TOS, commission form) so
+// stacked modals only dismiss the one on top, and Tab stays inside it.
+window.modalStack = window.modalStack || [];
+
+window.rememberModalFocus = function (modal) {
+    if (!modal) return;
+    modal._restoreFocus = document.activeElement;
+    const i = window.modalStack.indexOf(modal);
+    if (i !== -1) window.modalStack.splice(i, 1);
+    window.modalStack.push(modal);
+};
+
+window.restoreModalFocus = function (modal) {
+    if (!modal) return;
+    const i = window.modalStack.indexOf(modal);
+    if (i !== -1) window.modalStack.splice(i, 1);
+    const el = modal._restoreFocus;
+    modal._restoreFocus = null;
+    if (el && typeof el.focus === "function" && document.contains(el)) el.focus();
+};
+
+window.focusModalStart = function (modal) {
+    const close = modal?.querySelector(".close");
+    if (close) close.focus();
+};
+
+window.topOpenModal = function () {
+    while (window.modalStack.length && window.modalStack[window.modalStack.length - 1].style.display !== "flex") {
+        window.modalStack.pop();
+    }
+    return window.modalStack[window.modalStack.length - 1] || null;
+};
+
+function modalFocusable(modal) {
+    return [...modal.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')]
+        .filter(el => !el.hasAttribute("hidden") && el.getClientRects().length > 0);
+}
+
+document.addEventListener("keydown", (e) => {
+    const modal = window.topOpenModal();
+    if (!modal) return;
+    if (e.key === "Escape") {
+        e.preventDefault();
+        modal.querySelector(".close")?.click();
+        return;
+    }
+    if (e.key !== "Tab") return;
+    const items = modalFocusable(modal);
+    if (!items.length) {
+        e.preventDefault();
+        return;
+    }
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (e.shiftKey && (document.activeElement === first || !modal.contains(document.activeElement))) {
+        e.preventDefault();
+        last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+    }
+});
 
 // ── About page ────────────────────────────────────────────────────────────────
 function loadAboutContent() {

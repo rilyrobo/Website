@@ -51,10 +51,9 @@ function setupComics(comicsList) {
 
 // ── Dynamic comic pages ──────────────────────────────────────────────────────
 function createComicPages(comicsList) {
-    // querySelector('page') targets the custom <page> element in index.html
-    const mainContainer = document.querySelector("page");
+    const mainContainer = document.querySelector("main");
     if (!mainContainer) {
-        console.error("Could not find <page> container element.");
+        console.error("Could not find <main> container element.");
         return;
     }
 
