@@ -2246,6 +2246,13 @@ footer {
   margin-bottom: 2rem;
 }
 
+.price-note {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 0.25rem auto 1.5rem;
+  max-width: 40rem;
+}
+
 .center-text a,
 #about-content a {
   color: var(--accent-gold);

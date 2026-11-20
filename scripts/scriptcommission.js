@@ -17,12 +17,15 @@ const prices = {
         kitbashChar: 75,
         kitbashProp: 75,
         visemePer: 10,
-        togglePer: 10, exprPer: 10, dynbonesPer: 10, quest: 50
+        togglePer: 10, exprPer: 10, dynbonesPer: 10, quest: 50,
+        fromScratch: 250,
+        kitbash: 100,
+        animationPer: 20
     },
     bg: { splash: 20, vague: 40, mid: 60, full: 150 },
     rig: { basic: 30, mid: 65, advanced: 100 },
     tex: { low: 30, high: 100 },
-    additional: { nsfw: 0.20, rush: 0.25, commercial: 0.50 }
+    additional: { nsfw: 0.20, rush: 0.25, commercial: 0.50, editPer: 10 }
 };
 
 // ── Calculator state ──────────────────────────────────────────────────────────
@@ -31,6 +34,7 @@ const state = {
     style: 'sketch', coverage: 'portrait', chars: 1, bg: 0,
     mesh: 'lowpoly', tex: 30, rig: 0,
     cloth: 0, staticProps: 0, dynamicProps: 0, visemes: 0, toggles: 0, exprs: 0, dynbones: 0, quest: false,
+    animations: 0, edits: 0,
     nsfw: false, rush: false, commercial: false
 };
 
@@ -232,6 +236,14 @@ function buildCalculator() {
                     <button class="calc-step-btn" onclick="calcStep('dynbones',1)">+</button>
                 </div>
             </div>
+            <div class="calc-stepper-row">
+                <span class="calc-stepper-label">Custom animations <em>$${p3.animationPer} each</em></span>
+                <div class="calc-stepper">
+                    <button class="calc-step-btn" id="animations-minus" onclick="calcStep('animations',-1)" disabled>−</button>
+                    <span class="calc-step-val" id="animations-val">0</span>
+                    <button class="calc-step-btn" onclick="calcStep('animations',1)">+</button>
+                </div>
+            </div>
             <div class="calc-toggle-row" onclick="calcToggle('quest')">
                 <div class="calc-toggle-left">
                     <span class="calc-toggle-label">Quest / mobile optimisation</span>
@@ -245,6 +257,15 @@ function buildCalculator() {
     <!-- Add-ons (shared) -->
     <div class="calc-card">
         <div class="calc-card-title">Add-ons</div>
+        <div class="calc-stepper-row">
+            <span class="calc-stepper-label">Extra edits / revisions <em>$${prices.additional.editPer} each</em></span>
+            <div class="calc-stepper">
+                <button class="calc-step-btn" id="edits-minus" onclick="calcStep('edits',-1)" disabled>−</button>
+                <span class="calc-step-val" id="edits-val">0</span>
+                <button class="calc-step-btn" onclick="calcStep('edits',1)">+</button>
+            </div>
+        </div>
+        <p class="calc-hint">Three complete revisions are included in the sketching phase. This adds revisions beyond those rounds.</p>
         <div class="calc-toggle-row" onclick="calcToggle('nsfw')">
             <div class="calc-toggle-left">
                 <span class="calc-toggle-label">NSFW / adult content</span>
@@ -416,7 +437,9 @@ const stepperConfig = {
     visemes:      { min: 0,  max: 40, stateKey: 'visemes'      },
     toggles:  { min: 0,  max: 30, stateKey: 'toggles'  },
     exprs:    { min: 0,  max: 30, stateKey: 'exprs'    },
-    dynbones: { min: 0,  max: 20, stateKey: 'dynbones' }
+    dynbones: { min: 0,  max: 20, stateKey: 'dynbones' },
+    animations: { min: 0, max: 40, stateKey: 'animations' },
+    edits:      { min: 0, max: 40, stateKey: 'edits' }
 };
 
 function calcStep(key, dir) {
@@ -548,6 +571,17 @@ function calcUpdatePrice() {
             base += prices["3d"].quest;
             lines.push({ label: 'Quest / mobile optimisation', amount: prices["3d"].quest });
         }
+        if (state.animations > 0) {
+            const a = state.animations * prices["3d"].animationPer;
+            base += a;
+            lines.push({ label: `${state.animations} custom animation${state.animations > 1 ? 's' : ''}`, amount: a });
+        }
+    }
+
+    if (state.edits > 0) {
+        const extraEdits = state.edits * prices.additional.editPer;
+        base += extraEdits;
+        lines.push({ label: `${state.edits} extra revision${state.edits > 1 ? 's' : ''}`, amount: extraEdits });
     }
 
     const addons = [];
@@ -614,7 +648,6 @@ function setPriceLabels() {
     const set   = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
     const money = (n) => `$${n}`;
     const range = (o) => `$${o.low} – $${o.high}`;
-    const QUOTE = 'Contact for quote';
     const p2 = prices["2d"];
     const p3 = prices["3d"];
 
@@ -645,15 +678,15 @@ function setPriceLabels() {
     set('3d-kitbashprop',  money(p3.kitbashProp));
     set('3d-viseme',       `${money(p3.visemePer)} per viseme`);
 
-    set('avatar-fromScratch',      QUOTE);
-    set('avatar-kitbashing',       QUOTE);
+    set('avatar-fromScratch',      `starting at ${money(p3.fromScratch)}`);
+    set('avatar-kitbashing',       `starting at ${money(p3.kitbash)}`);
     set('avatar-texturing',        range(prices.tex));
     set('avatar-expressions',      `${money(p3.exprPer)} each`);
     set('avatar-rigging',          `${money(prices.rig.basic)} – ${money(prices.rig.advanced)}`);
     set('avatar-customClothing',   `${range(p3.clothPerItem)} each`);
     set('vrchat-dynamicBones',     `${money(p3.dynbonesPer)} each`);
     set('vrchat-toggleSetups',     `${money(p3.togglePer)} each`);
-    set('vrchat-animations',       QUOTE);
+    set('vrchat-animations',       `${money(p3.animationPer)} each`);
     set('vrchat-questConversion',  money(p3.quest));
 
     set('additional-rushOrder',     `+${addonPct(prices.additional.rush)}%`);
@@ -661,7 +694,11 @@ function setPriceLabels() {
     set('additional-nsfw2d',        `+${addonPct(prices.additional.nsfw)}%`);
     set('additional-nsfw3d',        `+${addonPct(prices.additional.nsfw)}%`);
     set('additional-nsfw',          `+${addonPct(prices.additional.nsfw)}%`);
-    set('additional-edits',         QUOTE);
+    set('additional-edits',         `${money(prices.additional.editPer)} each`);
+    const editsNote = document.getElementById('additional-edits-note');
+    if (editsNote) {
+        editsNote.textContent = `Three complete revisions are included in the sketching phase. Extra edits and revisions beyond those rounds are ${money(prices.additional.editPer)} each.`;
+    }
 }
 
 // ── TOS modal ─────────────────────────────────────────────────────────────────
