@@ -376,8 +376,12 @@ function renderCard(item) {
 // ── Gallery page setup ────────────────────────────────────────────────────────
 function setupGalleries(galleryData) {
     const dropdownContent = document.querySelector(".dropdown-content-gallery");
-    const mainContainer   = document.querySelector("main");
-    if (!dropdownContent || !mainContainer) return;
+    const mainContainer   = document.getElementById("site-content");
+    if (!mainContainer) {
+        console.error("Could not find #site-content container element.");
+        return;
+    }
+    if (!dropdownContent) return;
 
     let dropdownHtml = "";
 
