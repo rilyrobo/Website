@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const section = document.querySelector(".live-stream-section");
     if (!section) return;
 
-    fetch(LIVE_STATUS_FILE + "?v=" + Date.now())
+    fetch(LIVE_STATUS_FILE)
         .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
         .then(status => {
             liveStatusCache = status;

@@ -12,13 +12,20 @@ const prices = {
         midpoly:  { low: 225, high: 300 },
         highpoly: { low: 300, high: 500 },
         clothPerItem: { low: 30, high: 100 },
-        propPerItem:  { low: 50, high: 100 },
-        togglePer: 10, exprPer: 10, dynbonesPer: 10, quest: 50
+        staticProp: 30,
+        dynamicProp: 50,
+        kitbashChar: 75,
+        kitbashProp: 75,
+        visemePer: 10,
+        togglePer: 10, exprPer: 10, dynbonesPer: 10, quest: 50,
+        fromScratch: 250,
+        kitbash: 100,
+        animationPer: 20
     },
     bg: { splash: 20, vague: 40, mid: 60, full: 150 },
     rig: { basic: 30, mid: 65, advanced: 100 },
     tex: { low: 30, high: 100 },
-    additional: { nsfw: 0.20, rush: 0.25, commercial: 0.50 }
+    additional: { nsfw: 0.20, rush: 0.25, commercial: 0.50, editPer: 10 }
 };
 
 // ── Calculator state ──────────────────────────────────────────────────────────
@@ -26,7 +33,8 @@ const state = {
     type: '2d',
     style: 'sketch', coverage: 'portrait', chars: 1, bg: 0,
     mesh: 'lowpoly', tex: 30, rig: 0,
-    cloth: 0, props: 0, toggles: 0, exprs: 0, dynbones: 0, quest: false,
+    cloth: 0, staticProps: 0, dynamicProps: 0, visemes: 0, toggles: 0, exprs: 0, dynbones: 0, quest: false,
+    animations: 0, edits: 0,
     nsfw: false, rush: false, commercial: false
 };
 
@@ -35,10 +43,15 @@ document.addEventListener('DOMContentLoaded', () => {
     buildCalculator();
     initTosModal();
     initNavImageScroll();
-    initCommissionSlider();
     initStaticExampleGalleries();
     setPriceLabels();
 });
+
+// Commission showcase clips are multi‑megabyte. Build them only when that
+// route opens (see showPage in script.js), not on every page load.
+window.initCommissionMedia = function () {
+    initCommissionSlider();
+};
 
 // ── Shared modal scroll-lock (reference counted) ───────────────────────────────
 // Multiple modals can stack (e.g. TOS opened from inside the commission
@@ -61,9 +74,17 @@ window.releaseModalLock = function () {
 };
 
 // ── Build the calculator HTML inside #commission-calculator ───────────────────
+function addonPct(mult) {
+    return Math.round(mult * 100);
+}
+
 function buildCalculator() {
     const root = document.getElementById('commission-calculator');
     if (!root) return;
+
+    const p2 = prices["2d"];
+    const p3 = prices["3d"];
+    const charPct = addonPct(p2.charMult);
 
     root.innerHTML = `
     <div class="calc-type-tabs">
@@ -83,10 +104,10 @@ function buildCalculator() {
         <div class="calc-card">
             <div class="calc-card-title">Style</div>
             <div class="calc-chip-group" id="calc-style-chips">
-                <button class="calc-chip active" data-val="sketch"    onclick="calcSelectChip(this,'calc-style-chips','style')">Sketch <em>$8+</em></button>
-                <button class="calc-chip"        data-val="lineart"   onclick="calcSelectChip(this,'calc-style-chips','style')">Line Art <em>$12+</em></button>
-                <button class="calc-chip"        data-val="flatcolors"onclick="calcSelectChip(this,'calc-style-chips','style')">Flat Colours <em>$16+</em></button>
-                <button class="calc-chip"        data-val="shading"   onclick="calcSelectChip(this,'calc-style-chips','style')">Full Shading <em>$20+</em></button>
+                <button class="calc-chip active" data-val="sketch"    onclick="calcSelectChip(this,'calc-style-chips','style')">Sketch <em>$${p2.sketch.portrait}+</em></button>
+                <button class="calc-chip"        data-val="lineart"   onclick="calcSelectChip(this,'calc-style-chips','style')">Line Art <em>$${p2.lineart.portrait}+</em></button>
+                <button class="calc-chip"        data-val="flatcolors"onclick="calcSelectChip(this,'calc-style-chips','style')">Flat Colours <em>$${p2.flatcolors.portrait}+</em></button>
+                <button class="calc-chip"        data-val="shading"   onclick="calcSelectChip(this,'calc-style-chips','style')">Full Shading <em>$${p2.shading.portrait}+</em></button>
             </div>
         </div>
 
@@ -109,7 +130,7 @@ function buildCalculator() {
                     <button class="calc-step-btn" onclick="calcStep('chars',1)">+</button>
                 </div>
             </div>
-            <p class="calc-hint" id="chars-hint">First character included. Each additional is +50% of base.</p>
+            <p class="calc-hint" id="chars-hint">First character included. Each additional is +${charPct}% of base.</p>
         </div>
 
         <div class="calc-card">
@@ -128,9 +149,9 @@ function buildCalculator() {
         <div class="calc-card">
             <div class="calc-card-title">Base Mesh</div>
             <div class="calc-chip-group" id="calc-mesh-chips">
-                <button class="calc-chip active" data-val="lowpoly"  onclick="calcSelectChip(this,'calc-mesh-chips','mesh')">Low-Poly <em>$150–225</em></button>
-                <button class="calc-chip"        data-val="midpoly"  onclick="calcSelectChip(this,'calc-mesh-chips','mesh')">Mid-Poly <em>$225–300</em></button>
-                <button class="calc-chip"        data-val="highpoly" onclick="calcSelectChip(this,'calc-mesh-chips','mesh')">High-Poly <em>$300–500+</em></button>
+                <button class="calc-chip active" data-val="lowpoly"  onclick="calcSelectChip(this,'calc-mesh-chips','mesh')">Low-Poly <em>$${p3.lowpoly.low}–${p3.lowpoly.high}</em></button>
+                <button class="calc-chip"        data-val="midpoly"  onclick="calcSelectChip(this,'calc-mesh-chips','mesh')">Mid-Poly <em>$${p3.midpoly.low}–${p3.midpoly.high}</em></button>
+                <button class="calc-chip"        data-val="highpoly" onclick="calcSelectChip(this,'calc-mesh-chips','mesh')">High-Poly <em>$${p3.highpoly.low}–${p3.highpoly.high}</em></button>
             </div>
             <p class="calc-hint" id="mesh-hint">Quest / mobile ready. Minimal geometry, optimised for performance.</p>
         </div>
@@ -164,11 +185,27 @@ function buildCalculator() {
                 </div>
             </div>
             <div class="calc-stepper-row">
-                <span class="calc-stepper-label">Props</span>
+                <span class="calc-stepper-label">Static props <em>$${p3.staticProp} each</em></span>
                 <div class="calc-stepper">
-                    <button class="calc-step-btn" id="props-minus" onclick="calcStep('props',-1)" disabled>−</button>
-                    <span class="calc-step-val" id="props-val">0</span>
-                    <button class="calc-step-btn" onclick="calcStep('props',1)">+</button>
+                    <button class="calc-step-btn" id="staticProps-minus" onclick="calcStep('staticProps',-1)" disabled>−</button>
+                    <span class="calc-step-val" id="staticProps-val">0</span>
+                    <button class="calc-step-btn" onclick="calcStep('staticProps',1)">+</button>
+                </div>
+            </div>
+            <div class="calc-stepper-row">
+                <span class="calc-stepper-label">Dynamic props <em>$${p3.dynamicProp} each</em></span>
+                <div class="calc-stepper">
+                    <button class="calc-step-btn" id="dynamicProps-minus" onclick="calcStep('dynamicProps',-1)" disabled>−</button>
+                    <span class="calc-step-val" id="dynamicProps-val">0</span>
+                    <button class="calc-step-btn" onclick="calcStep('dynamicProps',1)">+</button>
+                </div>
+            </div>
+            <div class="calc-stepper-row">
+                <span class="calc-stepper-label">Facial / speech visemes <em>$${p3.visemePer} per viseme</em></span>
+                <div class="calc-stepper">
+                    <button class="calc-step-btn" id="visemes-minus" onclick="calcStep('visemes',-1)" disabled>−</button>
+                    <span class="calc-step-val" id="visemes-val">0</span>
+                    <button class="calc-step-btn" onclick="calcStep('visemes',1)">+</button>
                 </div>
             </div>
         </div>
@@ -199,10 +236,18 @@ function buildCalculator() {
                     <button class="calc-step-btn" onclick="calcStep('dynbones',1)">+</button>
                 </div>
             </div>
+            <div class="calc-stepper-row">
+                <span class="calc-stepper-label">Custom animations <em>$${p3.animationPer} each</em></span>
+                <div class="calc-stepper">
+                    <button class="calc-step-btn" id="animations-minus" onclick="calcStep('animations',-1)" disabled>−</button>
+                    <span class="calc-step-val" id="animations-val">0</span>
+                    <button class="calc-step-btn" onclick="calcStep('animations',1)">+</button>
+                </div>
+            </div>
             <div class="calc-toggle-row" onclick="calcToggle('quest')">
                 <div class="calc-toggle-left">
                     <span class="calc-toggle-label">Quest / mobile optimisation</span>
-                    <span class="calc-toggle-sub">+$50 flat fee</span>
+                    <span class="calc-toggle-sub">+$${p3.quest} flat fee</span>
                 </div>
                 <div class="calc-toggle-switch" id="quest-toggle"></div>
             </div>
@@ -212,24 +257,33 @@ function buildCalculator() {
     <!-- Add-ons (shared) -->
     <div class="calc-card">
         <div class="calc-card-title">Add-ons</div>
+        <div class="calc-stepper-row">
+            <span class="calc-stepper-label">Extra edits / revisions <em>$${prices.additional.editPer} each</em></span>
+            <div class="calc-stepper">
+                <button class="calc-step-btn" id="edits-minus" onclick="calcStep('edits',-1)" disabled>−</button>
+                <span class="calc-step-val" id="edits-val">0</span>
+                <button class="calc-step-btn" onclick="calcStep('edits',1)">+</button>
+            </div>
+        </div>
+        <p class="calc-hint">Three complete revisions are included in the sketching phase. This adds revisions beyond those rounds.</p>
         <div class="calc-toggle-row" onclick="calcToggle('nsfw')">
             <div class="calc-toggle-left">
                 <span class="calc-toggle-label">NSFW / adult content</span>
-                <span class="calc-toggle-sub">+20% of base price</span>
+                <span class="calc-toggle-sub">+${addonPct(prices.additional.nsfw)}% of base price</span>
             </div>
             <div class="calc-toggle-switch" id="nsfw-toggle"></div>
         </div>
         <div class="calc-toggle-row" onclick="calcToggle('rush')">
             <div class="calc-toggle-left">
                 <span class="calc-toggle-label">Rush order</span>
-                <span class="calc-toggle-sub">+25% — priority queue placement</span>
+                <span class="calc-toggle-sub">+${addonPct(prices.additional.rush)}% — priority queue placement</span>
             </div>
             <div class="calc-toggle-switch" id="rush-toggle"></div>
         </div>
         <div class="calc-toggle-row" onclick="calcToggle('commercial')">
             <div class="calc-toggle-left">
                 <span class="calc-toggle-label">Commercial use</span>
-                <span class="calc-toggle-sub">+50% — covers commercial licensing</span>
+                <span class="calc-toggle-sub">+${addonPct(prices.additional.commercial)}% — covers commercial licensing</span>
             </div>
             <div class="calc-toggle-switch" id="commercial-toggle"></div>
         </div>
@@ -242,13 +296,14 @@ function buildCalculator() {
             <span class="calc-result-total" id="calc-total">—</span>
         </div>
         <div id="calc-breakdown"><p class="calc-result-empty">Select options above to see your estimate.</p></div>
+        <p class="calc-contact-line">Questions about a commission? <a href="${COMMISSION_CONTACT.twitterUrl}" target="_blank" rel="noopener noreferrer">Twitter</a>, <a href="${COMMISSION_CONTACT.kofiUrl}" target="_blank" rel="noopener noreferrer">Ko-fi</a>, <a href="mailto:${COMMISSION_CONTACT.email}">Email</a>, or <a href="${COMMISSION_CONTACT.discordUrl}" target="_blank" rel="noopener noreferrer">Discord</a>.</p>
         <button class="calc-request-btn" id="calc-request-btn" onclick="openCommissionForm()" disabled>
             Request This Commission
         </button>
     </div>
 
     <!-- Intake form modal -->
-    <div class="form-modal" id="commission-form-modal">
+    <div class="form-modal" id="commission-form-modal" role="dialog" aria-modal="true" aria-label="Commission request">
         <div class="form-modal-content">
             <button class="close form-close" onclick="closeCommissionForm()" aria-label="Close">&times;</button>
 
@@ -376,11 +431,15 @@ function calcSelectChip(el, groupId, stateKey) {
 // ── Steppers ──────────────────────────────────────────────────────────────────
 const stepperConfig = {
     chars:    { min: 1,  max: 20, stateKey: 'chars'    },
-    cloth:    { min: 0,  max: 20, stateKey: 'cloth'    },
-    props:    { min: 0,  max: 20, stateKey: 'props'    },
+    cloth:        { min: 0,  max: 20, stateKey: 'cloth'        },
+    staticProps:  { min: 0,  max: 20, stateKey: 'staticProps'  },
+    dynamicProps: { min: 0,  max: 20, stateKey: 'dynamicProps' },
+    visemes:      { min: 0,  max: 40, stateKey: 'visemes'      },
     toggles:  { min: 0,  max: 30, stateKey: 'toggles'  },
     exprs:    { min: 0,  max: 30, stateKey: 'exprs'    },
-    dynbones: { min: 0,  max: 20, stateKey: 'dynbones' }
+    dynbones: { min: 0,  max: 20, stateKey: 'dynbones' },
+    animations: { min: 0, max: 40, stateKey: 'animations' },
+    edits:      { min: 0, max: 40, stateKey: 'edits' }
 };
 
 function calcStep(key, dir) {
@@ -391,9 +450,10 @@ function calcStep(key, dir) {
     const minusBtn = document.getElementById(key + '-minus');
     if (minusBtn) minusBtn.disabled = (val <= cfg.min);
     if (key === 'chars') {
+        const charPct = addonPct(prices["2d"].charMult);
         document.getElementById('chars-hint').textContent = val === 1
-            ? 'First character included. Each additional is +50% of base.'
-            : `${val - 1} extra character${val > 2 ? 's' : ''} — +${(val - 1) * 50}% added on top of base.`;
+            ? `First character included. Each additional is +${charPct}% of base.`
+            : `${val - 1} extra character${val > 2 ? 's' : ''} — +${(val - 1) * charPct}% added on top of base.`;
     }
     calcUpdatePrice();
 }
@@ -452,7 +512,7 @@ function calcUpdatePrice() {
         if (state.chars > 1) {
             const extra = (state.chars - 1) * b * prices["2d"].charMult;
             base += extra;
-            lines.push({ label: `+${state.chars - 1} extra character${state.chars > 2 ? 's' : ''} (+${(state.chars - 1) * 50}%)`, amount: extra });
+            lines.push({ label: `+${state.chars - 1} extra character${state.chars > 2 ? 's' : ''} (+${(state.chars - 1) * addonPct(prices["2d"].charMult)}%)`, amount: extra });
         }
         if (state.bg > 0) {
             base += state.bg;
@@ -477,10 +537,20 @@ function calcUpdatePrice() {
             base += c;
             lines.push({ label: `${state.cloth} clothing item${state.cloth > 1 ? 's' : ''}`, amount: c });
         }
-        if (state.props > 0) {
-            const p = state.props * Math.round((prices["3d"].propPerItem.low + prices["3d"].propPerItem.high) / 2);
+        if (state.staticProps > 0) {
+            const p = state.staticProps * prices["3d"].staticProp;
             base += p;
-            lines.push({ label: `${state.props} prop${state.props > 1 ? 's' : ''}`, amount: p });
+            lines.push({ label: `${state.staticProps} static prop${state.staticProps > 1 ? 's' : ''}`, amount: p });
+        }
+        if (state.dynamicProps > 0) {
+            const p = state.dynamicProps * prices["3d"].dynamicProp;
+            base += p;
+            lines.push({ label: `${state.dynamicProps} dynamic prop${state.dynamicProps > 1 ? 's' : ''}`, amount: p });
+        }
+        if (state.visemes > 0) {
+            const v = state.visemes * prices["3d"].visemePer;
+            base += v;
+            lines.push({ label: `${state.visemes} viseme${state.visemes > 1 ? 's' : ''}`, amount: v });
         }
         if (state.toggles > 0) {
             const t = state.toggles * prices["3d"].togglePer;
@@ -501,6 +571,17 @@ function calcUpdatePrice() {
             base += prices["3d"].quest;
             lines.push({ label: 'Quest / mobile optimisation', amount: prices["3d"].quest });
         }
+        if (state.animations > 0) {
+            const a = state.animations * prices["3d"].animationPer;
+            base += a;
+            lines.push({ label: `${state.animations} custom animation${state.animations > 1 ? 's' : ''}`, amount: a });
+        }
+    }
+
+    if (state.edits > 0) {
+        const extraEdits = state.edits * prices.additional.editPer;
+        base += extraEdits;
+        lines.push({ label: `${state.edits} extra revision${state.edits > 1 ? 's' : ''}`, amount: extraEdits });
     }
 
     const addons = [];
@@ -565,26 +646,59 @@ function capMesh(s) {
 // ── Static price labels (for the price list section) ─────────────────────────
 function setPriceLabels() {
     const set   = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-    const range = (o)       => `$${o.low} – $${o.high}`;
+    const money = (n) => `$${n}`;
+    const range = (o) => `$${o.low} – $${o.high}`;
+    const p2 = prices["2d"];
+    const p3 = prices["3d"];
 
-    set('2d-sketch-portrait',        `$${prices["2d"].sketch.portrait}`);
-    set('2d-sketch-upperhalf',       `$${prices["2d"].sketch.upperhalf}`);
-    set('2d-sketch-fullbody',        `$${prices["2d"].sketch.fullbody}`);
-    set('2d-lineart-portrait',       `$${prices["2d"].lineart.portrait}`);
-    set('2d-lineart-upperhalf',      `$${prices["2d"].lineart.upperhalf}`);
-    set('2d-lineart-fullbody',       `$${prices["2d"].lineart.fullbody}`);
-    set('2d-flatcolors-portrait',    `$${prices["2d"].flatcolors.portrait}`);
-    set('2d-flatcolors-upperhalf',   `$${prices["2d"].flatcolors.upperhalf}`);
-    set('2d-flatcolors-fullbody',    `$${prices["2d"].flatcolors.fullbody}`);
-    set('2d-shading-portrait',       `$${prices["2d"].shading.portrait}`);
-    set('2d-shading-upperhalf',      `$${prices["2d"].shading.upperhalf}`);
-    set('2d-shading-fullbody',       `$${prices["2d"].shading.fullbody}`);
-    set('2d-adition-character',      `${prices["2d"].charMult * 100}%`);
-    set('additional-rushOrder',      `+${prices.additional.rush * 100}%`);
-    set('additional-commercialUse',  `+${prices.additional.commercial * 100}%`);
-    set('additional-nsfw2d',         `+${prices.additional.nsfw * 100}%`);
-    set('additional-nsfw3d',         `+${prices.additional.nsfw * 100}%`);
-    set('additional-nsfw',           `+${prices.additional.nsfw * 100}%`);
+    set('2d-sketch-portrait',        money(p2.sketch.portrait));
+    set('2d-sketch-upperhalf',       money(p2.sketch.upperhalf));
+    set('2d-sketch-fullbody',        money(p2.sketch.fullbody));
+    set('2d-lineart-portrait',       money(p2.lineart.portrait));
+    set('2d-lineart-upperhalf',      money(p2.lineart.upperhalf));
+    set('2d-lineart-fullbody',       money(p2.lineart.fullbody));
+    set('2d-flatcolors-portrait',    money(p2.flatcolors.portrait));
+    set('2d-flatcolors-upperhalf',   money(p2.flatcolors.upperhalf));
+    set('2d-flatcolors-fullbody',    money(p2.flatcolors.fullbody));
+    set('2d-shading-portrait',       money(p2.shading.portrait));
+    set('2d-shading-upperhalf',      money(p2.shading.upperhalf));
+    set('2d-shading-fullbody',       money(p2.shading.fullbody));
+    set('2d-addition-character',     `+${addonPct(p2.charMult)}% of base price per extra character`);
+
+    // splash is the calculator's gradient / splash tier; full is the detailed tier.
+    set('2d-background-colourgradient',    money(prices.bg.splash));
+    set('2d-background-detailedbackground', money(prices.bg.full));
+
+    set('3d-lowpoly',  range(p3.lowpoly));
+    set('3d-midpoly',  range(p3.midpoly));
+    set('3d-highpoly', range(p3.highpoly));
+    set('3d-staticprop',   money(p3.staticProp));
+    set('3d-dynamicprop',  money(p3.dynamicProp));
+    set('3d-kitbashchar',  money(p3.kitbashChar));
+    set('3d-kitbashprop',  money(p3.kitbashProp));
+    set('3d-viseme',       `${money(p3.visemePer)} per viseme`);
+
+    set('avatar-fromScratch',      `starting at ${money(p3.fromScratch)}`);
+    set('avatar-kitbashing',       `starting at ${money(p3.kitbash)}`);
+    set('avatar-texturing',        range(prices.tex));
+    set('avatar-expressions',      `${money(p3.exprPer)} each`);
+    set('avatar-rigging',          `${money(prices.rig.basic)} – ${money(prices.rig.advanced)}`);
+    set('avatar-customClothing',   `${range(p3.clothPerItem)} each`);
+    set('vrchat-dynamicBones',     `${money(p3.dynbonesPer)} each`);
+    set('vrchat-toggleSetups',     `${money(p3.togglePer)} each`);
+    set('vrchat-animations',       `${money(p3.animationPer)} each`);
+    set('vrchat-questConversion',  money(p3.quest));
+
+    set('additional-rushOrder',     `+${addonPct(prices.additional.rush)}%`);
+    set('additional-commercialUse', `+${addonPct(prices.additional.commercial)}%`);
+    set('additional-nsfw2d',        `+${addonPct(prices.additional.nsfw)}%`);
+    set('additional-nsfw3d',        `+${addonPct(prices.additional.nsfw)}%`);
+    set('additional-nsfw',          `+${addonPct(prices.additional.nsfw)}%`);
+    set('additional-edits',         `${money(prices.additional.editPer)} each`);
+    const editsNote = document.getElementById('additional-edits-note');
+    if (editsNote) {
+        editsNote.textContent = `Three complete revisions are included in the sketching phase. Extra edits and revisions beyond those rounds are ${money(prices.additional.editPer)} each.`;
+    }
 }
 
 // ── TOS modal ─────────────────────────────────────────────────────────────────
@@ -605,12 +719,15 @@ function initTosModal() {
     const tosContent = document.getElementById('tos-content');
 
     function openModal() {
+        window.rememberModalFocus?.(modal);
         modal.style.display = 'flex';
         window.acquireModalLock();
+        window.focusModalStart?.(modal);
     }
     function closeModal() {
         modal.style.display = 'none';
         window.releaseModalLock();
+        window.restoreModalFocus?.(modal);
     }
 
     btn.addEventListener('click', (e) => {
@@ -622,9 +739,6 @@ function initTosModal() {
     });
     closeBtn?.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal.style.display === 'flex') closeModal();
-    });
 }
 
 // ── Nav hover image: switch between above/beside based on header visibility ───
@@ -672,13 +786,11 @@ function getExampleModalRefs() {
         if (modalVideo) { modalVideo.pause(); modalVideo.style.display = 'none'; }
         if (modalImg)   modalImg.style.display = 'block';
         window.releaseModalLock?.();
+        window.restoreModalFocus?.(modal);
     }
 
     closeBtn?.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal.style.display === 'flex') closeModal();
-    });
 
     exampleModalRefs = { modal, modalImg, modalVideo, videoSrc, closeModal };
     return exampleModalRefs;
@@ -686,7 +798,7 @@ function getExampleModalRefs() {
 
 // Opens the lightbox showing either a still image or a video, picking
 // whichever matches the given showcase URL's extension.
-function openExampleMediaModal(showcaseUrl) {
+function openExampleMediaModal(showcaseUrl, altText) {
     const refs = getExampleModalRefs();
     if (!refs) return;
     const { modal, modalImg, modalVideo, videoSrc } = refs;
@@ -695,43 +807,53 @@ function openExampleMediaModal(showcaseUrl) {
     if (isVideo && modalVideo && videoSrc) {
         if (modalImg) modalImg.style.display = 'none';
         modalVideo.style.display = 'block';
+        modalVideo.setAttribute('aria-label', altText || 'Commission animation');
         videoSrc.src = showcaseUrl;
         modalVideo.load();
         modalVideo.play();
     } else if (modalImg) {
         if (modalVideo) modalVideo.style.display = 'none';
         modalImg.style.display = 'block';
+        modalImg.alt = altText || 'Enlarged commission example';
         modalImg.src = showcaseUrl;
     }
+    window.rememberModalFocus?.(modal);
     modal.style.display = 'flex';
     window.acquireModalLock?.();
+    window.focusModalStart?.(modal);
 }
 
 // ── Commission media showcase slider (JS-generated thumbnails) ────────────────
 function initCommissionSlider() {
     const slider = document.querySelector('.commissions-slider');
-    if (!slider) return;
+    if (!slider || slider.dataset.ready) return;
     if (!getExampleModalRefs()) return;
+    slider.dataset.ready = '1';
 
     const commissionMedia = [
-        { icon: 'images/commissions/3d_scr_image01.gif',  showcase: 'images/commissions/3d_scr_image01.webm' },
-        { icon: 'images/commissions/3d_scr_image02.gif',  showcase: 'images/commissions/3d_scr_image02.webm' },
-        { icon: 'images/commissions/3d_scr_image03.gif',  showcase: 'images/commissions/3d_scr_image03.webm' },
+        { src: 'images/commissions/3d_scr_image01.webm', label: 'Recent 3D commission animation' },
+        { src: 'images/commissions/3d_scr_image02.webm', label: 'Recent 3D commission animation' },
+        { src: 'images/commissions/3d_scr_image03.webm', label: 'Recent 3D commission animation' },
     ];
 
-    commissionMedia.forEach(media => {
-        const isVideo = /\.(webm|mp4)$/i.test(media.icon);
-        let el;
-        if (isVideo) {
-            el = document.createElement('video');
-            el.src = media.icon; el.loop = true; el.muted = true; el.autoplay = true;
-        } else {
-            el = document.createElement('img');
-            el.src = media.icon;
-        }
-        el.alt = 'Commission example';
+    commissionMedia.forEach((media, index) => {
+        const el = document.createElement('video');
+        el.muted = true;
+        el.defaultMuted = true;
+        el.loop = true;
+        el.playsInline = true;
+        el.autoplay = true;
+        el.preload = 'none';
+        el.setAttribute('muted', '');
+        el.setAttribute('loop', '');
+        el.setAttribute('playsinline', '');
+        el.width = 140;
+        el.height = 140;
+        const label = `${media.label} ${index + 1}`;
+        el.setAttribute('aria-label', label);
+        el.src = media.src;
         el.classList.add('example-image');
-        el.addEventListener('click', () => openExampleMediaModal(media.showcase));
+        el.addEventListener('click', () => openExampleMediaModal(media.src, label));
         slider.appendChild(el);
     });
 }
@@ -745,7 +867,7 @@ function initStaticExampleGalleries() {
 
     document.querySelectorAll('.examples .example-image').forEach(img => {
         img.style.cursor = 'pointer';
-        img.addEventListener('click', () => openExampleMediaModal(img.src));
+        img.addEventListener('click', () => openExampleMediaModal(img.getAttribute('src'), img.alt));
     });
 }
 
@@ -780,9 +902,11 @@ function openCommissionForm() {
         document.body.appendChild(modal);
     }
 
+    window.rememberModalFocus?.(modal);
     modal.style.display = 'flex';
     formGoToStep(1);
     window.acquireModalLock();
+    window.focusModalStart?.(modal);
 }
 
 function closeCommissionForm() {
@@ -790,6 +914,7 @@ function closeCommissionForm() {
     if (!modal) return;
     modal.style.display = 'none';
     window.releaseModalLock();
+    window.restoreModalFocus?.(modal);
 }
 
 function formGoToStep(step) {
@@ -998,9 +1123,4 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.target === modal) closeCommissionForm();
         });
     }
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal && modal.style.display === 'flex') {
-            closeCommissionForm();
-        }
-    });
 });

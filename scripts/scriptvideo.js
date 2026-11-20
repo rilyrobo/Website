@@ -70,7 +70,7 @@ let videoItemsPromise = null;
 function fetchVideoItems() {
     if (videoItemsCache) return Promise.resolve(videoItemsCache);
     if (videoItemsPromise) return videoItemsPromise;
-    videoItemsPromise = fetch(VIDEO_DATA_FILE + "?v=" + Date.now())
+    videoItemsPromise = fetch(VIDEO_DATA_FILE)
         .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
         .then(d => { videoItemsCache = d.items || []; return videoItemsCache; })
         .catch(err => {
@@ -181,7 +181,7 @@ function renderPlayerFacade(video) {
     mount.innerHTML = `
         <div class="video-thumb-wrap video-hero-thumb" style="aspect-ratio:16/9;">
             ${thumb
-                ? `<img src="${escapeVideoAttr(thumb)}" alt="" loading="eager" decoding="async" class="video-thumb-img" onerror="this.style.display='none'">`
+                ? `<img src="${escapeVideoAttr(thumb)}" alt="${escapeVideoAttr(video.title)}" loading="eager" decoding="async" class="video-thumb-img" onerror="this.style.display='none'">`
                 : `<div class="video-thumb-placeholder"></div>`}
             <button type="button" class="video-play-trigger"
                     aria-label="Play video: ${escapeVideoAttr(video.title)}">
@@ -289,7 +289,7 @@ function renderVideoCard(video, { linkOnly }) {
         .join("");
 
     const thumbHtml = thumb
-        ? `<img src="${escapeVideoAttr(thumb)}" alt="" loading="lazy" decoding="async" class="video-thumb-img" onerror="this.style.display='none'">`
+        ? `<img src="${escapeVideoAttr(thumb)}" alt="${escapeVideoAttr(video.title)}" loading="lazy" decoding="async" class="video-thumb-img" onerror="this.style.display='none'">`
         : `<div class="video-thumb-placeholder"></div>`;
 
     const tag = linkOnly ? "a" : "button";

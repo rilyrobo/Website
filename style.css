@@ -13,7 +13,7 @@
   --accent-red-hot: #cc2200;
   --text-primary:   #f0e0d0;
   --text-secondary: #c8a890;
-  --text-muted:     #8a6858;
+  --text-muted:     #a18472;
   --border:         rgba(200,150,12,0.25);
   --border-strong:  rgba(200,150,12,0.55);
   --shadow:         0 4px 24px rgba(0,0,0,0.7);
@@ -24,6 +24,16 @@
 
 /* ── Reset & Base ──────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
+
+:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 3px;
+}
+
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible) {
+  outline: none;
+}
 
 body {
   font-family: 'Crimson Text', Georgia, serif;
@@ -39,7 +49,7 @@ body {
 
 /* ── Header ────────────────────────────────────────────────────────────────── */
 header {
-  background: url('images/backgroundHeader.jpg') center/cover no-repeat;
+  background: url('images/backgroundHeader.webp') center/cover no-repeat;
   color: white;
   padding: 3rem 1rem 2rem;
   text-align: center;
@@ -245,6 +255,10 @@ header p {
   cursor: pointer;
   color: var(--text-primary);
   user-select: none;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  line-height: 1;
 }
 
 .nav-links {
@@ -254,6 +268,15 @@ header p {
 }
 
 .nav-links.show { display: flex; }
+
+/* The Ko-fi floating button uses a very high z-index and sits over the
+   open mobile menu. Hide it while the menu is open. */
+body.nav-open #mobile-nav { z-index: 2147483000; }
+body.nav-open .floatingchat-container-wrap,
+body.nav-open #kofi-widget-overlay {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
 
 .nav-links .nav-item { width: 100%; text-align: center; }
 
@@ -282,7 +305,7 @@ header p {
 
 /* ── Home Page ─────────────────────────────────────────────────────────────── */
 .home-page {
-  background: url('images/background.png') center/cover repeat;
+  background: url('images/background.webp') center/cover repeat;
   text-align: center;
   padding: 3rem 1.5rem;
   border-radius: var(--radius);
@@ -1438,12 +1461,21 @@ header p {
 .calc-stepper-label {
   font-size: 0.95rem;
   color: var(--text-secondary);
+  padding-right: 12px;
+}
+
+.calc-stepper-label em {
+  font-style: normal;
+  font-size: 0.82em;
+  color: var(--text-muted);
+  margin-left: 4px;
 }
 
 .calc-stepper {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;
 }
 
 .calc-step-btn {
@@ -1626,6 +1658,18 @@ header p {
   text-align: center;
   padding: 10px 1.25rem 12px;
   border-top: 1px solid rgba(200,150,12,0.08);
+}
+
+.calc-contact-line {
+  margin: 0;
+  padding: 4px 1.25rem 12px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.calc-contact-line a {
+  color: var(--accent-gold);
 }
 
 /* Request commission button (sits inside .calc-result) */
@@ -2129,12 +2173,15 @@ body.modal-open {
   top: 10px;
   right: 16px;
   font-size: 1.8rem;
+  font-weight: 700;
   line-height: 1;
   color: var(--text-muted);
   cursor: pointer;
   transition: color var(--transition);
   background: none;
   border: none;
+  padding: 0;
+  font-family: inherit;
 }
 
 .close:hover { color: var(--text-primary); }
@@ -2197,6 +2244,18 @@ footer {
   font-size: 1.05rem;
   text-align: center;
   margin-bottom: 2rem;
+}
+
+.price-note {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 0.25rem auto 1.5rem;
+  max-width: 40rem;
+}
+
+.center-text a,
+#about-content a {
+  color: var(--accent-gold);
 }
 
 /* ── Utility ─────────────────────────────────────────────────────────────────── */

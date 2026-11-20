@@ -97,7 +97,7 @@ function renderVideoActivityCard(item) {
         .join("");
 
     const thumbHtml = item.image
-        ? `<img src="${escapeVideoAttr(item.image)}" alt="" loading="lazy" class="video-thumb-img" onerror="this.style.display='none'">`
+        ? `<img src="${escapeVideoAttr(item.image)}" alt="${escapeVideoAttr(item.title)}" loading="lazy" class="video-thumb-img" onerror="this.style.display='none'">`
         : `<div class="video-thumb-placeholder"></div>`;
 
     return `

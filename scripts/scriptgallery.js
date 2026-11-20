@@ -6,6 +6,7 @@ function populateModal(card) {
     if (!modalImage || !modalLinks) return;
 
     modalImage.src = card.dataset.image;
+    modalImage.alt = card.querySelector("h4")?.getAttribute("title") || card.querySelector("h4")?.textContent || "Enlarged artwork";
 
     const daLink = card.dataset.daLink;
     const asLink = card.dataset.asLink;
@@ -31,13 +32,11 @@ function bindModalDismissal(modal) {
     const close = () => {
         modal.style.display = "none";
         window.releaseModalLock?.();
+        window.restoreModalFocus?.(modal);
     };
 
     closeBtn?.addEventListener("click", close);
     modal.addEventListener("click", (e) => { if (e.target === modal) close(); });
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && modal.style.display === "flex") close();
-    });
 }
 
 function attachModalListeners(gridSelector) {
@@ -56,8 +55,10 @@ function attachModalListeners(gridSelector) {
         const card = e.target.closest(".gallery-card");
         if (card) {
             populateModal(card);
+            window.rememberModalFocus?.(modal);
             modal.style.display = "flex";
             window.acquireModalLock?.();
+            window.focusModalStart?.(modal);
         }
     });
 
@@ -74,8 +75,10 @@ function attachModalListenersToElement(el) {
         const card = e.target.closest(".gallery-card");
         if (card) {
             populateModal(card);
+            window.rememberModalFocus?.(modal);
             modal.style.display = "flex";
             window.acquireModalLock?.();
+            window.focusModalStart?.(modal);
         }
     });
 
@@ -89,7 +92,7 @@ const galleryData = [
     { file: "da-featured.json",         title: "Featured",         icon: "images/icon/nav_icon_Work.gif",     description: "A collection of my latest work"      },
     { file: "da-2d-art.json",           title: "2D Art",           icon: "images/icon/nav_icon_Gallery.gif",  description: "A collection of my 2D artwork"        },
     { file: "da-3d-art.json",           title: "3D Art",           icon: "images/icon/nav_icon_3D.gif",       description: "A collection of my 3D artwork"        },
-    { file: "da-character-design.json", title: "Character Design", icon: "images/icon/nav_icon_Gallery2.gif", description: "A collection of my character designs" },
+    { file: "da-character-design.json", title: "Character Design", icon: "images/icon/nav_icon_Gallery.gif", description: "A collection of my character designs" },
 ];
 
 // Derives a gallery's tag-matching slug from its DA filename — e.g.
@@ -126,22 +129,18 @@ function getArtStationItemsForGallery(slug) {
     );
 }
 
+const jsonCache = new Map();
+
 function fetchJSON(filename) {
-    return fetch(DATA_BASE + filename + "?v=" + Date.now())
+    if (jsonCache.has(filename)) return jsonCache.get(filename);
+    const pending = fetch(DATA_BASE + filename)
         .then(r => {
             if (!r.ok) throw new Error(`HTTP ${r.status} for ${filename}`);
             return r.json();
         });
+    jsonCache.set(filename, pending);
+    return pending;
 }
-
-// ── Boot ──────────────────────────────────────────────────────────────────────
-document.addEventListener("DOMContentLoaded", () => {
-    // Home preview now shows the true latest across BOTH platforms (within
-    // the Featured gallery), not DA-only as before.
-    loadHomeGallery(galleryData[0], ".gallery-grid-home", 5);
-    loadMergedGallery(galleryData[0], ".gallery-grid-full");
-    setupGalleries(galleryData);
-});
 
 // ── Title normalisation for fuzzy matching ────────────────────────────────────
 function normTitle(str) {
@@ -377,7 +376,7 @@ function renderCard(item) {
 // ── Gallery page setup ────────────────────────────────────────────────────────
 function setupGalleries(galleryData) {
     const dropdownContent = document.querySelector(".dropdown-content-gallery");
-    const mainContainer   = document.querySelector("page");
+    const mainContainer   = document.querySelector("main");
     if (!dropdownContent || !mainContainer) return;
 
     let dropdownHtml = "";
@@ -402,8 +401,6 @@ function setupGalleries(galleryData) {
                 <a href="https://rilyrobo.artstation.com/"       target="_blank" rel="noopener noreferrer" class="button artstation-button">More on ArtStation</a>
             </div>`;
         mainContainer.appendChild(galleryPage);
-
-        loadMergedGallery(gallery, `.gallery-grid-${slug}`);
     });
 
     dropdownContent.innerHTML = dropdownHtml;
@@ -412,6 +409,38 @@ function setupGalleries(galleryData) {
         preview.addEventListener("click", () => showPage(preview.getAttribute("data-target")));
     });
 }
+
+const loadedGallerySelectors = new Set();
+
+// Home boot only fetches the featured preview. The full gallery and the
+// other category pages fetch the first time their route is opened.
+function ensureGalleryLoaded(pageId) {
+    let gallery = null;
+    let selector = null;
+
+    if (pageId === "gallery") {
+        gallery = galleryData[0];
+        selector = ".gallery-grid-full";
+    } else if (pageId.startsWith("gallery-")) {
+        const slug = pageId.slice("gallery-".length);
+        gallery = galleryData.slice(1).find(g => g.title.replace(/\s+/g, "-") === slug) || null;
+        selector = gallery ? `.gallery-grid-${slug}` : null;
+    }
+
+    if (!gallery || !selector || loadedGallerySelectors.has(selector)) return;
+    if (!document.querySelector(selector)) return;
+    loadedGallerySelectors.add(selector);
+    loadMergedGallery(gallery, selector);
+}
+window.ensureGalleryLoaded = ensureGalleryLoaded;
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+    loadHomeGallery(galleryData[0], ".gallery-grid-home", 5);
+    setupGalleries(galleryData);
+    const hash = location.hash.slice(1);
+    if (hash === "gallery" || hash.startsWith("gallery-")) ensureGalleryLoaded(hash);
+});
 
 // ── Error helpers ─────────────────────────────────────────────────────────────
 function noArtworkHtml() {
