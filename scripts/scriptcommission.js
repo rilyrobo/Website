@@ -741,7 +741,7 @@ function initTosModal() {
 
     btn.addEventListener('click', (e) => {
         e.preventDefault();
-        fetch('tos.html?v=20261120')
+        fetch('tos.html')
             .then(r => r.text())
             .then(html => { if (tosContent) tosContent.innerHTML = html; openModal(); })
             .catch(err => console.error('TOS load error:', err));

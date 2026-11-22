@@ -133,7 +133,7 @@ const jsonCache = new Map();
 
 function fetchJSON(filename) {
     if (jsonCache.has(filename)) return jsonCache.get(filename);
-    const pending = fetch(DATA_BASE + filename + "?v=20261120")
+    const pending = fetch(DATA_BASE + filename)
         .then(r => {
             if (!r.ok) throw new Error(`HTTP ${r.status} for ${filename}`);
             return r.json();
