@@ -175,13 +175,12 @@ function renderTwitterFallback(container) {
 
     container.innerHTML = `
         <div class="twitter-fallback">
-            <p class="twitter-fallback-text">The X timeline didn't load. Use the direct link instead:</p>
-            <a href="${twitterInfo.url}" target="_blank" rel="noopener noreferrer" class="button button-ghost">
-                View @RilyRobo on X
+            <p class="twitter-fallback-text">Live embeds from X are unreliable right now — here's the direct link instead:</p>
+            <a href="${twitterInfo.url}" target="_blank" rel="noopener noreferrer"
+               class="button" style="background: linear-gradient(135deg, ${twitterInfo.color}, #0d5a8a);">
+                Follow @RilyRobo on X
             </a>
         </div>`;
-    const direct = container.parentElement?.querySelector(".twitter-direct-link");
-    if (direct) direct.hidden = true;
 }
 
 // ── Utilities (local copies to avoid a hard load-order dependency — mirrors

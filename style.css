@@ -65,29 +65,7 @@ header::after {
   pointer-events: none;
 }
 
-header h1, header p, .brand { position: relative; z-index: 1; }
-
-.brand {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  max-width: 46rem;
-  margin: 0 auto 0.75rem;
-  text-align: left;
-}
-
-.brand-mark {
-  width: 84px;
-  height: 84px;
-  flex: 0 0 auto;
-  filter: drop-shadow(0 6px 16px rgba(0,0,0,0.65));
-}
-
-.brand-copy h1,
-.brand-copy p { margin-left: 0; margin-right: 0; }
-
-.tagline-open { white-space: nowrap; }
+header h1, header p { position: relative; z-index: 1; }
 
 header h1 {
   font-family: 'Cinzel Decorative', serif;
@@ -339,90 +317,6 @@ body.nav-open #kofi-widget-overlay {
   margin: 0 auto;
   line-height: 1.8;
   text-shadow: 0 1px 4px rgba(0,0,0,0.8);
-  color: var(--text-primary);
-}
-
-.hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.95fr);
-  gap: 2rem;
-  align-items: center;
-  text-align: left;
-  max-width: 1080px;
-  margin: 0 auto 2.5rem;
-}
-
-.hero-figure { margin: 0; }
-
-.hero-figure img {
-  width: 100%;
-  height: auto;
-  max-height: 640px;
-  object-fit: contain;
-  display: block;
-  border-radius: var(--radius);
-  border: 1px solid var(--border-strong);
-  background: #120808;
-  box-shadow: 0 16px 40px rgba(0,0,0,0.55);
-}
-
-.hero-copy {
-  text-align: left;
-  background: rgba(13, 5, 5, 0.78);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.25rem 1.35rem 1.4rem;
-  box-shadow: var(--shadow);
-}
-
-.hero-copy h2 {
-  font-family: 'Cinzel Decorative', serif;
-  color: var(--accent-gold);
-  font-size: clamp(1.35rem, 3vw, 2.05rem);
-  line-height: 1.3;
-  margin: 0.55rem 0 0.75rem;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.75);
-}
-
-.hero-copy .button-container { text-align: left; margin-top: 1.25rem; }
-
-.status-badge {
-  display: inline-block;
-  margin: 0;
-  font-family: 'Cinzel', serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #d7ffd8;
-  border: 1px solid rgba(90, 190, 100, 0.75);
-  background: rgba(16, 70, 28, 0.55);
-  border-radius: 999px;
-  padding: 0.28rem 0.8rem;
-}
-
-.hero-prices {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.hero-prices li {
-  font-family: 'Cinzel', serif;
-  font-size: 1rem;
-  color: var(--text-primary);
-  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
-}
-
-.hero-prices strong { color: var(--accent-gold); }
-
-.button.button-ghost {
-  background: transparent;
-  border: 1px solid var(--accent-gold);
-  color: var(--accent-gold);
-}
-
-.button.button-ghost:hover {
-  background: rgba(200,150,12,0.16);
   color: var(--text-primary);
 }
 
@@ -1206,49 +1100,6 @@ body.nav-open #kofi-widget-overlay {
 .game-card h3 { font-family: 'Cinzel', serif; font-size: 1.3rem; color: var(--accent-gold); margin: 0.5rem 0; }
 .game-card p  { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1rem; }
 
-.game-title-wip {
-  font-style: italic;
-  font-weight: 400;
-  font-size: 1.05rem;
-  color: var(--text-secondary);
-  border: 1px dashed var(--border-strong);
-  display: inline-block;
-  padding: 0.2rem 0.85rem;
-  border-radius: 999px;
-}
-
-.game-nda-face {
-  height: 280px;
-  margin-bottom: 1rem;
-  border-radius: 8px;
-  border: 1px solid var(--border-strong);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  background:
-    linear-gradient(165deg, rgba(26,8,8,0.2) 0%, rgba(8,2,2,0.82) 70%),
-    url('images/backgroundHeader.webp') center/cover no-repeat;
-}
-
-.game-card .game-nda-face img {
-  width: 72px;
-  height: 72px;
-  margin: 0;
-  object-fit: contain;
-  border-radius: 0;
-}
-
-.game-card .game-nda-label {
-  margin: 0;
-  font-family: 'Cinzel', serif;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--accent-gold);
-  font-size: 1.05rem;
-}
-
 /* ── Social ────────────────────────────────────────────────────────────────── */
 .social-media a, .social-contact a {
   display: flex;
@@ -1296,38 +1147,9 @@ body.nav-open #kofi-widget-overlay {
 
 .social-media-grid, .social-contact-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 12px;
-  text-align: left;
-}
-
-.social-media-grid a.social-chip {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 0.75rem;
-  margin: 0;
-  padding: 0.65rem 1rem;
-  background: var(--bg-card);
-  color: var(--text-primary);
-  border: 1px solid var(--accent-gold);
-  border-radius: 999px;
-  box-shadow: none;
-  text-decoration: none;
-}
-
-.social-media-grid a.social-chip strong {
-  font-family: 'Cinzel', serif;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  font-size: 0.92rem;
-}
-
-.social-media-grid a.social-chip:hover {
-  background: rgba(200,150,12,0.12);
-  transform: none;
-  box-shadow: none;
-  border-color: var(--accent-gold);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  text-align: center;
 }
 
 /* ── Social Page: Latest Activity Feed & X Embed ─────────────────────────── */
@@ -1401,14 +1223,7 @@ body.nav-open #kofi-widget-overlay {
 .twitter-embed-container {
   max-width: 550px;
   margin: 0 auto;
-  min-height: 120px;
-  text-align: center;
-}
-
-.twitter-embed-container .twitter-timeline {
-  color: var(--accent-gold);
-  font-family: 'Cinzel', serif;
-  letter-spacing: 0.04em;
+  min-height: 200px; /* reserves space so the timeout-fallback swap doesn't cause a layout jump */
 }
 
 .twitter-fallback {
@@ -1426,155 +1241,11 @@ body.nav-open #kofi-widget-overlay {
   margin-bottom: 1rem;
 }
 
-.twitter-direct-link {
-  text-align: center;
-  margin: 0.85rem 0 0;
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-}
-
-.twitter-direct-link a { color: var(--accent-gold); }
-
 @media (max-width: 767px) {
   .activity-feed-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
 }
 
 /* ── Commissions & Pricing ─────────────────────────────────────────────────── */
-.commission-leads {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-  margin: 0.5rem auto 1.5rem;
-  max-width: 980px;
-}
-
-.commission-leads figure { margin: 0; }
-
-.commission-leads img {
-  width: 100%;
-  height: 240px;
-  object-fit: contain;
-  display: block;
-  border-radius: var(--radius);
-  border: 1px solid var(--border-strong);
-  cursor: pointer;
-  background: #120808;
-}
-
-.commission-leads figcaption {
-  margin-top: 0.4rem;
-  text-align: center;
-  font-family: 'Cinzel', serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--accent-gold);
-}
-
-.commission-from {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.7rem;
-  list-style: none;
-  padding: 0;
-  margin: 1.5rem 0 0.75rem;
-}
-
-.commission-from li {
-  font-family: 'Cinzel', serif;
-  font-size: 0.85rem;
-  color: var(--text-primary);
-  background: var(--bg-card);
-  border: 1px solid var(--border-strong);
-  border-radius: 999px;
-  padding: 0.4rem 0.9rem;
-}
-
-.commission-from strong { color: var(--accent-gold); }
-
-.commission-status {
-  font-family: 'Cinzel', serif;
-  letter-spacing: 0.06em;
-  color: #d7ffd8;
-  margin-bottom: 0.25rem;
-}
-
-.commission-dm { margin-top: 0; }
-
-.commission-dm a,
-.draw-bounds strong { color: var(--accent-gold); }
-
-.process-steps {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.75rem;
-  list-style: none;
-  padding: 0;
-  margin: 0 auto 1.5rem;
-  max-width: 980px;
-}
-
-.process-steps li {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 0.9rem 0.75rem;
-  text-align: center;
-  color: var(--text-secondary);
-}
-
-.process-steps strong {
-  display: block;
-  margin-bottom: 0.35rem;
-  font-family: 'Cinzel', serif;
-  color: var(--accent-gold);
-}
-
-.draw-bounds {
-  max-width: 40rem;
-  margin: 0 auto 1.5rem;
-  text-align: center;
-}
-
-.faq {
-  max-width: 42rem;
-  margin: 0 auto 2rem;
-  text-align: left;
-}
-
-.faq details {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 0.7rem 1rem;
-  margin-bottom: 0.6rem;
-}
-
-.faq summary {
-  font-family: 'Cinzel', serif;
-  cursor: pointer;
-  color: var(--text-primary);
-}
-
-.faq details p {
-  margin: 0.6rem 0 0.2rem;
-  color: var(--text-secondary);
-}
-
-.commission-info { margin: 2rem 0 1rem; }
-
-.shop-closed-note { margin-top: 2rem; }
-
-.kofi-footer-button {
-  background: linear-gradient(135deg, #660000, #3a0000);
-  border-color: var(--border-strong);
-}
-
-.kofi-footer-button:hover {
-  background: linear-gradient(135deg, #8b0000, #660000);
-}
-
 .pricing-grid {
   display: flex;
   flex-wrap: wrap;
@@ -2615,26 +2286,6 @@ footer {
 
   .page { padding: 1.5rem 1rem; }
 
-  .brand { gap: 0.65rem; max-width: 100%; }
-  .brand-mark { width: 64px; height: 64px; }
-  header p.tagline {
-    font-size: 0.78rem;
-    letter-spacing: 0.02em;
-    line-height: 1.45;
-  }
-
-  .hero {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-  .hero-copy,
-  .hero-copy .button-container { text-align: center; }
-  .hero-figure img { max-height: 420px; }
-
-  .commission-leads,
-  .process-steps { grid-template-columns: 1fr 1fr; }
-  .commission-leads img { height: 180px; }
-
   .game-grid { grid-template-columns: 1fr; }
 
   .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
@@ -2657,11 +2308,7 @@ footer {
 }
 
 @media (max-width: 480px) {
-  header h1 { font-size: 1.35rem; }
+  header h1 { font-size: 1.4rem; }
   .welcome-heading { font-size: 1.2rem; }
   .gallery-card img { height: 140px; }
-  .commission-leads,
-  .process-steps { grid-template-columns: 1fr; }
-  .commission-leads img { height: 220px; }
-  .brand-copy h1 { font-size: 1.25rem; }
 }

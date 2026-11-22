@@ -289,22 +289,7 @@ function loadMergedGallery(gallery, gridSelector, limit = null) {
 
         const merged  = mergeItems(daItems, asItems);
         const display = limit ? merged.slice(0, limit) : merged;
-        const curated = gallery.file === "da-featured.json";
-        if (!curated) {
-            renderMergedContainer(container, display);
-        } else {
-            fetchJSON("featured-picks.json")
-                .then(picks => {
-                    const titles = Array.isArray(picks.titles) ? picks.titles : [];
-                    const cap = Number(picks.limit) || 12;
-                    if (!titles.length) {
-                        renderMergedContainer(container, display);
-                        return;
-                    }
-                    renderCuratedContainer(container, display, titles, cap);
-                })
-                .catch(() => renderMergedContainer(container, display));
-        }
+        renderMergedContainer(container, display);
 
         if (daResult.status === "rejected") {
             container.insertAdjacentHTML("beforebegin",
@@ -352,89 +337,14 @@ function galleryFilter(btn, filter) {
        .forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
 
-    const root = btn.closest(".gallery-grid, .gallery-grid-full");
-    if (!root) return;
-    if (root.dataset.curationFilter) {
-        root.dataset.sourceFilter = filter;
-        applyGalleryFilters(root);
-        return;
-    }
-    root.querySelectorAll(".gallery-card").forEach(card => {
-        card.style.display = (filter === "all" || card.dataset.sources === filter) ? "" : "none";
-    });
-}
-
-function renderCuratedContainer(container, items, titles, limit) {
-    const { featured, archive } = splitCurated(items, titles, limit);
-    const all = [...featured, ...archive];
-    container.dataset.curationFilter = "featured";
-    container.dataset.sourceFilter = "all";
-    container.innerHTML = `
-        <div class="gallery-filter-bar" data-kind="curation">
-            <button class="gallery-filter-btn active" onclick="galleryCurationFilter(this,'featured')">Featured (${featured.length})</button>
-            <button class="gallery-filter-btn" onclick="galleryCurationFilter(this,'archive')">Archive / older work (${archive.length})</button>
-            <button class="gallery-filter-btn" onclick="galleryCurationFilter(this,'all')">All (${all.length})</button>
-        </div>
-        ${sourceFilterBar(all).replace(">All<", ">Any source<")}
-        <div class="gallery-inner-grid">${all.map(renderCard).join("")}</div>`;
-    applyGalleryFilters(container);
-    const innerGrid = container.querySelector(".gallery-inner-grid");
-    if (innerGrid) attachModalListenersToElement(innerGrid);
+    btn.closest(".gallery-grid, .gallery-inner-grid, .gallery-grid-full")
+       ?.querySelectorAll(".gallery-card")
+       .forEach(card => {
+           card.style.display = (filter === "all" || card.dataset.sources === filter) ? "" : "none";
+       });
 }
 
 // ── Card renderer ─────────────────────────────────────────────────────────────
-function applyGalleryFilters(root) {
-    if (!root) return;
-    const source = root.dataset.sourceFilter || "all";
-    const curation = root.dataset.curationFilter || "all";
-    root.querySelectorAll(".gallery-card").forEach(card => {
-        const showSource = source === "all" || card.dataset.sources === source;
-        const showCuration = curation === "all" || !card.dataset.curation || card.dataset.curation === curation;
-        card.style.display = showSource && showCuration ? "" : "none";
-    });
-}
-
-function galleryCurationFilter(btn, filter) {
-    const bar = btn.closest(".gallery-filter-bar");
-    bar?.querySelectorAll(".gallery-filter-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    const root = btn.closest(".gallery-grid, .gallery-grid-full");
-    if (root) root.dataset.curationFilter = filter;
-    applyGalleryFilters(root);
-}
-
-function splitCurated(items, titles, limit) {
-    const order = new Map(titles.map((title, index) => [normTitle(title), index]));
-    const featured = [];
-    const used = new Set();
-    const archive = [];
-    items.forEach(item => {
-        const idx = order.get(normTitle(item.title));
-        if (idx !== undefined && !used.has(idx) && featured.length < limit) {
-            used.add(idx);
-            featured.push({ ...item, curation: "featured", _idx: idx });
-        } else {
-            archive.push({ ...item, curation: "archive" });
-        }
-    });
-    featured.sort((a, b) => a._idx - b._idx);
-    return { featured, archive };
-}
-
-function sourceFilterBar(items) {
-    const hasBoth = items.some(i => i.sources === "both");
-    const hasDA   = items.some(i => i.sources === "da");
-    const hasAS   = items.some(i => i.sources === "as");
-    if (!(hasBoth || (hasDA && hasAS))) return "";
-    return `
-        <div class="gallery-filter-bar" data-kind="source">
-            <button class="gallery-filter-btn active" onclick="galleryFilter(this,'all')">All</button>
-            ${hasBoth ? `<button class="gallery-filter-btn" onclick="galleryFilter(this,'both')"><span class="gfb-da">DA</span> + <span class="gfb-as">AS</span></button>` : ""}
-            ${hasDA   ? `<button class="gallery-filter-btn" onclick="galleryFilter(this,'da')">DeviantArt only</button>`  : ""}
-            ${hasAS   ? `<button class="gallery-filter-btn" onclick="galleryFilter(this,'as')">ArtStation only</button>`  : ""}
-        </div>`;
-}
-
 function renderCard(item) {
     const badges = [
         item.daLink ? `<a href="${escapeAttr(item.daLink)}" class="gallery-badge badge-da" target="_blank" rel="noopener noreferrer" title="View on DeviantArt" onclick="event.stopPropagation()">DA</a>` : "",
@@ -451,8 +361,7 @@ function renderCard(item) {
              data-as-link="${escapeAttr(item.asLink || '')}"
              data-image="${escapeAttr(item.image)}"
              data-date="${escapeAttr(item.date || '')}"
-             data-sources="${item.sources}"
-             data-curation="${escapeAttr(item.curation || '')}">
+             data-sources="${item.sources}">
             <img src="${escapeAttr(item.image)}"
                  alt="${escapeAttr(item.title)}"
                  loading="lazy"

@@ -297,7 +297,7 @@ function buildCalculator() {
         </div>
         <div id="calc-breakdown"><p class="calc-result-empty">Select options above to see your estimate.</p></div>
         <p class="calc-contact-line">Questions about a commission? <a href="${COMMISSION_CONTACT.twitterUrl}" target="_blank" rel="noopener noreferrer">Twitter</a>, <a href="${COMMISSION_CONTACT.kofiUrl}" target="_blank" rel="noopener noreferrer">Ko-fi</a>, <a href="mailto:${COMMISSION_CONTACT.email}">Email</a>, or <a href="${COMMISSION_CONTACT.discordUrl}" target="_blank" rel="noopener noreferrer">Discord</a>.</p>
-        <button class="calc-request-btn" id="calc-request-btn" type="button" onclick="openCommissionForm(true)">
+        <button class="calc-request-btn" id="calc-request-btn" onclick="openCommissionForm()" disabled>
             Request This Commission
         </button>
     </div>
@@ -372,7 +372,7 @@ function buildCalculator() {
             <!-- Step 3: Review -->
             <div class="form-step" id="form-step-3">
                 <h3 class="form-step-title">Review your request</h3>
-                <p class="form-step-hint">I'll confirm the final price once I've reviewed your brief. A calculator estimate is included only if you opened this form from the calculator.</p>
+                <p class="form-step-hint">This is an estimate based on the calculator. I'll confirm the final price once I've reviewed your brief.</p>
 
                 <div class="form-summary" id="form-summary"></div>
 
@@ -607,7 +607,7 @@ function renderCalcResult(total, lines, addons, base) {
     if (base === 0) {
         totalEl.textContent = '—';
         breakdownEl.innerHTML = '<p class="calc-result-empty">Select options above to see your estimate.</p>';
-        if (requestBtn) requestBtn.disabled = false;
+        if (requestBtn) requestBtn.disabled = true;
         lastCalcResult = null;
         return;
     }
@@ -631,8 +631,6 @@ function renderCalcResult(total, lines, addons, base) {
     if (requestBtn) requestBtn.disabled = false;
     lastCalcResult = { total, lines, addons, base, type: state.type };
 }
-
-let formIncludesEstimate = false;
 
 // ── Label helpers ─────────────────────────────────────────────────────────────
 function capStyle(s) {
@@ -679,13 +677,6 @@ function setPriceLabels() {
     set('3d-kitbashchar',  money(p3.kitbashChar));
     set('3d-kitbashprop',  money(p3.kitbashProp));
     set('3d-viseme',       `${money(p3.visemePer)} per viseme`);
-
-    set('hero-from-2d',            money(p2.sketch.portrait));
-    set('hero-from-vr',            money(p3.fromScratch));
-    set('from-2d',                 money(p2.sketch.portrait));
-    set('from-3d-prop',            money(p3.staticProp));
-    set('from-3d',                 money(p3.lowpoly.low));
-    set('from-vrchat',             money(p3.fromScratch));
 
     set('avatar-fromScratch',      `starting at ${money(p3.fromScratch)}`);
     set('avatar-kitbashing',       `starting at ${money(p3.kitbash)}`);
@@ -874,7 +865,7 @@ function initCommissionSlider() {
 function initStaticExampleGalleries() {
     if (!getExampleModalRefs()) return;
 
-    document.querySelectorAll('.examples .example-image, .commission-leads img').forEach(img => {
+    document.querySelectorAll('.examples .example-image').forEach(img => {
         img.style.cursor = 'pointer';
         img.addEventListener('click', () => openExampleMediaModal(img.getAttribute('src'), img.alt));
     });
@@ -898,8 +889,8 @@ const COMMISSION_CONTACT = {
     }
 };
 
-function openCommissionForm(includeEstimate) {
-    formIncludesEstimate = includeEstimate === true && !!lastCalcResult;
+function openCommissionForm() {
+    if (!lastCalcResult) return;
     const modal = document.getElementById('commission-form-modal');
     if (!modal) return;
 
@@ -971,13 +962,9 @@ function openTosFromForm(e) {
     }
 }
 
-function currentEstimate() {
-    return formIncludesEstimate ? lastCalcResult : null;
-}
-
 function buildFormSummary() {
     const summaryEl = document.getElementById('form-summary');
-    if (!summaryEl) return;
+    if (!summaryEl || !lastCalcResult) return;
 
     const get = id => document.getElementById(id)?.value?.trim() || '';
     const name     = get('cf-name')     || 'Not provided';
@@ -991,34 +978,28 @@ function buildFormSummary() {
     const refs     = get('cf-refs');
     const notes    = get('cf-notes');
 
-    const estimate = currentEstimate();
-    const typeLabel = estimate
-        ? (estimate.type === '2d' ? '2D Art' : '3D / Avatar')
-        : 'No calculator estimate — please quote from this brief';
+    const typeLabel = lastCalcResult.type === '2d' ? '2D Art' : '3D / Avatar';
 
     let lines = `
         <div class="form-summary-section">
             <div class="form-summary-label">Commission type</div>
             <div class="form-summary-value">${escapeHtmlForm(typeLabel)}</div>
-        </div>`;
-
-    if (estimate) {
-        lines += `
+        </div>
         <div class="form-summary-section">
             <div class="form-summary-label">Configuration</div>
             <div class="form-summary-breakdown">`;
-        estimate.lines.forEach(l => {
-            lines += `<div class="form-summary-row"><span>${escapeHtmlForm(l.label)}</span><span>$${l.amount.toFixed(0)}</span></div>`;
+
+    lastCalcResult.lines.forEach(l => {
+        lines += `<div class="form-summary-row"><span>${escapeHtmlForm(l.label)}</span><span>$${l.amount.toFixed(0)}</span></div>`;
+    });
+    if (lastCalcResult.addons.length) {
+        lines += `<div class="form-summary-row subtotal"><span>Subtotal</span><span>$${lastCalcResult.base.toFixed(0)}</span></div>`;
+        lastCalcResult.addons.forEach(a => {
+            lines += `<div class="form-summary-row addon"><span>${escapeHtmlForm(a.label)}</span><span>+$${a.amount.toFixed(0)}</span></div>`;
         });
-        if (estimate.addons.length) {
-            lines += `<div class="form-summary-row subtotal"><span>Subtotal</span><span>$${estimate.base.toFixed(0)}</span></div>`;
-            estimate.addons.forEach(a => {
-                lines += `<div class="form-summary-row addon"><span>${escapeHtmlForm(a.label)}</span><span>+$${a.amount.toFixed(0)}</span></div>`;
-            });
-        }
-        lines += `<div class="form-summary-row total"><span>Estimated total</span><span>$${estimate.total.toFixed(0)}</span></div>`;
-        lines += `</div></div>`;
     }
+    lines += `<div class="form-summary-row total"><span>Estimated total</span><span>$${lastCalcResult.total.toFixed(0)}</span></div>`;
+    lines += `</div></div>`;
 
     lines += `
         <div class="form-summary-section">
@@ -1049,22 +1030,17 @@ function buildPlainTextSummary() {
     const refs     = get('cf-refs');
     const notes    = get('cf-notes');
 
-    const estimate = currentEstimate();
-    const typeLabel = estimate
-        ? (estimate.type === '2d' ? '2D Art' : '3D / Avatar')
-        : 'No calculator estimate — please quote from this brief';
+    const typeLabel = lastCalcResult.type === '2d' ? '2D Art' : '3D / Avatar';
 
     let text = `COMMISSION REQUEST\n\n`;
     text += `Type: ${typeLabel}\n\n`;
-    if (estimate) {
-        text += `Configuration:\n`;
-        estimate.lines.forEach(l => { text += `  - ${l.label}: $${l.amount.toFixed(0)}\n`; });
-        if (estimate.addons.length) {
-            text += `  Subtotal: $${estimate.base.toFixed(0)}\n`;
-            estimate.addons.forEach(a => { text += `  - ${a.label}: +$${a.amount.toFixed(0)}\n`; });
-        }
-        text += `  Estimated total: $${estimate.total.toFixed(0)}\n\n`;
+    text += `Configuration:\n`;
+    lastCalcResult.lines.forEach(l => { text += `  - ${l.label}: $${l.amount.toFixed(0)}\n`; });
+    if (lastCalcResult.addons.length) {
+        text += `  Subtotal: $${lastCalcResult.base.toFixed(0)}\n`;
+        lastCalcResult.addons.forEach(a => { text += `  - ${a.label}: +$${a.amount.toFixed(0)}\n`; });
     }
+    text += `  Estimated total: $${lastCalcResult.total.toFixed(0)}\n\n`;
     text += `From: ${name} (${contact})\n`;
     if (charname) text += `Character: ${charname}\n`;
     text += `Concept: ${desc}\n`;
@@ -1073,9 +1049,7 @@ function buildPlainTextSummary() {
     if (deadline) text += `Deadline: ${deadline}\n`;
     if (refs)     text += `References: ${refs}\n`;
     if (notes)    text += `Notes: ${notes}\n`;
-    text += estimate
-        ? `\n(This is an estimate — final price confirmed after review.)`
-        : `\n(No calculator estimate. Final price confirmed after review.)`;
+    text += `\n(This is an estimate — final price confirmed after review.)`;
 
     return text;
 }
@@ -1093,10 +1067,7 @@ function submitCommissionForm() {
     const optionsEl = document.getElementById('form-send-options');
     if (!optionsEl) return;
 
-    const estimate = currentEstimate();
-    const subject = encodeURIComponent('Commission Request — ' + (
-        estimate ? (estimate.type === '2d' ? '2D Art' : '3D / Avatar') : 'Brief only'
-    ));
+    const subject = encodeURIComponent('Commission Request — ' + (lastCalcResult.type === '2d' ? '2D Art' : '3D / Avatar'));
     const mailtoBody = encodeURIComponent(plainText);
     const mailtoUrl = `mailto:${COMMISSION_CONTACT.email}?subject=${subject}&body=${mailtoBody}`;
 
